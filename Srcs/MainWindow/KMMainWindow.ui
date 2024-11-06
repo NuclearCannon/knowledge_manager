@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>kmuiClass</class>
+ <widget class="QMainWindow" name="kmuiClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>553</width>
+    <height>607</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>200</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>KMMainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="left_part" native="true">
+    <property name="geometry">
+     <rect>
+      <x>6</x>
+      <y>6</y>
+      <width>200</width>
+      <height>381</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>200</width>
+      <height>0</height>
+     </size>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QPushButton" name="related_entries_button">
+         <property name="text">
+          <string>关联词条</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="anchor_button">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>锚点</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="synopsis_button">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="styleSheet">
+          <string notr="true"/>
+         </property>
+         <property name="text">
+          <string>大纲</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QTabWidget" name="left_tab_widget"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QTabWidget" name="tab_widget">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>6</y>
+      <width>500</width>
+      <height>321</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>300</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="tabPosition">
+     <enum>QTabWidget::TabPosition::North</enum>
+    </property>
+    <property name="tabShape">
+     <enum>QTabWidget::TabShape::Rounded</enum>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>20</width>
+      <height>16</height>
+     </size>
+    </property>
+    <property name="elideMode">
+     <enum>Qt::TextElideMode::ElideNone</enum>
+    </property>
+    <property name="documentMode">
+     <bool>false</bool>
+    </property>
+    <property name="tabsClosable">
+     <bool>true</bool>
+    </property>
+    <property name="movable">
+     <bool>true</bool>
+    </property>
+    <property name="tabBarAutoHide">
+     <bool>false</bool>
+    </property>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>Tab 1</string>
+     </attribute>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Tab 2</string>
+     </attribute>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>553</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>文件</string>
+    </property>
+    <addaction name="act_create_entry"/>
+    <addaction name="act_delete_entry"/>
+    <addaction name="act_save_kl"/>
+    <addaction name="act_merge_kl"/>
+    <addaction name="act_separate_kl"/>
+    <addaction name="act_open_start_window"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>编辑</string>
+    </property>
+    <widget class="QMenu" name="menu_8">
+     <property name="title">
+      <string>添加块</string>
+     </property>
+     <addaction name="act_add_text_block"/>
+     <addaction name="act_add_code_block"/>
+     <addaction name="act_add_image_block"/>
+     <addaction name="act_add_header_block"/>
+    </widget>
+    <addaction name="act_cut_and_paste"/>
+    <addaction name="act_copy"/>
+    <addaction name="act_paste"/>
+    <addaction name="act_find_replace_in_term"/>
+    <addaction name="act_insert_block_above"/>
+    <addaction name="act_insert_block_below"/>
+    <addaction name="menu_8"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>链接</string>
+    </property>
+    <addaction name="act_insert_link"/>
+    <addaction name="act_batch_insert_link"/>
+    <addaction name="act_batch_delete_link"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>格式</string>
+    </property>
+    <addaction name="act_overbold"/>
+    <addaction name="act_italic"/>
+    <addaction name="act_underline"/>
+    <addaction name="act_delete_line"/>
+    <addaction name="act_inline_formula"/>
+    <addaction name="act_inline_code"/>
+    <addaction name="act_insert_image"/>
+   </widget>
+   <widget class="QMenu" name="menu_5">
+    <property name="title">
+     <string>标签</string>
+    </property>
+    <widget class="QMenu" name="menu_7">
+     <property name="title">
+      <string>添加标签</string>
+     </property>
+     <addaction name="act_search_label"/>
+     <addaction name="act_recent_label"/>
+    </widget>
+    <addaction name="menu_7"/>
+    <addaction name="act_manage_label"/>
+   </widget>
+   <widget class="QMenu" name="menu_6">
+    <property name="title">
+     <string>搜索</string>
+    </property>
+    <addaction name="act_search_kl"/>
+    <addaction name="act_search_entry"/>
+    <addaction name="act_search_multi_kl"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_4"/>
+   <addaction name="menu_5"/>
+   <addaction name="menu_6"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="act_create_entry">
+   <property name="text">
+    <string>新建词条</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="act_delete_entry">
+   <property name="text">
+    <string>删除词条</string>
+   </property>
+   <property name="shortcut">
+    <string>Del</string>
+   </property>
+  </action>
+  <action name="act_save_kl">
+   <property name="text">
+    <string>保存知识库</string>
+   </property>
+   <property name="toolTip">
+    <string>保存知识库</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="act_recent_entries">
+   <property name="text">
+    <string>打开最近词条</string>
+   </property>
+   <property name="toolTip">
+    <string>打开最近词条</string>
+   </property>
+  </action>
+  <action name="act_create_new_kl">
+   <property name="text">
+    <string>新建库</string>
+   </property>
+  </action>
+  <action name="act_open_kl">
+   <property name="text">
+    <string>打开库文件</string>
+   </property>
+  </action>
+  <action name="act_open_recent_kl">
+   <property name="text">
+    <string>打开最近库文件</string>
+   </property>
+  </action>
+  <action name="act_import_kl">
+   <property name="text">
+    <string>导入库文件</string>
+   </property>
+  </action>
+  <action name="act_export_kl">
+   <property name="text">
+    <string>导出库文件</string>
+   </property>
+  </action>
+  <action name="act_merge_kl">
+   <property name="text">
+    <string>合库</string>
+   </property>
+  </action>
+  <action name="act_undo">
+   <property name="text">
+    <string>撤销</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="act_redo">
+   <property name="text">
+    <string>重做</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+  </action>
+  <action name="act_cut_and_paste">
+   <property name="text">
+    <string>剪切</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+  <action name="act_paste">
+   <property name="text">
+    <string>粘贴</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="act_find_replace_in_term">
+   <property name="text">
+    <string>词条内查找和替换</string>
+   </property>
+  </action>
+  <action name="act_insert_block_above">
+   <property name="text">
+    <string>在块上方插入新块</string>
+   </property>
+  </action>
+  <action name="act_insert_block_below">
+   <property name="text">
+    <string>在块下方插入新块</string>
+   </property>
+  </action>
+  <action name="act_insert_link">
+   <property name="text">
+    <string>插入链接</string>
+   </property>
+  </action>
+  <action name="act_batch_insert_link">
+   <property name="text">
+    <string>批量插入链接</string>
+   </property>
+  </action>
+  <action name="act_batch_delete_link">
+   <property name="text">
+    <string>批量删除链接</string>
+   </property>
+  </action>
+  <action name="act_separate_kl">
+   <property name="text">
+    <string>分库</string>
+   </property>
+  </action>
+  <action name="act_copy">
+   <property name="text">
+    <string>复制</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="act_overbold">
+   <property name="text">
+    <string>加粗</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="act_italic">
+   <property name="text">
+    <string>斜体</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="act_underline">
+   <property name="text">
+    <string>下划线</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="act_delete_line">
+   <property name="text">
+    <string>删除线</string>
+   </property>
+  </action>
+  <action name="act_inline_formula">
+   <property name="text">
+    <string>内联公式</string>
+   </property>
+  </action>
+  <action name="act_inline_code">
+   <property name="text">
+    <string>内联代码</string>
+   </property>
+  </action>
+  <action name="act_insert_image">
+   <property name="text">
+    <string>插入图片</string>
+   </property>
+  </action>
+  <action name="act_new_label">
+   <property name="text">
+    <string>新建标签</string>
+   </property>
+  </action>
+  <action name="act_delete_label">
+   <property name="text">
+    <string>删除标签</string>
+   </property>
+  </action>
+  <action name="act_edit_label">
+   <property name="text">
+    <string>修改标签</string>
+   </property>
+  </action>
+  <action name="act_search_label">
+   <property name="text">
+    <string>搜索标签</string>
+   </property>
+  </action>
+  <action name="act_recent_label">
+   <property name="text">
+    <string>最近使用</string>
+   </property>
+  </action>
+  <action name="act_search_kl">
+   <property name="text">
+    <string>搜索库</string>
+   </property>
+  </action>
+  <action name="act_search_multi_kl">
+   <property name="text">
+    <string>多库搜索</string>
+   </property>
+  </action>
+  <action name="act_search_entry">
+   <property name="text">
+    <string>搜索词条</string>
+   </property>
+  </action>
+  <action name="act_open_start_window">
+   <property name="text">
+    <string>打开启动窗口</string>
+   </property>
+  </action>
+  <action name="act_manage_label">
+   <property name="text">
+    <string>管理标签</string>
+   </property>
+  </action>
+  <action name="act_add_text_block">
+   <property name="text">
+    <string>文本块</string>
+   </property>
+  </action>
+  <action name="act_add_code_block">
+   <property name="text">
+    <string>代码块</string>
+   </property>
+  </action>
+  <action name="act_add_image_block">
+   <property name="text">
+    <string>图片块</string>
+   </property>
+  </action>
+  <action name="act_add_header_block">
+   <property name="text">
+    <string>标题块</string>
+   </property>
+  </action>
+  <action name="action1_6">
+   <property name="text">
+    <string>1</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources>
+  <include location="../kmui.qrc"/>
+ </resources>
+ <connections/>
+</ui>
