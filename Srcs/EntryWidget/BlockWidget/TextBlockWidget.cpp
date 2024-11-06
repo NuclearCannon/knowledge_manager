@@ -5,7 +5,9 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 
-static const int type_key = 1000;  // 只要是个比较大的数字就行
+static const int FORMAT_IS_CODE = 1000;  // 只要是个比较大的数字就行
+static const int FORMAT_IS_LINK = 1001;
+
 
 // 这些静态函数仅用于本文件内
 static int createFormatCode(bool bold, bool italic, bool underline, bool strike)
@@ -29,16 +31,11 @@ static void decodeFormatCode(int format_code, bool& bold, bool& italic, bool& un
 
 TextType getQTextCharFormatType(const QTextCharFormat& format)
 {
-    if(format.hasProperty(type_key))
-    {
-        int x = format.property(type_key).toInt();
-        return (TextType)x;
-    }
-    else
-    {
-        qWarning() << "Warning:getQTextCharFormatType get no type!";
-        return TextType::normal;
-    }
+
+    if(format.hasProperty(FORMAT_IS_CODE))return TextType::code;
+    if(format.hasProperty(FORMAT_IS_LINK))return TextType::link;
+    return TextType::normal;
+
 }
 
 
@@ -49,7 +46,6 @@ static QTextCharFormat normalFormat(bool bold, bool italic, bool underline, bool
     format.setFontItalic(italic);
     format.setFontUnderline(underline);
     format.setFontStrikeOut(strike);
-    format.setProperty(type_key, TextType::normal);
     return format;
 }
 
@@ -64,7 +60,7 @@ static QTextCharFormat codeFormat()
     code_format.setFont(font); 
     QColor codeColor(0, 0, 128);
     code_format.setForeground(codeColor);
-    code_format.setProperty(type_key, TextType::code);
+    code_format.setProperty(FORMAT_IS_CODE, true);
     return code_format;
 }
 
@@ -75,7 +71,7 @@ static QTextCharFormat linkFormat(const QString& href)
     link_format.setAnchorHref(href);
     link_format.setForeground(QColor(Qt::blue));
     link_format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
-    link_format.setProperty(type_key, TextType::link);
+    link_format.setProperty(FORMAT_IS_LINK, true);
     return link_format;
 }
 

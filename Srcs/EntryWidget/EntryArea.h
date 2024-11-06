@@ -7,7 +7,7 @@
 #include <QPixmap>
 #include <QFileDialog>
 #include <QSet>
-
+#include <QFile>
 class EntryArea : public QScrollArea
 {
     Q_OBJECT
@@ -22,8 +22,12 @@ private:
     EntryArea(QWidget* parent, const QDir& root);
     int insert(int index, BlockWidget* ptr);// 在下标处插入一个块
     int find(BlockWidget* block_widget);  // 定位一个块，返回其下标
-    void load();
+    
+    QFile entry_file;
 public:
+    int load();
+    int dump();  // 将当前内容同步到文件
+    ~EntryArea();
     struct OutlineItem
     {
         QString text;
@@ -33,7 +37,7 @@ public:
         OutlineItem(QString text, int level, int position);
     };
     std::list<OutlineItem> getOutline() const;
-    void dump();  // 将当前内容同步到文件
+    
     bool has(BlockWidget* block) const;  // 检查是否有该块
     int rollTo(int position);// 滚动到指定位置，如果滚动失败返回0，滚动成功返回1
     int length() const;  // 返回块列表的长度
@@ -48,7 +52,6 @@ public:
     void appendBlock(BlockType type);
     void appendBlock(BlockWidget* widget);
     int deleteCurrentBlock();
-    void clear();  // 清空所有的块
     static EntryArea* open(QWidget* parent, const QDir& dir);
     static EntryArea* initialize(QWidget* parent, const QDir& dir);
     QDir getRootDir() const;  

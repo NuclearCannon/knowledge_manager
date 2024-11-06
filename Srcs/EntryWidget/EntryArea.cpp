@@ -17,7 +17,6 @@ static QString generateUniqueFileName(const QDir& dir, const QString& baseFileNa
         QString counterStr = QString::number(counter++);
         newFileName = fileName + "(" + counterStr + ")." + suffix;
     }
-
     return newFileName;
 }
 
@@ -84,12 +83,20 @@ int EntryArea::find(BlockWidget* block_widget)
     return -1;
 }
 
-void EntryArea::load()
+int EntryArea::load()
 {
     // 创建一个pugi::xml_document对象  
     pugi::xml_document doc;
-    doc.load_file(root_dir.absoluteFilePath("entry.xml").toStdString().c_str());
-
+    // 读取文件内容
+    if (!(entry_file.open(QFile::ReadOnly | QFile::Text)))
+    {
+        // 文件打开失败
+        entry_file.close();
+        return 0;
+    }
+    // 文件打开成功
+    QTextStream stream(&entry_file);
+    doc.load_string(stream.readAll().toStdString().c_str());
     // 从字符串加载XML内容到doc中  
     pugi::xml_node root = doc.root();
     for (pugi::xml_node child = root.first_child(); child; child = child.next_sibling())
@@ -130,31 +137,53 @@ void EntryArea::load()
             qDebug() << "Unknown type of xml child:" << child.name();
         }
     }
-    return;
+    return 1;
 
 }
 
-// EntryArea(public)
 // 构造函数
-EntryArea::EntryArea(QWidget* parent, const QDir& root) : 
-    QScrollArea(parent), 
-    layout(0), 
-    head(0), 
+EntryArea::EntryArea(QWidget* parent, const QDir& root) :
+    QScrollArea(parent),
+    layout(0),
+    head(0),
     tail(0),
     focus(nullptr),
     root_dir(root),
     attachment_dir(root_dir.absoluteFilePath("attachments")),
-    saved(true)
-
+    saved(true),
+    entry_file(root.absoluteFilePath("entry.xml"))
 {
     setWidget(new QWidget);
     setWidgetResizable(true);
-    qDebug() << "BlockArea initialized";
+    qDebug() << "EntryArea initialized";
     layout = new QVBoxLayout(this->widget());
     layout->addStretch(1);
+    // 打开文件不由这里负责
+    
+    qDebug() << "EntryWidget(filePath=" << root.absoluteFilePath("entry.xml");
 
 }
-// 使用默认析构函数
+
+EntryArea::~EntryArea()
+{
+    // 关闭文件
+    if (entry_file.isOpen())
+    {
+        entry_file.close();
+    }
+
+    // 清空blocks
+    BlockWidget* p = head, * q;
+    while (p)
+    {
+        q = p->next;
+        layout->removeWidget(p);
+        delete p;
+        p = q;
+
+    }
+    head = tail = nullptr;
+}
 bool EntryArea::has(BlockWidget* block) const
 {
     return blocks.contains(block);
@@ -345,19 +374,15 @@ int EntryArea::deleteCurrentBlock()
 }
 
 
-void EntryArea::dump()
+int EntryArea::dump()
 {
     pugi::xml_document doc;
     pugi::xml_node root = doc.root();
-
     root.set_name("entry");
-
     for (BlockWidget* iter = head; iter; iter = iter->next)
     {
         std::ostringstream oss;
         root.print(oss);
-        
-
         pugi::xml_node block_node = root.append_child(pugi::node_element);
         if (block_node.empty())
         {
@@ -368,28 +393,22 @@ void EntryArea::dump()
 
     }
     // 导出为文件
-    
-    doc.save_file(root_dir.absoluteFilePath("entry.xml").toStdString().c_str());
-
-    this->saved = true;
-
-}
-
-
-
-void EntryArea::clear()
-{
-    BlockWidget* p = head, * q;
-    while (p)
+    if (!(entry_file.open(QFile::WriteOnly | QFile::Text | QFile::Truncate)))
     {
-        q = p->next;
-        layout->removeWidget(p);
-        delete p;
-        p = q;
-
+        // 文件打开失败
+        entry_file.close();
+        return 0;
     }
-    head = tail = nullptr;
+    // 文件打开成功
+    std::ostringstream oss;
+    doc.save(oss);
+    QTextStream stream(&entry_file);
+    stream << oss.str().c_str();
+    this->saved = true;
+    entry_file.close();
+    return 1;
 }
+
 
 
 std::list<EntryArea::OutlineItem> EntryArea::getOutline() const
@@ -415,6 +434,7 @@ std::list<EntryArea::OutlineItem> EntryArea::getOutline() const
 EntryArea* EntryArea::open(QWidget* parent, const QDir& dir)
 {
     EntryArea* p = new EntryArea(parent, dir);
+    
     p->load();
     return p;
 
@@ -422,6 +442,7 @@ EntryArea* EntryArea::open(QWidget* parent, const QDir& dir)
 EntryArea* EntryArea::initialize(QWidget* parent, const QDir& dir)
 {
     EntryArea* p = new EntryArea(parent, dir);
+    
     p->dump();
     return p;
 }
