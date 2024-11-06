@@ -219,7 +219,7 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 	ui.left_tab_widget->addTab(synopsis_list, "大纲");
 
 
-	relatedEntriedButtonClicked();  // 默认显示关联词条
+	anchorButtonClicked();  // 默认显示锚点
 
 	for (int i = 0; i < ui.left_tab_widget->tabBar()->count(); ++i) {
 		ui.left_tab_widget->tabBar()->setTabButton(i, QTabBar::RightSide, nullptr); // 移除关闭按钮
@@ -234,10 +234,11 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 	connect(ui.related_entries_button, &QAbstractButton::clicked, this, &KMMainWindow::relatedEntriedButtonClicked);
 	connect(ui.anchor_button, &QAbstractButton::clicked, this, &KMMainWindow::anchorButtonClicked);
 	connect(ui.synopsis_button, &QAbstractButton::clicked, this, &KMMainWindow::synopsisButtonClicked);
-	// 大纲列表的左键点击
-	//connect(synopsis_list, &QListWidget::itemClicked, this, &KMMainWindow::synopsisItemClicked);
-	// 大刚列表的右键点击
-	//connect(synopsis_list, &QListWidget::customContextMenuRequested, this, &KMMainWindow::synopsisItemRightClicked);
+	// 左键点击
+	connect(synopsis_list, &QListWidget::itemClicked, this, &KMMainWindow::synopsisItemClicked);
+	connect(out_entries_list, &QListWidget::itemClicked, this, &KMMainWindow::relatedEntryItemClicked);
+	connect(in_entries_list, &QListWidget::itemClicked, this, &KMMainWindow::relatedEntryItemClicked);
+	connect(anchor_list, &QListWidget::itemClicked, this, &KMMainWindow::anchorItemClicked);
 
 	// tabwidget相关
 	connect(ui.tab_widget, &QTabWidget::tabCloseRequested, this, &KMMainWindow::acttabCloseRequested);  // 点击tab关闭按钮时，关闭特定的tab
@@ -247,6 +248,7 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 	connect(ui.act_delete_entry, &QAction::triggered, this, &KMMainWindow::actDeleteEntry);  // 点击删除文件时，询问并删除当前词条，同时删除对应的tab
 	connect(ui.act_save_kl, &QAction::triggered, this, &KMMainWindow::actSaveKL);  // 点击保存库时，保存当前库
 	connect(ui.act_open_start_window, &QAction::triggered, this, &KMMainWindow::actOpenStartWindow);  // 点击打开启动窗口
+	connect(ui.act_set_current_entry_as_anchor, &QAction::triggered, this, &KMMainWindow::actSetCurrentEntryAsAnchor);  // 设置当前词条为锚点
 
 	// 编辑菜单
 	connect(ui.act_add_text_block, &QAction::triggered, this, &KMMainWindow::actAddTextBlock);  // 添加一个文本块
@@ -281,21 +283,34 @@ void KMMainWindow::handleKLChanged()
 	}
 }
 
-bool KMMainWindow::addEntryToTab(EntryWidget* entry_widget, const QString& entry_title) 
+// 根据entry_id，跳转到对应的词条，如果词条已经打开，则直接跳转，否则打开词条
+// 返回是否成功跳转
+bool KMMainWindow::openEntry(int entry_id)
 {
-	if (entry_widget == nullptr)
+	// 先判断是否已经加到tab_widget中，如果是就直接将其设为当前tab
+	for (int i = 0; i < ui.tab_widget->count(); ++i)
+	{
+		EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->widget(i));
+		if (entry_widget->getEntryId() == entry_id)
+		{
+			ui.tab_widget->setCurrentWidget(entry_widget);
+			return true;
+		}
+	}
+
+	// 如果不在tab_widget中，就新建一个tab
+	const EntryMeta* entry_meta = meta_data.getEntry(entry_id);
+	if (entry_meta == nullptr) return false;
+
+	EntryWidget* entry_widget = EntryWidget::construct(entry_id, ui.tab_widget, this);
+
+	if (!addEntryToTab(entry_widget, entry_meta->title()))  // 这里会判断entry_widget是否为nullptr
 	{
 		return false;
 	}
-	ui.tab_widget->addTab(entry_widget, entry_title);
-
-	connect(entry_widget->getEntryArea(), &EntryArea::contentChange, this, &KMMainWindow::handleKLChanged);
-	connect(entry_widget->getEntryArea(), &EntryArea::titleChange, this, &KMMainWindow::synopsisButtonClicked);
-
-	ui.tab_widget->setCurrentWidget(entry_widget);
 
 	return true;
-};
+}
 
 // 关闭时，询问未保存的词条，从 current_kl_list 中删除当前库
 void KMMainWindow::closeEvent(QCloseEvent* event)
@@ -386,7 +401,10 @@ void KMMainWindow::relatedEntriedButtonClicked()
 		{
 			const EntryMeta* entry_meta = meta_data.getEntry(entry_id);
 			if (entry_meta == nullptr) continue;
-			out_entries_list->addItem(entry_meta->title());
+			QListWidgetItem* item = new QListWidgetItem(out_entries_list);
+			item->setText(entry_meta->title());
+			item->setData(Qt::UserRole, entry_id);
+			out_entries_list->addItem(item);
 		}
 	}
 
@@ -396,8 +414,22 @@ void KMMainWindow::relatedEntriedButtonClicked()
 		{
 			const EntryMeta* entry_meta = meta_data.getEntry(entry_id);
 			if (entry_meta == nullptr) continue;
-			in_entries_list->addItem(entry_meta->title());
+			QListWidgetItem* item = new QListWidgetItem(in_entries_list);
+			item->setText(entry_meta->title());
+			item->setData(Qt::UserRole, entry_id);
+			in_entries_list->addItem(item);
 		}
+	}
+}
+
+// 槽：// 左键关联词条中的条目，跳转到对应的词条
+void KMMainWindow::relatedEntryItemClicked(QListWidgetItem* item)
+{
+	int entry_id = item->data(Qt::UserRole).toInt();
+
+	if (!openEntry(entry_id))
+	{
+		QMessageBox::warning(this, "错误", "打开词条失败：" + item->text());
 	}
 }
 
@@ -418,7 +450,23 @@ void KMMainWindow::anchorButtonClicked()
 	{
 		const EntryMeta* entry_meta = meta_data.getEntry(entry_id);
 		if (entry_meta == nullptr) continue;
-		anchor_list->addItem(entry_meta->title());
+		QListWidgetItem* item = new QListWidgetItem(anchor_list);
+		item->setText(entry_meta->title());
+		item->setData(Qt::UserRole, entry_id);
+		anchor_list->addItem(item);
+
+		//qDebug() << "锚点：" << entry_meta->title();
+	}
+}
+
+// 槽：左键锚点中的条目，跳转到对应的词条
+void KMMainWindow::anchorItemClicked(QListWidgetItem* item)
+{
+	int entry_id = item->data(Qt::UserRole).toInt();
+
+	if (!openEntry(entry_id))
+	{
+		QMessageBox::warning(this, "错误", "打开词条失败：" + item->text());
 	}
 }
 
@@ -455,3 +503,26 @@ void KMMainWindow::synopsisButtonClicked()
 	}
 }
 
+// 槽：大纲列表的左键点击
+void KMMainWindow::synopsisItemClicked(QListWidgetItem* item)
+{
+	EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->currentWidget());
+	EntryArea* entry_area = entry_widget->getEntryArea();
+	entry_area->rollTo(item->data(Qt::UserRole).toInt());
+}
+
+bool KMMainWindow::addEntryToTab(EntryWidget* entry_widget, const QString& entry_title)
+{
+	if (entry_widget == nullptr)
+	{
+		return false;
+	}
+	ui.tab_widget->addTab(entry_widget, entry_title);
+
+	connect(entry_widget->getEntryArea(), &EntryArea::contentChange, this, &KMMainWindow::handleKLChanged);
+	connect(entry_widget->getEntryArea(), &EntryArea::titleChange, this, &KMMainWindow::synopsisButtonClicked);
+
+	ui.tab_widget->setCurrentWidget(entry_widget);
+
+	return true;
+};

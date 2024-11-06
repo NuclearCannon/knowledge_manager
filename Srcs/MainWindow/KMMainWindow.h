@@ -1,6 +1,7 @@
 #pragma once
 #include <QtWidgets/QMainWindow>
 #include <QListWidget>
+#include <QPoint>
 
 #include "ui_KMMainWindow.h"
 #include "MetaData.h"
@@ -42,11 +43,12 @@ public:
 	// 获取元数据
 	const MetaData& getMetaData() const;
 
-	// 添加一个tab，返回是否添加成功，不要直接调用ui.tab_widget->addTab
-	bool addEntryToTab(EntryWidget* entry_widget, const QString& entry_title);
-
 	//void addTab(QWidget* widget, const QString& label);//新加
 	void onUpdateTabWidget(const QString& klName, const QString& klPath, QWidget* widget, const QString& fileName);//搜索完打开词条函数
+
+	// 根据entry_id，跳转到对应的词条，如果词条已经打开，则直接跳转，否则打开词条
+	// 返回是否成功跳转
+	bool openEntry(int entry_id);
 
 private slots:
 	// 文件菜单相关的槽函数
@@ -55,6 +57,7 @@ private slots:
 	void actDeleteEntry();  // 点击删除文件时，询问并删除当前词条，同时删除对应的tab
 	void actSaveKL();  // 点击保存库时，保存当前库
 	void actOpenStartWindow();  // 点击打开启动窗口
+	void actSetCurrentEntryAsAnchor();  // 设置当前词条为锚点
 
 	// 编辑菜单相关的槽函数
 	void actAddTextBlock();  // 点击添加文本块时，添加一个文本块
@@ -76,8 +79,11 @@ private slots:
 
 	// 关联标签、锚点、大纲 槽函数
 	void relatedEntriedButtonClicked();  // 关联词条
+	void relatedEntryItemClicked(QListWidgetItem* item);  // 左键关联词条中的条目，跳转到对应的词条
 	void anchorButtonClicked();  // 锚点
+	void anchorItemClicked(QListWidgetItem* item);  // 左键锚点中的条目，跳转到对应的词条
 	void synopsisButtonClicked();  // 大纲
+	void synopsisItemClicked(QListWidgetItem* item);  // 左键大纲中的条目，跳转到对应的词条
 
 	// 知识库发生变化时，更新MainWindow的标题（在知识库名称后面加" *"）
 	void handleKLChanged();  
@@ -93,4 +99,7 @@ private:
 
 	// 构造KMMainWindow的辅助函数，用于加载库
 	bool initialize();
+
+	// 添加一个tab，返回是否添加成功，不要直接调用ui.tab_widget->addTab
+	bool addEntryToTab(EntryWidget* entry_widget, const QString& entry_title);
 };

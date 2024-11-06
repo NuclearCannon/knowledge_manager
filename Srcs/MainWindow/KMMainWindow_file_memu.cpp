@@ -105,6 +105,12 @@ void KMMainWindow::actCreateEntry()
 // 点击删除文件时，询问并删除当前词条，同时删除对应的tab
 void KMMainWindow::actDeleteEntry()
 {
+	if (ui.tab_widget->count() == 0)
+	{
+		QMessageBox::warning(this, "错误", "当前没有打开的词条！");
+		return;
+	}
+
 	// 询问是否删除当前词条
 	QMessageBox msg_box(QMessageBox::Warning, "警告", "是否删除当前词条？", QMessageBox::Yes | QMessageBox::No, this);
 	msg_box.button(QMessageBox::Yes)->setText("是");
@@ -227,6 +233,39 @@ void KMMainWindow::actOpenStartWindow()
 	start_window->show();
 }
 
+// 槽：设置当前词条为锚点
+void KMMainWindow::actSetCurrentEntryAsAnchor()
+{
+	if (ui.tab_widget->count() == 0)
+	{
+		QMessageBox::warning(this, "错误", "当前没有打开的词条！");
+		return;
+	}
 
+	int current_index = ui.tab_widget->currentIndex();
+	EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->widget(current_index));
+	
+	int rnt = meta_data.addAnchor(entry_widget->getEntryId());
+
+	if (rnt == -1)
+	{
+		QMessageBox::warning(this, "错误", "该锚点已存在！设置锚点失败！");
+	}
+	else if (rnt == -2)
+	{
+		QMessageBox::warning(this, "错误", "设置锚点失败！");
+	}
+	else
+	{
+		handleKLChanged();
+	}
+
+	// 如果左边在展示锚点，则刷新锚点列表
+	if (ui.left_tab_widget->currentIndex() == 1)
+	{
+		anchorButtonClicked();
+	}
+
+}
 
 
