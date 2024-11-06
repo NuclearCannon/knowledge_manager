@@ -62,6 +62,12 @@ void KMMainWindow::actCreateEntry()
 				continue;
 			}
 			// 添加到元数据
+
+			// 打印所有元数据中的词条
+			for (auto entry : meta_data.getEntries()) {
+				qDebug() << "entry: " << entry->title();
+			}
+
 			entry_id = meta_data.addEntry(entry_title);
 			
 			if (entry_id == -1)
@@ -215,7 +221,7 @@ void KMMainWindow::actSaveKL()
 // 槽：点击打开启动窗口
 void KMMainWindow::actOpenStartWindow()
 {
-	StartWindow* start_window = new StartWindow(this);
+	StartWindow* start_window = new StartWindow();
 	start_window->setWindowFlags(Qt::Window);  // 独立窗口
 	start_window->refreshListWidget();  // 刷新listWidget
 	start_window->show();

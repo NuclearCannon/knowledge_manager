@@ -9,8 +9,8 @@
 #include "../MainWindow/KMMainWindow.h"
 #include "../public.h"
 
-StartWindow::StartWindow(QWidget* parent)
-    : QWidget(parent)
+StartWindow::StartWindow()
+    : QWidget(nullptr)
     , ui(new Ui::start_window_widget)
 {
 	ui->setupUi(this);  // listWidget的样式表在ui文件中设置了

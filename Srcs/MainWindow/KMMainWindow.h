@@ -89,7 +89,7 @@ protected:
 	void closeEvent(QCloseEvent* event) override;  // 关闭时，询问未保存的词条，从 current_kl_list 中删除当前库
 
 private:
-	explicit KMMainWindow(QString _kl_name, QString _kl_path, QWidget* parent = nullptr);
+	explicit KMMainWindow(QString _kl_name, QString _kl_path);
 
 	// 构造KMMainWindow的辅助函数，用于加载库
 	bool initialize();

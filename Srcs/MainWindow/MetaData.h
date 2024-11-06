@@ -85,12 +85,10 @@ public:
 
 	// 添加一个新的Tag，如果成功返回对应的TagId，
 	// 如果失败（重名）return -1
-	// 一切正常，return 0
 	int addTag(const QColor& color, const QString& name);
 
 	// 添加一个新的EntryMeta，如果成功返回对应的EntryId，
 	// 如果失败（重名）return -1
-	// 一切正常，return 0
 	int addEntry(const QString& title);
 
 	// 向词条的标签集中加入一个标签。

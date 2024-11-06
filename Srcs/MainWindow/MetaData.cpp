@@ -219,8 +219,7 @@ int MetaData::addTag(const QColor& color, const QString& name)
 	int new_id = 0;
 	while (tags.find(new_id) != tags.end())new_id++;
 	tags[new_id] = new Tag(new_id, color, name);
-	return 0;
-
+	return new_id;
 }
 
 int MetaData::addEntry(const QString& title)
@@ -234,7 +233,7 @@ int MetaData::addEntry(const QString& title)
 	int new_id = 0;
 	while (entrys.find(new_id) != entrys.end())new_id++;
 	entrys[new_id] = new EntryMeta(new_id, title);
-	return 0;
+	return new_id;
 }
 
 int MetaData::addTagToEntry(int tag_id, int entry_id)

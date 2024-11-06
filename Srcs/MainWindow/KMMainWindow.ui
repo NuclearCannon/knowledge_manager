@@ -190,6 +190,7 @@
     <addaction name="act_merge_kl"/>
     <addaction name="act_separate_kl"/>
     <addaction name="act_open_start_window"/>
+    <addaction name="act_set_current_entry_as_anchor"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -280,7 +281,7 @@
   </action>
   <action name="act_delete_entry">
    <property name="text">
-    <string>删除词条</string>
+    <string>删除当前词条</string>
    </property>
    <property name="shortcut">
     <string>Del</string>
@@ -529,10 +530,15 @@
     <string>1</string>
    </property>
   </action>
+  <action name="act_set_current_entry_as_anchor">
+   <property name="text">
+    <string>将当前词条设为锚点</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../kmui.qrc"/>
+  <include location="../../KnowledgeManager.qrc"/>
  </resources>
  <connections/>
 </ui>

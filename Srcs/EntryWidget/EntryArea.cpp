@@ -438,6 +438,7 @@ void EntryArea::contentChangeSlot()
 
 void EntryArea::titleChangeSlot()
 {
+	//qDebug() << "titleChange\n";
     emit titleChange();
 }
 

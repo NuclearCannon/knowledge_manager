@@ -15,7 +15,7 @@ class StartWindow : public QWidget
 
 public:
 	// 调用构造函数后必须调用refreshListWidget()来刷新listWidget
-    explicit StartWindow(QWidget* parent = nullptr);
+    explicit StartWindow();
     ~StartWindow();
 	void refreshListWidget();  // 刷新listWidget
 
