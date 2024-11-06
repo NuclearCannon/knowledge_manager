@@ -9,10 +9,240 @@
       <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
       <Extensions>ts</Extensions>
     </Filter>
+    <Filter Include="Srcs">
+      <UniqueIdentifier>{1c9a68c6-9ff9-49c5-9506-3db984367e2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\Compress">
+      <UniqueIdentifier>{ee95312a-c6a6-45e6-b06b-be4c9c07e331}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\EntryWidget">
+      <UniqueIdentifier>{63e8770d-000a-4763-aeca-e27cf3c2cab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\EntryWidget\BlockWidget">
+      <UniqueIdentifier>{5d55bc29-5997-4286-914c-16d9f021e223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\EntryWidget\pugixml">
+      <UniqueIdentifier>{28420789-e15e-43cd-a48b-a07181fe0b9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\MainWindow">
+      <UniqueIdentifier>{973e0c86-d065-4ed7-8f80-10cc16447ba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\Search">
+      <UniqueIdentifier>{6e561301-e008-4299-a757-7901e8881520}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\StartWindow">
+      <UniqueIdentifier>{f4eccac2-25ce-4c7d-aeb1-540de191ac92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\TagManager">
+      <UniqueIdentifier>{ffb8ab8d-819b-45b7-a06c-8cf831ee4d63}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="KnowledgeManager.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Srcs\Compress\compression.cpp">
+      <Filter>Srcs\Compress</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\Compress\miniz.c">
+      <Filter>Srcs\Compress</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\BlockWidget.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlockWidget.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlockWidget.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\ImageBlockWidget.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlockWidget.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\pugixml\pugixml.cpp">
+      <Filter>Srcs\EntryWidget\pugixml</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\EntryArea.cpp">
+      <Filter>Srcs\EntryWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\EntryWidget.cpp">
+      <Filter>Srcs\EntryWidget</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\MainWindow\KMMainWindow.cpp">
+      <Filter>Srcs\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\MainWindow\KMMainWindow_file_memu.cpp">
+      <Filter>Srcs\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\MainWindow\KMMainWindow_tag_menu.cpp">
+      <Filter>Srcs\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\MainWindow\KMMainWindowEditMenu.cpp">
+      <Filter>Srcs\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\MainWindow\kmui_mergeseparatekl_memu.cpp">
+      <Filter>Srcs\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\MainWindow\kmui_search_memu.cpp">
+      <Filter>Srcs\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\MainWindow\MetaData.cpp">
+      <Filter>Srcs\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\Search\merge_kl.cpp">
+      <Filter>Srcs\Search</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\Search\merge_kl_same_name.cpp">
+      <Filter>Srcs\Search</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\Search\search_entry_widget.cpp">
+      <Filter>Srcs\Search</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\Search\search_kl_widget.cpp">
+      <Filter>Srcs\Search</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\Search\search_multi_kl_widget.cpp">
+      <Filter>Srcs\Search</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\Search\separate_kl.cpp">
+      <Filter>Srcs\Search</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\StartWindow\new_kl_guidance.cpp">
+      <Filter>Srcs\StartWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\StartWindow\startwindow.cpp">
+      <Filter>Srcs\StartWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\TagManager\tag_edit_dialog.cpp">
+      <Filter>Srcs\TagManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\TagManager\tag_manager.cpp">
+      <Filter>Srcs\TagManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\main.cpp">
+      <Filter>Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\public.cpp">
+      <Filter>Srcs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Srcs\Compress\compression.h">
+      <Filter>Srcs\Compress</Filter>
+    </ClInclude>
+    <ClInclude Include="Srcs\Compress\miniz.h">
+      <Filter>Srcs\Compress</Filter>
+    </ClInclude>
+    <ClInclude Include="Srcs\EntryWidget\BlockWidget\BlockWidgets.h">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </ClInclude>
+    <ClInclude Include="Srcs\EntryWidget\pugixml\pugiconfig.hpp">
+      <Filter>Srcs\EntryWidget\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="Srcs\EntryWidget\pugixml\pugixml.hpp">
+      <Filter>Srcs\EntryWidget\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="Srcs\MainWindow\MetaData.h">
+      <Filter>Srcs\MainWindow</Filter>
+    </ClInclude>
+    <ClInclude Include="Srcs\public.h">
+      <Filter>Srcs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\BlockWidget.h">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\CodeBlockWidget.h">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\HeaderBlockWidget.h">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\ImageBlockWidget.h">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\TextBlockWidget.h">
+      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\EntryWidget\EntryArea.h">
+      <Filter>Srcs\EntryWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\EntryWidget\EntryWidget.h">
+      <Filter>Srcs\EntryWidget</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\MainWindow\KMMainWindow.h">
+      <Filter>Srcs\MainWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\Search\merge_kl.h">
+      <Filter>Srcs\Search</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\Search\merge_kl_same_name.h">
+      <Filter>Srcs\Search</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\Search\search_entry_widget.h">
+      <Filter>Srcs\Search</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\Search\search_kl_widget.h">
+      <Filter>Srcs\Search</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\Search\search_multi_kl_widget.h">
+      <Filter>Srcs\Search</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\Search\separate_kl.h">
+      <Filter>Srcs\Search</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\StartWindow\new_kl_guidance.h">
+      <Filter>Srcs\StartWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\StartWindow\startwindow.h">
+      <Filter>Srcs\StartWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\TagManager\tag_edit_dialog.h">
+      <Filter>Srcs\TagManager</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\TagManager\tag_manager.h">
+      <Filter>Srcs\TagManager</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="Srcs\MainWindow\KMMainWindow.ui">
+      <Filter>Srcs\MainWindow</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\Search\merge_kl.ui">
+      <Filter>Srcs\Search</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\Search\merge_kl_same_name.ui">
+      <Filter>Srcs\Search</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\Search\search_entry_widget.ui">
+      <Filter>Srcs\Search</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\Search\search_kl_widget.ui">
+      <Filter>Srcs\Search</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\Search\search_multi_kl_widget.ui">
+      <Filter>Srcs\Search</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\Search\separate_kl.ui">
+      <Filter>Srcs\Search</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\StartWindow\newklguidance.ui">
+      <Filter>Srcs\StartWindow</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\StartWindow\startwindow.ui">
+      <Filter>Srcs\StartWindow</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\TagManager\tag_edit_dialog.ui">
+      <Filter>Srcs\TagManager</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\TagManager\tag_manager.ui">
+      <Filter>Srcs\TagManager</Filter>
+    </QtUic>
   </ItemGroup>
 </Project>
