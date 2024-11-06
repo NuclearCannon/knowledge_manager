@@ -23,10 +23,7 @@ void BlockWidget::emitContentChange()
 {
 	emit contentChange();
 }
-void BlockWidget::emitTitleChange()
-{
-	emit titleChange();
-}
+
 
 void BlockWidget::emitLinkClicked(QUrl url)
 {

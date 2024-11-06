@@ -68,32 +68,38 @@ void HeaderBlockWidget::keyPressEvent(QKeyEvent* e) {
     // Ctrl + 1~6 = 切换级别
     if (e->modifiers() == Qt::Modifier::CTRL)
     {
+        int new_level = -1;
         switch (e->key())
         {
         case Qt::Key_1:
-            level = 1;
+            new_level = 1;
             line->setFont(h1Font);
             break;
         case Qt::Key_2:
-            level = 2;
+            new_level = 2;
             line->setFont(h2Font);
             break;
         case Qt::Key_3:
-            level = 3;
+            new_level = 3;
             line->setFont(h3Font);
             break;
         case Qt::Key_4:
-            level = 4;
+            new_level = 4;
             line->setFont(h4Font);
             break;
         case Qt::Key_5:
-            level = 5;
+            new_level = 5;
             line->setFont(h5Font);
             break;
         case Qt::Key_6:
-            level = 6;
+            new_level = 6;
             line->setFont(h6Font);
             break;
+        }
+        if (new_level != -1 && new_level != level)
+        {
+            level = new_level;
+            emitContentChange();
         }
     }
 

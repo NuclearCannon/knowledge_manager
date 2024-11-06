@@ -10,6 +10,7 @@ private:
     QLineEdit *line;
     QVBoxLayout* layout;
     int level;
+    
 protected:
     void keyPressEvent(QKeyEvent* e) override;
 public:

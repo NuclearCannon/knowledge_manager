@@ -123,6 +123,7 @@ void EntryArea::load()
             widget->importFromPugi(child);
             appendBlock(widget);
             connect(widget, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
+            connect(widget, &BlockWidget::contentChange, this, &EntryArea::titleChangeSlot);
         }
         else
         {
@@ -208,14 +209,20 @@ BlockWidget* EntryArea::newBlockWidgetByType(BlockType type)
     case BlockType::Image:
         new_block = new ImageBlockWidget(this->widget(), attachment_dir);
         break;
-    case BlockType::Header:
+    case BlockType::Header: 
         new_block = new HeaderBlockWidget(this->widget());
-        break;
+        // 对于标题块来说，内容的变动就意味着标题的EntryArea标题的变动！
+        connect(new_block, &BlockWidget::contentChange, this, &EntryArea::titleChangeSlot);
+        // 手动调用titleChangeSlot
+        titleChangeSlot();
+        break; 
     default:
         throw "unknown type of block insert";
         break;
     }
     connect(new_block, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
+    // 新块意味着内容变动，手动调用contentChangeSlot
+    contentChangeSlot();
     return new_block;
 }
 
@@ -438,7 +445,8 @@ void EntryArea::contentChangeSlot()
 
 void EntryArea::titleChangeSlot()
 {
-	//qDebug() << "titleChange\n";
+
+	qDebug() << "titleChange\n";
     emit titleChange();
 }
 

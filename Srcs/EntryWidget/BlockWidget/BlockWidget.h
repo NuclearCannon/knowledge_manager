@@ -33,13 +33,11 @@ public:
 
 signals:
 	void contentChange();
-signals:
-	void titleChange();
+
 signals:
 	void linkClicked(QUrl);
 protected slots:
 	void emitContentChange();
-	void emitTitleChange();
 	void emitLinkClicked(QUrl url);
 
 };
