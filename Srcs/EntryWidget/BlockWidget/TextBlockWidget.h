@@ -48,7 +48,6 @@ protected:
     void keyReleaseEvent(QKeyEvent* event) override;
 private:
     TextBlockWidget* const parent_ptr;
-    bool ctrlPressed;
 
     
 };
