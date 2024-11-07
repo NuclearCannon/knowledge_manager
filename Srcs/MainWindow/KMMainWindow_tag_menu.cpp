@@ -18,7 +18,7 @@ void KMMainWindow::actRecentLabel()
 // 管理标签
 void KMMainWindow::actManageLabel()
 {
-	TagManager* tag_manager = new TagManager(this);
+	TagManager* tag_manager = new TagManager(this, this);
 	tag_manager->refreshTagList();
 	tag_manager->setWindowFlags(Qt::Window);
 	tag_manager->show();

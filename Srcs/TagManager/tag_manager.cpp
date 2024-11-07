@@ -6,14 +6,23 @@
 #include "../MainWindow/KMMainWindow.h"
 #include "tag_edit_dialog.h"
 
-TagManager::TagManager(QWidget *parent)
-    : QWidget(parent)
-	, ui(new Ui::TagManager), mainwindow(static_cast<KMMainWindow*>(parentWidget()))
+TagManager::TagManager(KMMainWindow* _main_window, QWidget* parent)
+	: QWidget(parent), main_window(_main_window)
+	, ui(new Ui::TagManager)
 {
     ui->setupUi(this);
 
+	// 标签列表样式表
+	ui->tag_list_widget->setStyleSheet("QListWidget::item {border-bottom: 1px solid #d9d9d9; padding: 5px;}"
+		"QListWidget::item:hover {background-color: #f0f0f0;}"
+		"QListWidget::item:selected {background-color: #d9d9d9;}"
+		"QListWidget::item:selected:!active {background-color: #d9d9d9;}"
+		"QListWidget::item:selected:active {background-color: #d9d9d9;}"
+		"QListWidget::item:selected:!active:hover {background-color: #d9d9d9;}"
+		"QListWidget::item:selected:active:hover {background-color: #d9d9d9;}");
+
 	// 设置窗口标题
-	setWindowTitle("标签管理-" + TagManager::mainwindow->getKLName());
+	setWindowTitle("标签管理-" + main_window->getKLName());
 
 	connect(ui->new_tag_button, &QPushButton::clicked, this, &TagManager::actNewTag);
 	connect(ui->delete_tag_button, &QPushButton::clicked, this, &TagManager::actDeleteTag);
@@ -25,41 +34,72 @@ TagManager::~TagManager()
     delete ui;
 }
 
-// 刷新标签列表，从知识库中的tags.txt中读取标签值
+// 刷新标签列表
 void TagManager::refreshTagList()
 {
 	ui->tag_list_widget->clear();
 
+	const MetaData& meta_data = main_window->getMetaData();
 
 
+	for (auto& tag : meta_data.getTags())
+	{
+		QListWidgetItem* item = new QListWidgetItem();
+		item->setData(Qt::UserRole, tag->id());
+
+		QWidget* show_tag_widget = new QWidget();
+		QWidget* color_widget = new QWidget();
+		color_widget->setFixedSize(5, 5);
+		color_widget->setStyleSheet("background-color: " + tag->color().name());
+
+		QHBoxLayout* layout = new QHBoxLayout();
+		layout->addWidget(color_widget);
+		layout->addWidget(new QLabel(tag->name()));
+		show_tag_widget->setLayout(layout);
+
+		ui->tag_list_widget->addItem(item);
+
+		ui->tag_list_widget->setItemWidget(item, show_tag_widget);
+	}
 	// 将选中的item取消选中
 	ui->tag_list_widget->setCurrentItem(nullptr);
 }
 
-// 槽：新建标签，具体是向知识库中的tags.txt开头插入一个标签值
+// 槽：新建标签
 void TagManager::actNewTag()
 {
 	// 弹出tag_edit_dialog
-	TagEditDialog* tag_edit_dialog = new TagEditDialog(this);
-	tag_edit_dialog->setWindowTitle("新建标签");
+	TagEditDialog tag_edit_dialog(this);
+	tag_edit_dialog.setWindowTitle("新建标签");
 
 	// 设置标签为红色
-	tag_edit_dialog->setColor("#FF0000");
+	tag_edit_dialog.setColor("#FF0000");
 
-	if (tag_edit_dialog->exec() == QDialog::Accepted)  // 用户点了确定
+	if (tag_edit_dialog.exec() == QDialog::Accepted)  // 用户点了确定
 	{
-		QString tag = tag_edit_dialog->getName();
-		QString color = tag_edit_dialog->getColor();
+		QString tag_name = tag_edit_dialog.getName();
+		QColor color(tag_edit_dialog.getColor());
 
-		// 检查标签是否已经存在
+		if (!color.isValid())
+		{
+			QMessageBox::warning(this, "错误", "颜色格式错误");
+			return;
+		}
 
+		int rnt = (main_window->getMetaData()).addTag(color, tag_name);
+		if (rnt == -1)
+		{
+			QMessageBox::warning(this, "错误", "标签名重复");
+			return;
+		}
 
 		// 刷新标签列表
 		TagManager::refreshTagList();
+
+		emit tagChanged();
 	}
 
-	// 释放对话框资源
-	delete tag_edit_dialog;
+
 }
 
 // 槽：删除标签，提醒库中所有词条将删除此标签
@@ -72,20 +112,26 @@ void TagManager::actDeleteTag()
 		return;
 	}
 
-	QString tag = item->text();
-	QString hint = "将删除知识库 " + mainwindow->getKLName() + " 内所有 " + tag + " 标签，是否继续？";
+	QString tag_name = item->text();
+	QString hint = "将删除知识库 " + main_window->getKLName() + " 内所有 " + tag_name + " 标签，是否继续？";
 	QMessageBox* hint_box = new QMessageBox(QMessageBox::Warning, "警告", hint, QMessageBox::Yes | QMessageBox::No, this);
 	hint_box->button(QMessageBox::Yes)->setText("是");
 	hint_box->button(QMessageBox::No)->setText("否");
 	if (hint_box->exec() == QMessageBox::Yes)
 	{
-		// 先从标签集中删除标签
+		MetaData& meta_data = main_window->getMetaData();
+		int tag_id = item->data(Qt::UserRole).toInt();
+		int rnt = meta_data.removeTag(tag_id);
+		if (rnt == -1)
+		{
+			QMessageBox::warning(this, "错误", "标签不存在");
+			return;
+		}
 
 		// 刷新标签列表
 		TagManager::refreshTagList();
 
-		// 从所有词条中删除标签？？？
-
+		emit tagChanged();
 	}
 }
 
@@ -99,38 +145,55 @@ void TagManager::actEditTag()
 		return;
 	}
 
-	TagEditDialog* tag_edit_dialog = new TagEditDialog(this);
-	tag_edit_dialog->setWindowTitle("修改标签");
+	TagEditDialog tag_edit_dialog(this);
+	tag_edit_dialog.setWindowTitle("修改标签");
 
 	// 获取当前标签的名字和颜色，并应用到tag_edit_dialog中
 	QString old_tag = item->text();
-	tag_edit_dialog->setName(old_tag);
-	tag_edit_dialog->setColor(item->background().color().name());  // .color()返回QColor对象，.name()返回颜色的十六进制字符串
+	tag_edit_dialog.setName(old_tag);
+	tag_edit_dialog.setColor(item->background().color().name());  // .color()返回QColor对象，.name()返回颜色的十六进制字符串
 
-	if (tag_edit_dialog->exec() == QDialog::Accepted)  // 用户点了确定
+	if (tag_edit_dialog.exec() == QDialog::Accepted)  // 用户点了确定
 	{
-		QString tag = tag_edit_dialog->getName();
-		QString color = tag_edit_dialog->getColor();
+		QString tag_name = tag_edit_dialog.getName();
+		QString color = tag_edit_dialog.getColor();
 
 		// 提醒是否真的修改
-		QString hint = "将修改知识库 " + mainwindow->getKLName() + " 内所有 " + old_tag + " 标签为 " + tag + " ，是否继续？";
+		QString hint = "将修改知识库 " + main_window->getKLName() + " 内所有 " + old_tag + " 标签为 " + tag_name + " ，是否继续？";
 		QMessageBox* hint_box = new QMessageBox(QMessageBox::Warning, "警告", hint, QMessageBox::Yes | QMessageBox::No, this);
 		hint_box->button(QMessageBox::Yes)->setText("是");
 		hint_box->button(QMessageBox::No)->setText("否");
 		if (hint_box->exec() == QMessageBox::No)
 		{
-			delete tag_edit_dialog;
 			return;
 		}
 
+		QColor new_color(color);
+		if (!new_color.isValid())
+		{
+			QMessageBox::warning(this, "错误", "颜色格式错误");
+			return;
+		}
 
+		MetaData& meta_data = main_window->getMetaData();
+		int tag_id = item->data(Qt::UserRole).toInt();
+		int rnt = meta_data.modifyTagName(tag_id, tag_name);
+		if (rnt == -1)
+		{
+			QMessageBox::warning(this, "错误", "要修改的标签不存在");
+			return;
+		}
+		else if (rnt == -2)
+		{
+			QMessageBox::warning(this, "错误", "标签名重复");
+			return;
+		}
 
 		// 刷新标签列表
 		TagManager::refreshTagList();
-	}
 
-	// 释放对话框资源
-	delete tag_edit_dialog;
+		emit tagChanged();
+	}
 }
 
 // 槽：标签字典序排序

@@ -14,9 +14,12 @@ class TagManager : public QWidget
     Q_OBJECT
 
 public:
-    explicit TagManager(QWidget *parent = nullptr);
+    explicit TagManager(KMMainWindow* main_window, QWidget *parent = nullptr);
     ~TagManager();
 	void refreshTagList();  // 刷新标签列表
+
+signals:
+	void tagChanged();  // 标签改变（新增、删除或者编辑）
 
 public slots:
 	void actNewTag();  // 新建标签
@@ -26,7 +29,7 @@ public slots:
 
 private:
     Ui::TagManager *ui;
-	KMMainWindow* mainwindow;  // 主窗口，用来获得当前打开的知识库相关信息
+	KMMainWindow* main_window;  // 主窗口，用来获得当前打开的知识库相关信息
 };
 
 #endif // LABEL_MANAGER_H

@@ -231,9 +231,6 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 
 	ui.left_tab_widget->tabBar()->hide();  // 隐藏tabbar
 
-	//ui.left_tab_widget->tabBar()->setStyleSheet("QTabBar { height: 0px; }");  // 隐藏tabbar
-
-
 	// 左边的锚点、关联、标签、大纲的按钮
 	connect(ui.anchor_button, &QPushButton::clicked, this, &KMMainWindow::anchorButtonClicked);
 	connect(ui.related_entries_button, &QPushButton::clicked, this, &KMMainWindow::relatedEntriedButtonClicked);
@@ -367,7 +364,7 @@ QString KMMainWindow::getTempKLPath() const
 }
 
 // 获得元数据
-const MetaData& KMMainWindow::getMetaData() const
+MetaData& KMMainWindow::getMetaData()
 {
 	return meta_data;
 }
@@ -433,6 +430,11 @@ void KMMainWindow::relatedEntryItemClicked(QListWidgetItem* item)
 {
 	int entry_id = item->data(Qt::UserRole).toInt();
 
+	QListWidget* out_entries_list = static_cast<QListWidget*>(ui.left_tab_widget->widget(1)->layout()->itemAt(1)->widget());
+	QListWidget* in_entries_list = static_cast<QListWidget*>(ui.left_tab_widget->widget(1)->layout()->itemAt(3)->widget());
+	out_entries_list->setCurrentItem(nullptr);
+	in_entries_list->setCurrentItem(nullptr);
+
 	if (!openEntry(entry_id))
 	{
 		QMessageBox::warning(this, "错误", "打开词条失败：" + item->text());
@@ -470,6 +472,9 @@ void KMMainWindow::anchorButtonClicked()
 void KMMainWindow::anchorItemClicked(QListWidgetItem* item)
 {
 	int entry_id = item->data(Qt::UserRole).toInt();
+
+	QListWidget* anchor_list = static_cast<QListWidget*>(ui.left_tab_widget->widget(0));
+	anchor_list->setCurrentItem(nullptr);
 
 	if (!openEntry(entry_id))
 	{
@@ -547,6 +552,9 @@ void KMMainWindow::synopsisItemClicked(QListWidgetItem* item)
 	EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->currentWidget());
 	EntryArea* entry_area = entry_widget->getEntryArea();
 	entry_area->rollTo(item->data(Qt::UserRole).toInt());
+
+	QListWidget* synopsis_list = static_cast<QListWidget*>(ui.left_tab_widget->widget(3));
+	synopsis_list->setCurrentItem(nullptr);
 }
 
 bool KMMainWindow::addEntryToTab(EntryWidget* entry_widget, const QString& entry_title)

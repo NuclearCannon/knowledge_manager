@@ -23,6 +23,8 @@ public:
 
     void setColor(const QString& color)
     {
+		QColor c(color);
+        if (!c.isValid()) return;
         ui->color_line_edit->setText(color);
 		ui->color_widget->setStyleSheet("background-color: " + color);
     }

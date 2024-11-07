@@ -41,7 +41,7 @@ public:
 	QString getTempKLPath() const;
 
 	// 获取元数据
-	const MetaData& getMetaData() const;
+	MetaData& getMetaData();
 
 	//void addTab(QWidget* widget, const QString& label);//新加
 	void onUpdateTabWidget(const QString& klName, const QString& klPath, QWidget* widget, const QString& fileName);//搜索完打开词条函数
