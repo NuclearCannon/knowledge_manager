@@ -100,7 +100,7 @@ void StartWindow::listWidgetItemClicked(QListWidgetItem* item)
 
 	Status status;
 	// 检查文件是否存在，如果不存在，提示用户“知识库不存在或已被移动”，提示是否删除这个库的记录
-	QDir dir(kl_path);
+	QFile dir(kl_path);
 	if (dir.exists()) 
 	{
 		// 进入main_window

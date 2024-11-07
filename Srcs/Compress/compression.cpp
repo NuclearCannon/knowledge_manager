@@ -45,6 +45,12 @@ std::string gbk_to_utf8(const std::string& gbk_str) {
     std::string utf8_str(utf8_len, '\0');
     BOOL usedDefaultChar = FALSE;
     WideCharToMultiByte(CP_UTF8, 0, wide_str.c_str(), -1, &utf8_str[0], utf8_len, nullptr, &usedDefaultChar);
+
+    // 去掉末尾的 \0 字符
+    if (!utf8_str.empty() && utf8_str.back() == '\0') {
+        utf8_str.pop_back();
+    }
+
     return utf8_str;
 }
 
@@ -65,6 +71,12 @@ std::string utf8_to_gbk(const std::string& utf8_str) {
     std::string gbk_str(gbk_len, '\0');
     BOOL usedDefaultChar = FALSE;
     WideCharToMultiByte(936, 0, wide_str.c_str(), -1, &gbk_str[0], gbk_len, nullptr, &usedDefaultChar);
+
+    // 去掉末尾的 \0 字符
+    if (!gbk_str.empty() && gbk_str.back() == '\0') {
+        gbk_str.pop_back();
+    }
+
     return gbk_str;
 }
 
@@ -105,16 +117,24 @@ bool add_file_to_zip(mz_zip_archive& zip, const std::string& file_path, const st
 }
 
 // 压缩文件夹
-bool compress_folder(const std::string& string_folder_path, const std::string& _zip_file_path) {//传入路径为utf-8编码；如果为GBK编码，就不需要utf8_zip_file_path，直接使用zip_file_path
+bool compress_folder(const std::string& _folder_path, const std::string& _zip_file_path) {//传入路径为utf-8编码；如果为GBK编码，就不需要utf8_zip_file_path，直接使用zip_file_path
     mz_zip_archive zip;
     memset(&zip, 0, sizeof(zip));
 
-	std::string zip_file_path = _zip_file_path;
-    fs::path folder_path = utf8_to_gbk(string_folder_path);
+    std::string zip_file_path = _zip_file_path;
+    //fs::path folder_path = gbk_to_utf8(string_folder_path);
+    //fs::path folder_path = string_folder_path;
+    //fs::path folder_path = utf8_to_gbk(string_folder_path);
 
-	if (zip_file_path.size() < 4 || zip_file_path.substr(zip_file_path.size() - 4) != ".zip") {
+    // 去掉 zip_file_path 末尾的 ".km"
+    if (zip_file_path.size() >= 3 && zip_file_path.substr(zip_file_path.size() - 3) == ".km") {
+        zip_file_path = zip_file_path.substr(0, zip_file_path.size() - 3);
+    }
+
+    // 检查 zip_file_path 是否以 ".zip" 结尾，如果不是则添加 ".zip"
+    if (zip_file_path.size() < 4 || zip_file_path.substr(zip_file_path.size() - 4) != ".zip") {
         zip_file_path += ".zip";
-	}
+    }
 
     bool utf8_env = is_utf8_code_page();  // 检查是否为UTF-8环境
 
@@ -134,7 +154,7 @@ bool compress_folder(const std::string& string_folder_path, const std::string& _
     //std::string root_relative = fs::relative(folder_path, folder_path.parent_path()).string();
     //mz_zip_writer_add_file(&zip, (root_relative + "/").c_str(), nullptr, nullptr, 0, 0);
     //std::cout << "添加空文件夹: " << root_relative << std::endl;
-
+    fs::path folder_path = utf8_to_gbk(_folder_path);
     //递归遍历文件以实现子文件夹的添加
     for (const auto& entry : fs::recursive_directory_iterator(folder_path)) {
         //遍历到常规文件则添加文件至zip
@@ -152,12 +172,12 @@ bool compress_folder(const std::string& string_folder_path, const std::string& _
         //遍历到目录即子文件夹则添加空文件夹至zip
         else if (fs::is_directory(entry)) {
             // 获取相对路径
-            std::string relative_dir_path = fs::relative(entry.path(), folder_path).string() + "\\";
+            std::string relative_dir_path = fs::relative(entry.path(), folder_path).string() + "/";
             std::string zip_relative_dir_path = utf8_env ? relative_dir_path : gbk_to_utf8(relative_dir_path);
 
             // 添加空文件夹到zip
             std::cout << "正在添加文件夹: " << relative_dir_path << std::endl;
-            if (!mz_zip_writer_add_mem(&zip, (zip_relative_dir_path + "\\").c_str(), nullptr, 0, MZ_DEFAULT_COMPRESSION)) {
+            if (!mz_zip_writer_add_mem(&zip, (zip_relative_dir_path).c_str(), nullptr, 0, MZ_DEFAULT_COMPRESSION)) {
                 std::cerr << "无法添加文件夹: " << relative_dir_path << std::endl;
                 mz_zip_writer_end(&zip);
                 return false;
@@ -174,6 +194,44 @@ bool compress_folder(const std::string& string_folder_path, const std::string& _
 
     //结束zip文件的写入过程
     mz_zip_writer_end(&zip);
+
+    // 构建新的文件名，将 ".zip" 替换为 ".km"
+    std::string new_zip_file_path = utf8_to_gbk(zip_file_path);
+    std::string km_file_path = new_zip_file_path.substr(0, new_zip_file_path.size() - 4) + ".km";
+
+    // 检查并删除已存在的 .km 文件
+    if (std::remove(km_file_path.c_str()) != 0) {
+        if (errno != ENOENT) { // 如果文件存在且删除失败
+            std::cerr << "无法删除已存在的 .km 文件: " << km_file_path << std::endl;
+            return false;
+        }
+    }
+    else {
+        std::cout << "已删除已存在的 .km 文件: " << km_file_path << std::endl;
+    }
+
+    // 检查原始 ZIP 文件是否存在
+    std::ifstream zip_file(new_zip_file_path);
+    if (!zip_file.good()) {
+        std::cerr << "原始 ZIP 文件不存在: " << new_zip_file_path << std::endl;
+        return false;
+    }
+    zip_file.close();
+
+    // 重命名文件
+    if (std::rename(new_zip_file_path.c_str(), km_file_path.c_str()) != 0) {
+        std::cerr << "无法重命名文件: " << new_zip_file_path << " 到 " << km_file_path << std::endl;
+        return false;
+    }
+
+    // 验证重命名后的文件是否存在
+    std::ifstream km_file(km_file_path);
+    if (!km_file.good()) {
+        std::cerr << "重命名后的文件不存在: " << km_file_path << std::endl;
+        return false;
+    }
+    km_file.close();
+
     return true;
 }
 
@@ -183,21 +241,43 @@ bool compress_folder(const std::string& string_folder_path, const std::string& _
 //}
 
 // 解压 ZIP 文件
-bool decompress_zip(const std::string& _zip_file_path, const fs::path& extract_to) {
+bool decompress_zip(const std::string& _zip_file_path, const std::string& _extract_to) {
     mz_zip_archive zip;
     memset(&zip, 0, sizeof(zip));
 
     bool utf8_env = is_utf8_code_page();  // 检查是否为UTF-8环境
 
     std::string zip_file_path = _zip_file_path;
+    fs::path extract_to = utf8_to_gbk(_extract_to);
 
+    std::string km_file_path = utf8_to_gbk(zip_file_path);
+
+    // 去掉 zip_file_path 末尾的 ".km"
+    if (zip_file_path.size() >= 3 && zip_file_path.substr(zip_file_path.size() - 3) == ".km") {
+        zip_file_path = zip_file_path.substr(0, zip_file_path.size() - 3);
+    }
+
+    // 检查 zip_file_path 是否以 ".zip" 结尾，如果不是则添加 ".zip"
     if (zip_file_path.size() < 4 || zip_file_path.substr(zip_file_path.size() - 4) != ".zip") {
         zip_file_path += ".zip";
     }
 
+    if (!fs::exists(extract_to)) {
+        fs::create_directories(extract_to);
+        std::cout << "成功创建目标文件夹: " << extract_to << std::endl;
+    }
+
+    //解压前将后缀改回zip
+    std::string new_zip_file_path = utf8_to_gbk(zip_file_path);
+    // 重命名文件
+    if (std::rename(km_file_path.c_str(), new_zip_file_path.c_str()) != 0) {
+        std::cerr << "无法重命名文件: " << km_file_path << " 到 " << new_zip_file_path << std::endl;
+        return false;
+    }
+
     //由于miniz库是utf-8编码方式的,如果在GBK编码方式的系统上运行,需要将GBK的路径转为utf-8路径方能使用miniz库
     std::string utf8_zip_file_path = (utf8_env ? zip_file_path : gbk_to_utf8(zip_file_path));
-
+    utf8_zip_file_path = zip_file_path;
     if (!mz_zip_reader_init_file(&zip, utf8_zip_file_path.c_str(), 0)) {
         std::cerr << "无法打开 ZIP 文件: " << zip_file_path << std::endl;
         return false;
@@ -255,7 +335,7 @@ bool decompress_zip(const std::string& _zip_file_path, const fs::path& extract_t
         }
         else {
             // 处理文件
-            std::string full_output_path = extract_to.string() + "\\" + processed_filename;
+            std::string full_output_path = extract_to.string() + "/" + processed_filename;
             std::string new_full_output_path = utf8_env ? full_output_path : gbk_to_utf8(full_output_path);
 
             if (!mz_zip_reader_extract_to_file(&zip, i, new_full_output_path.c_str(), 0)) {
@@ -263,13 +343,21 @@ bool decompress_zip(const std::string& _zip_file_path, const fs::path& extract_t
                 mz_zip_reader_end(&zip);
                 return false;
             }
-            std::cout << "解压文件成功: " << extract_to.string() + "\\" + processed_filename << std::endl; // 输出解压成功的信息
+            std::cout << "解压文件成功: " << extract_to.string() + "/" + processed_filename << std::endl; // 输出解压成功的信息
         }
     }
 
 
     // 关闭 ZIP 文件
     mz_zip_reader_end(&zip);
+
+    //解压完将后缀改回km
+    // 重命名文件
+    if (std::rename(new_zip_file_path.c_str(), km_file_path.c_str()) != 0) {
+        std::cerr << "无法重命名文件: " << new_zip_file_path << " 到 " << km_file_path << std::endl;
+        return false;
+    }
+
     return true;
 }
 

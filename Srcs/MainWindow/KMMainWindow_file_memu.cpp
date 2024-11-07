@@ -183,42 +183,42 @@ void KMMainWindow::actSaveKL()
 	}
 
 	// 压缩知识库
-	//if (!compress_folder(getTempKLPath().toStdString(), getOriginalKLPath().toStdString()))
+	if (!compress_folder(getTempKLPath().toStdString(), getOriginalKLPath().toStdString()))
+	{
+		QMessageBox::warning(this, "错误", "压缩知识库失败！");
+		return;
+	}
+
+	//// 先不压缩，直接复制？？？
+	//QDir temp_kl_dir(getTempKLPath());
+	//QDir original_kl_dir(getOriginalKLPath());
+	//if (!temp_kl_dir.exists())
 	//{
-	//	QMessageBox::warning(this, "错误", "压缩知识库失败！");
+	//	QMessageBox::warning(this, "错误", "临时知识库不存在！");
+	//	return;
+	//}
+	//if (!original_kl_dir.exists())
+	//{
+	//	if (!original_kl_dir.mkpath(getOriginalKLPath()))
+	//	{
+	//		QMessageBox::warning(this, "错误", "无法创建原始知识库文件夹！");
+	//		return;
+	//	}
+	//}
+
+	//// 删除原始知识库文件夹下的所有文件
+	//if (!original_kl_dir.removeRecursively())
+	//{
+	//	QMessageBox::warning(this, "错误", "删除原始知识库文件夹失败！");
 	//	return;
 	//}
 
-	// 先不压缩，直接复制？？？
-	QDir temp_kl_dir(getTempKLPath());
-	QDir original_kl_dir(getOriginalKLPath());
-	if (!temp_kl_dir.exists())
-	{
-		QMessageBox::warning(this, "错误", "临时知识库不存在！");
-		return;
-	}
-	if (!original_kl_dir.exists())
-	{
-		if (!original_kl_dir.mkpath(getOriginalKLPath()))
-		{
-			QMessageBox::warning(this, "错误", "无法创建原始知识库文件夹！");
-			return;
-		}
-	}
 
-	// 删除原始知识库文件夹下的所有文件
-	if (!original_kl_dir.removeRecursively())
-	{
-		QMessageBox::warning(this, "错误", "删除原始知识库文件夹失败！");
-		return;
-	}
-
-
-	if (!copyDirectory(getTempKLPath(), getOriginalKLPath()))
-	{
-		QMessageBox::warning(this, "错误", "复制知识库失败！");
-		return;
-	}
+	//if (!copyDirectory(getTempKLPath(), getOriginalKLPath()))
+	//{
+	//	QMessageBox::warning(this, "错误", "复制知识库失败！");
+	//	return;
+	//}
 
 	is_saved = true;
 	setWindowTitle("km-" + kl_name);

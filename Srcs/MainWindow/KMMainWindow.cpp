@@ -15,8 +15,8 @@ KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path, QWidget*
 	// 文件检查
 	QString _temp_kl_path = default_path_for_temp_kls + "/" + kl_name;
 	QDir _temp_kl_dir(_temp_kl_path);
-	QDir _original_kl_dir(kl_path);
-	if (!_original_kl_dir.exists())  // 如果kl_path不存在，提示
+	QFile _original_kl_file(kl_path);
+	if (!_original_kl_file.exists())  // 如果kl_path不存在，提示
 	{
 		QMessageBox::warning(parent, "错误", "知识库不存在：" + kl_path);
 		return nullptr;
@@ -29,8 +29,8 @@ KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path, QWidget*
 			return nullptr;
 		}
 	}
-	//if (!kl_path.endsWith(kl_name + ".zip"))  // kl_path要以kl_name + ".zip"结尾
-	if (!kl_path.endsWith(kl_name))  // kl_path要以kl_name + ".zip"结尾
+	if (!kl_path.endsWith(kl_name + ".km"))  // kl_path要以kl_name + ".zip"结尾
+	//if (!kl_path.endsWith(kl_name))  // kl_path要以kl_name + ".zip"结尾
 	{
 		QMessageBox::warning(parent, "错误", "知识库路径错误：" + kl_path);
 		return nullptr;
@@ -105,18 +105,18 @@ bool KMMainWindow::initialize()
 	QDir temp_kl_dir(temp_kl_path);
 
 	// 解压
-	//if (!decompress_zip(original_kl_path.toStdString(), temp_kl_path.toStdString()))
-	//{
-	//	QMessageBox::warning(this, "错误", "解压知识库失败：" + original_kl_path);
-	//	return false;
-	//}
-
-	// 先用复制？？？
-	if (!copyDirectory(original_kl_path, temp_kl_path))
+	if (!decompress_zip(original_kl_path.toStdString(), temp_kl_path.toStdString()))
 	{
-		QMessageBox::warning(this, "错误", "复制知识库失败：" + original_kl_path);
+		QMessageBox::warning(this, "错误", "解压知识库失败：" + original_kl_path);
 		return false;
 	}
+
+	// 先用复制？？？
+	//if (!copyDirectory(original_kl_path, temp_kl_path))
+	//{
+	//	QMessageBox::warning(this, "错误", "复制知识库失败：" + original_kl_path);
+	//	return false;
+	//}
 
 	QFile meta_data_file(temp_kl_path + "/meta_data.xml");
 	if (!meta_data_file.exists())

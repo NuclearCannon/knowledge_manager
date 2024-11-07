@@ -57,7 +57,7 @@ void NewKLGuidance::createButtonClicked()
 		QMessageBox::warning(this, "错误", "知识库路径不存在");
 		return;
 	}
-	else if (target_dir.exists(kl_name))
+	else if (target_dir.exists(kl_name+".km"))
 	{
 		QMessageBox::warning(this, "错误", "目标文件夹存在同名知识库");
 		return;
@@ -102,24 +102,26 @@ void NewKLGuidance::createButtonClicked()
 
 	meta_data_file.close();
 
-	// 压缩文件夹
-	//if (!compress_folder(kl_path.toStdString(), kl_path.toStdString()))
-	//{
-	//	// 失败了要回滚
-	//	status = removeKLFromRecentKLList(kl_name, kl_path);
-	//	if (status == Status::Error) QMessageBox::warning(this, "错误", "无法打开或操作文件：" + kl_path);
+	//压缩文件夹
+	if (!compress_folder(kl_path.toStdString(), kl_path.toStdString() + ".km"))
+	{
+		// 删除刚刚创建的文件夹
+		if (!kl_dir.removeRecursively())
+		{
+			QMessageBox::warning(this, "错误", "删除知识库文件夹失败！");
+			return;
+		}
+	
+		QMessageBox::warning(this, "错误", "压缩知识库失败！");
+		return;
+	}
 
-	//	// 删除刚刚创建的文件夹
-	//	QDir kl_dir(kl_path);
-	//	if (!kl_dir.removeRecursively())
-	//	{
-	//		QMessageBox::warning(this, "错误", "删除知识库文件夹失败！");
-	//		return;
-	//	}
-
-	//	QMessageBox::warning(this, "错误", "压缩知识库失败！");
-	//	return;
-	//}
+	// 删除刚刚创建的文件夹
+	if (!kl_dir.removeRecursively())
+	{
+		QMessageBox::warning(this, "错误", "删除知识库文件夹失败！");
+		return;
+	}
 
 	// 先不压缩了，打开时解压也换成复制？？？
 
@@ -143,7 +145,7 @@ void NewKLGuidance::createButtonClicked()
 		//parent_window2->deleteLater();
 	}
 
-	KMMainWindow* km = KMMainWindow::construct(kl_name, kl_path, nullptr);
+	KMMainWindow* km = KMMainWindow::construct(kl_name, kl_path + ".km", nullptr);
 	if (km == nullptr)
 	{
 		QMessageBox::warning(this, "错误", "打开知识库失败！");
