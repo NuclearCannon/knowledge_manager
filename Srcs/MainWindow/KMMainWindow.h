@@ -92,6 +92,10 @@ private slots:
 	// 知识库发生变化时，更新MainWindow的标题（在知识库名称后面加" *"）
 	void handleKLChanged();  
 
+	// 指出指入
+	void addPointOut();
+
+
 signals:
 	void klChanged();  // 知识库发生变化时，发出信号
 

@@ -273,6 +273,9 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 
 	// 知识库改变时，更新窗口标题
 	connect(this, &KMMainWindow::klChanged, this, &KMMainWindow::handleKLChanged);
+
+	// 关联部分
+	connect(ui.act_point_out, &QAction::triggered, this, &KMMainWindow::addPointOut);
 }
 
 KMMainWindow::~KMMainWindow() {}

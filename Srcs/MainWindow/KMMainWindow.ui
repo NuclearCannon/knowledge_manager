@@ -217,6 +217,7 @@
     <addaction name="act_insert_block_above"/>
     <addaction name="act_insert_block_below"/>
     <addaction name="menu_8"/>
+    <addaction name="act_point_out"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -537,6 +538,11 @@
   <action name="act_set_current_entry_as_anchor">
    <property name="text">
     <string>将当前词条设为锚点</string>
+   </property>
+  </action>
+  <action name="act_point_out">
+   <property name="text">
+    <string>添加关联指出</string>
    </property>
   </action>
  </widget>
