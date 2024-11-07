@@ -43,14 +43,6 @@ public:
     TextBlockBrowser(TextBlockWidget* parent);
     void setStyleOnSelection(FormatItem x, bool value = true);
     void setTypeOnSelection(TextType type);
-protected:
-    void keyPressEvent(QKeyEvent* event) override;
-    void keyReleaseEvent(QKeyEvent* event) override;
-private:
-    TextBlockWidget* const parent_ptr;
-    bool ctrlPressed;
-
-    
 };
 
 

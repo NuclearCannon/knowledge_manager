@@ -4,7 +4,8 @@
 #include <QTextDocumentFragment>
 #include <QDialogButtonBox>
 #include <QLabel>
-
+#include <QApplication>
+#include <QProcess>
 static const int FORMAT_IS_CODE = 1000;  // 只要是个比较大的数字就行
 static const int FORMAT_IS_LINK = 1001;
 
@@ -29,7 +30,8 @@ static void decodeFormatCode(int format_code, bool& bold, bool& italic, bool& un
 }
 
 
-TextType getQTextCharFormatType(const QTextCharFormat& format)
+
+static TextType getQTextCharFormatType(const QTextCharFormat& format)
 {
 
     if(format.hasProperty(FORMAT_IS_CODE))return TextType::code;
@@ -75,6 +77,25 @@ static QTextCharFormat linkFormat(const QString& href)
     return link_format;
 }
 
+static void openUrlInDefaultBrowser(const QUrl& url) {
+    // 将QUrl转换为QString
+    QString urlString = url.toString();
+
+    // 构建命令行指令
+    QString command = QString("start %1").arg(urlString);
+
+    // 使用QProcess执行命令
+    QProcess process;
+    process.start(command);
+
+    // 检查进程是否成功启动
+    if (!process.waitForStarted()) {
+        qWarning() << "Failed to start process:" << process.errorString();
+    }
+    else {
+        qDebug() << "URL opened in default browser.";
+    }
+}
 
 InputUrlDialog::InputUrlDialog(QWidget* parent, const QString& text) : QDialog(parent)
 {
@@ -125,9 +146,7 @@ void InputUrlDialog::reject()
 
 
 TextBlockBrowser::TextBlockBrowser(TextBlockWidget* parent) :
-    QTextBrowser(parent), 
-    ctrlPressed(false),
-    parent_ptr(parent)
+    QTextBrowser(parent)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setReadOnly(false);
@@ -220,28 +239,6 @@ void TextBlockBrowser::setTypeOnSelection(TextType type)
     cursor.clearSelection();
 
 }
-
-void TextBlockBrowser::keyPressEvent(QKeyEvent* event){
-    if (event->key() == Qt::Key_Control) {
-        qDebug() << "ctrl down";
-        ctrlPressed = true;
-        setReadOnly(true); // 当Ctrl键按下时，设为只读 
-        setStyleSheet("background-color: yellow;");
-    }
-    QTextEdit::keyPressEvent(event);
-}
-
-void TextBlockBrowser::keyReleaseEvent(QKeyEvent* event){
-    if (event->key() == Qt::Key_Control) {
-        qDebug() << "ctrl up";
-        ctrlPressed = false;
-        setReadOnly(false); // 当Ctrl键释放时，恢复可编辑状态  
-        setStyleSheet("background-color: white;");
-    }
-    QTextEdit::keyReleaseEvent(event);
-}
-
-
 
 
 TextBlockWidget::TextBlockWidget(QWidget* parent) :
@@ -387,6 +384,13 @@ void TextBlockWidget::onAnchorClicked(const QUrl& url)
 {
     
     qDebug() << "onAnchorClicked(link), href=" << url.toString();
-    emitLinkClicked(url);
-    
+    if (QApplication::keyboardModifiers() == Qt::ControlModifier)
+    {
+        openUrlInDefaultBrowser(url);
+    }
+    else
+    {
+        // do nothing
+        qDebug() << "onAnchorClicked blocked because ctrl is not pressed";
+    }
 }
