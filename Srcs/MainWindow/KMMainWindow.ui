@@ -49,17 +49,10 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0">
        <property name="spacing">
         <number>0</number>
        </property>
-       <item>
-        <widget class="QPushButton" name="related_entries_button">
-         <property name="text">
-          <string>关联词条</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QPushButton" name="anchor_button">
          <property name="sizePolicy">
@@ -76,6 +69,20 @@
          </property>
          <property name="text">
           <string>锚点</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="related_entries_button">
+         <property name="text">
+          <string>关联</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="tag_button">
+         <property name="text">
+          <string>标签</string>
          </property>
         </widget>
        </item>

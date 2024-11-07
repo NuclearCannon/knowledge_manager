@@ -4,7 +4,6 @@
 #include <qoverload.h>
 
 #include "../EntryWidget/EntryWidget.h"
-#include "search_multi_kl_widget.h"
 #include "search_entry_widget.h"
 #include "ui_search_entry_widget.h"
 
@@ -17,9 +16,9 @@ search::search(QWidget* parent, QListWidget* muti_kl_nameandpath)
 {
     ui->setupUi(this);
     this->setWindowTitle("搜索词条");
-    // 如果不是从多库进入的，那么隐藏按钮
-    search_multi_kl_widget* parent_window1 = dynamic_cast<search_multi_kl_widget*>(this->parent());
-    if (parent_window1){ui->pushButton->setVisible(true);}  else { ui->pushButton->setVisible(false);}
+    //// 如果不是从多库进入的，那么隐藏按钮
+    //search_multi_kl_widget* parent_window1 = dynamic_cast<search_multi_kl_widget*>(this->parent());
+    //if (parent_window1){ui->pushButton->setVisible(true);}  else { ui->pushButton->setVisible(false);}
     ui->checkBox->setChecked(true);
     initial();
   
