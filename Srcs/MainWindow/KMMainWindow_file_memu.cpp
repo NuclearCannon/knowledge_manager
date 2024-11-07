@@ -261,7 +261,7 @@ void KMMainWindow::actSetCurrentEntryAsAnchor()
 	}
 
 	// 如果左边在展示锚点，则刷新锚点列表
-	if (ui.left_tab_widget->currentIndex() == 1)
+	if (ui.left_tab_widget->currentIndex() == 0)
 	{
 		anchorButtonClicked();
 	}

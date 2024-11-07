@@ -73,17 +73,18 @@ private slots:
 	//新加
 	void actSearchEntry();//搜索词条打开函数
 	void actSearchkl();//搜索库打开函数
-	void actSearchMultikl();//多库搜素打开函数
-	void actopenmergekl();  // 合库
-	void actopenseparatekl();  // 分库
+	//void actSearchMultikl();//多库搜素打开函数
+	//void actopenmergekl();  // 合库
+	//void actopenseparatekl();  // 分库
 
-	// 关联标签、锚点、大纲 槽函数
+	// 锚点、关联标签、标签、大纲 槽函数
 	void relatedEntriedButtonClicked();  // 关联词条
 	void relatedEntryItemClicked(QListWidgetItem* item);  // 左键关联词条中的条目，跳转到对应的词条
 	void anchorButtonClicked();  // 锚点
 	void anchorItemClicked(QListWidgetItem* item);  // 左键锚点中的条目，跳转到对应的词条
 	void synopsisButtonClicked();  // 大纲
 	void synopsisItemClicked(QListWidgetItem* item);  // 左键大纲中的条目，跳转到对应的词条
+	void tagButtonClicked();  // 标签
 
 	// 知识库发生变化时，更新MainWindow的标题（在知识库名称后面加" *"）
 	void handleKLChanged();  

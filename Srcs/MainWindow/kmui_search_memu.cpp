@@ -7,7 +7,6 @@
 #include "KMMainWindow.h"
 #include "../Search/search_kl_widget.h"
 #include "../Search/search_entry_widget.h"
-#include "../Search/search_multi_kl_widget.h"
 
 //搜索词条打开函数
 void KMMainWindow::actSearchEntry() {
@@ -59,11 +58,4 @@ void KMMainWindow::actSearchkl() {
 	search_kl_widget* search_kl = new search_kl_widget(this, kl_name);
 	search_kl->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
 	search_kl->show();
-};
-//多库搜素打开函数
-void KMMainWindow::actSearchMultikl() {
-	search_multi_kl_widget* search_multi_kl = new search_multi_kl_widget(this, kl_name);
-	connect(search_multi_kl, &search_multi_kl_widget::search_multi_kl_updateTabWidget, this, &KMMainWindow::onUpdateTabWidget);//建立连接，打开相应文件
-	search_multi_kl->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
-	search_multi_kl->show();
 };

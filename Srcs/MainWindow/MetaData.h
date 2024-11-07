@@ -52,6 +52,7 @@ private:
 	std::map<int,Tag*> tags;
 	std::map<int,EntryMeta*> entrys;  // 词条集合
 	std::set<int> anchors;  // 锚点
+	std::set<int> empty_set;  // 用于返回空集
 	int loadFromPugiDoc(pugi::xml_document& doc);
 	void dumpToPugiDoc(pugi::xml_document& doc);
 public:
@@ -137,6 +138,9 @@ public:
 
 	// 获得词条集（所有的）
 	std::vector<const EntryMeta*> getEntries() const;
+	
+	// 获得一个词条的标签集
+	const std::set<int>& getTagsOfEntry(int entry_id) const;
 
 	// 插入一条指向关系
 	// from未找到：return -1

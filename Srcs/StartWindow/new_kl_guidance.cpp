@@ -9,8 +9,6 @@
 #include "../StartWindow/startwindow.h"
 #include "../public.h"
 #include "../Compress/compression.h"
-#include "../Search/merge_kl.h"
-#include "../Search/merge_kl_same_name.h"
 
 NewKLGuidance::NewKLGuidance(QWidget *parent)
     : QWidget(parent)
@@ -125,22 +123,10 @@ void NewKLGuidance::createButtonClicked()
 
 	// 关闭父窗口
 	StartWindow* parent_window = dynamic_cast<StartWindow*>(this->parent());
-	merge_kl_same_name* parent_window1 = dynamic_cast<merge_kl_same_name*>(this->parent());
-	merge_kl* parent_window2 = dynamic_cast<merge_kl*>(this->parent());
 	if (parent_window)
 	{
 		parent_window->close();
 		//parent_window->deleteLater();
-	}
-	else if (parent_window1)
-	{
-		parent_window1->close();
-		//parent_window1->deleteLater();
-	}
-	else if (parent_window2)
-	{
-		parent_window2->close();
-		//parent_window2->deleteLater();
 	}
 
 	KMMainWindow* km = KMMainWindow::construct(kl_name, kl_path, nullptr);

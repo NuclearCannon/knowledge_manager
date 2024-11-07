@@ -394,6 +394,13 @@ std::vector<const EntryMeta*> MetaData::getEntries() const
 	return result;
 }
 
+const std::set<int>& MetaData::getTagsOfEntry(int entry_id) const
+{
+	auto entry_iter = entrys.find(entry_id);
+	if (entry_iter == entrys.end()) return empty_set;
+	return entry_iter->second->tagIds;
+}
+
 int MetaData::insertLinkRelationship(int from, int to)
 {
 	auto from_iter = entrys.find(from);

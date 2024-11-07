@@ -4,7 +4,6 @@
 #include "search_kl_widget.h"
 #include "ui_search_kl_widget.h"
 #include "../MainWindow/KMMainWindow.h"
-#include "../Search/separate_kl.h"
 
 extern QString data_path;
 search_kl_widget::search_kl_widget(QWidget *parent, QString kl_name,bool ifseparatekl)
@@ -184,21 +183,21 @@ void search_kl_widget::onListklClicked(QListWidgetItem* item) {
 } 
 void search_kl_widget::open_kl(const QString& filePath, const QString fileName) {
     // 新建一个main_window
-    if (if_separate_kl == 0) {
-        KMMainWindow* main_window = KMMainWindow::construct(fileName, filePath);
-		if (main_window == nullptr) {
-			QMessageBox::warning(this, "错误", "无法打开知识库：" + filePath);
-			return;
-		}
-        main_window->show();
-    }
-    else {
-        separate_kl* separate_window = new separate_kl(this,fileName ,filePath );
-        separate_window->setWindowTitle("分库");
-        connect(separate_window, &separate_kl::goback_separatekl, this, &search_kl_widget::gobackseparatekl);
-        separate_window->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
-        separate_window->show();
-    }
+    //if (if_separate_kl == 0) {
+    KMMainWindow* main_window = KMMainWindow::construct(fileName, filePath);
+	if (main_window == nullptr) {
+		QMessageBox::warning(this, "错误", "无法打开知识库：" + filePath);
+		return;
+	}
+    main_window->show();
+    //}
+    //else {
+    //    separate_kl* separate_window = new separate_kl(this,fileName ,filePath );
+    //    separate_window->setWindowTitle("分库");
+    //    connect(separate_window, &separate_kl::goback_separatekl, this, &search_kl_widget::gobackseparatekl);
+    //    separate_window->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
+    //    separate_window->show();
+    //}
 };
 void search_kl_widget::gobackseparatekl() {
     this->show();
