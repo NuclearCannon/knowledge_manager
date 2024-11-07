@@ -3,6 +3,7 @@
 #include <queue>
 #include <QTextStream>
 #include <sstream>
+#include <set>
 
 Tag::Tag(int id, const QColor& color, const QString& name) :
 	m_id(id),
@@ -43,6 +44,10 @@ inline const QString& EntryMeta::title() const
 	return m_title;
 }
 
+const std::set<int>& EntryMeta::getTags() const
+{
+	return tagIds;
+}
 
 MetaData::MetaData() = default;
 MetaData::~MetaData()
@@ -110,7 +115,6 @@ int MetaData::loadFromPugiDoc(pugi::xml_document& doc)
 
 int MetaData::load(QFile& file)
 {
-
 	pugi::xml_document doc;
 	QTextStream stream(&file);
 	QString text = stream.readAll();
@@ -394,12 +398,7 @@ std::vector<const EntryMeta*> MetaData::getEntries() const
 	return result;
 }
 
-const std::set<int>& MetaData::getTagsOfEntry(int entry_id) const
-{
-	auto entry_iter = entrys.find(entry_id);
-	if (entry_iter == entrys.end()) return empty_set;
-	return entry_iter->second->tagIds;
-}
+
 
 int MetaData::insertLinkRelationship(int from, int to)
 {
