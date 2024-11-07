@@ -24,7 +24,7 @@ public slots:
 	void createButtonClicked();  // 点击创建新的库文件按钮
 	void selectPathButtonClicked();  // 点击选择路径按钮
 
-    void emit_merge_kl_signal();//新加
+    //void emit_merge_kl_signal();//新加
 private:
     Ui::new_kl_guidance *ui;
 };

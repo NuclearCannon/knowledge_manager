@@ -19,8 +19,8 @@ class KMMainWindow : public QMainWindow
 private:
 	Ui::kmuiClass ui;
 	QString kl_name;  // 知识库名称
-	QString original_kl_path;  // 知识库的zip文件存放的路径，只有在压缩解压和显示库信息时用到
-	QString temp_kl_path;  // 知识库临时路径（解压后的路径），实际中用到的全是这个路径
+	QString original_kl_path;  // 知识库的km文件存放的路径，只有在压缩解压和显示库信息时用到，末尾带.km
+	QString temp_kl_path;  // 知识库临时路径（解压后的路径），实际中用到的全是这个路径，末尾不带.km
 	MetaData meta_data;  // 知识库的元数据
 	int is_saved;  // 记录当前库是否已经保存，用于MainWindow标题的改变和关闭时询问
 

@@ -76,32 +76,6 @@ KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path, QWidget*
 	return km;
 }
 
-// 临时使用的函数，用于复制文件夹？？？
-bool copyDirectory(const QString& srcPath, const QString& destPath) {
-	QDir srcDir(srcPath);
-	if (!srcDir.exists())
-		return false;
-
-	QDir destDir(destPath);
-	if (!destDir.exists()) {
-		destDir.mkpath(destPath);
-	}
-
-	foreach(QString fileName, srcDir.entryList(QDir::Files)) {
-		QString srcFilePath = srcPath + QDir::separator() + fileName;
-		QString destFilePath = destPath + QDir::separator() + fileName;
-		QFile::copy(srcFilePath, destFilePath);
-	}
-
-	foreach(QString subDirName, srcDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
-		QString srcSubDirPath = srcPath + QDir::separator() + subDirName;
-		QString destSubDirPath = destPath + QDir::separator() + subDirName;
-		copyDirectory(srcSubDirPath, destSubDirPath);
-	}
-
-	return true;
-}
-
 bool KMMainWindow::initialize()
 {
 	// 从original_kl_path中解压库文件到temp_kl_path
@@ -114,13 +88,6 @@ bool KMMainWindow::initialize()
 		QMessageBox::warning(this, "错误", "解压知识库失败：" + original_kl_path);
 		return false;
 	}
-
-	// 先用复制？？？
-	//if (!copyDirectory(original_kl_path, temp_kl_path))
-	//{
-	//	QMessageBox::warning(this, "错误", "复制知识库失败：" + original_kl_path);
-	//	return false;
-	//}
 
 	QFile meta_data_file(temp_kl_path + "/meta_data.xml");
 	if (!meta_data_file.exists())

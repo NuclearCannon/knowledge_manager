@@ -25,7 +25,7 @@ NewKLGuidance::NewKLGuidance(QWidget *parent)
 	// 点击选择路径按钮
 	connect(ui->select_path_button, &QPushButton::clicked, this, &NewKLGuidance::selectPathButtonClicked);
 
-	connect(ui->create_button, &QPushButton::clicked, this, &NewKLGuidance::emit_merge_kl_signal);
+	//connect(ui->create_button, &QPushButton::clicked, this, &NewKLGuidance::emit_merge_kl_signal);
 }
 
 NewKLGuidance::~NewKLGuidance()
@@ -55,7 +55,7 @@ void NewKLGuidance::createButtonClicked()
 		QMessageBox::warning(this, "错误", "知识库路径不存在");
 		return;
 	}
-	else if (target_dir.exists(kl_name+".km"))
+	else if (target_dir.exists(kl_name + ".km"))
 	{
 		QMessageBox::warning(this, "错误", "目标文件夹存在同名知识库");
 		return;
@@ -121,8 +121,6 @@ void NewKLGuidance::createButtonClicked()
 		return;
 	}
 
-	// 先不压缩了，打开时解压也换成复制？？？
-
 	// 关闭父窗口
 	StartWindow* parent_window = dynamic_cast<StartWindow*>(this->parent());
 	if (parent_window)
@@ -165,39 +163,39 @@ void NewKLGuidance::selectPathButtonClicked()
 }
 
 //新加
-void NewKLGuidance::emit_merge_kl_signal() {
-	QString kl_name = ui->kl_name_lineEdit->text();
-	// 获取输入的知识库路径
-	QString kl_path = ui->kl_path_lineEdit->text();
-	if (kl_name.isEmpty())
-	{
-		// 调整输入框下面的占位标签，显示“知识库名不能为空”
-		ui->hint_label->setText("知识库名不能为空");
-		return;
-	}
-	else if (kl_path.isEmpty())
-	{
-		// 调整输入框下面的占位标签，显示“知识库路径不能为空”
-		ui->hint_label->setText("知识库路径不能为空");
-		return;
-	}
-
-	// 在输入的知识库路径下创建一个文件夹kl_name，如果创建失败则提示用户
-	QDir dir;
-	if (!dir.mkpath(kl_path + '/' + kl_name))
-	{
-		// 用一个对话框提示用户创建失败
-		QMessageBox::warning(this, "错误", "知识库文件夹创建失败");
-		return;
-	}
-
-	// 将km_path修改为kl_path + '/' + kl_name
-	if (kl_path.endsWith('/'))
-	{
-		kl_path = kl_path + kl_name;
-	}
-	else {
-		kl_path = kl_path + '/' + kl_name;
-	}
-	emit mergekl(kl_name,kl_path);
-}
+//void NewKLGuidance::emit_merge_kl_signal() {
+//	QString kl_name = ui->kl_name_lineEdit->text();
+//	// 获取输入的知识库路径
+//	QString kl_path = ui->kl_path_lineEdit->text();
+//	if (kl_name.isEmpty())
+//	{
+//		// 调整输入框下面的占位标签，显示“知识库名不能为空”
+//		ui->hint_label->setText("知识库名不能为空");
+//		return;
+//	}
+//	else if (kl_path.isEmpty())
+//	{
+//		// 调整输入框下面的占位标签，显示“知识库路径不能为空”
+//		ui->hint_label->setText("知识库路径不能为空");
+//		return;
+//	}
+//
+//	// 在输入的知识库路径下创建一个文件夹kl_name，如果创建失败则提示用户
+//	QDir dir;
+//	if (!dir.mkpath(kl_path + '/' + kl_name))
+//	{
+//		// 用一个对话框提示用户创建失败
+//		QMessageBox::warning(this, "错误", "知识库文件夹创建失败");
+//		return;
+//	}
+//
+//	// 将km_path修改为kl_path + '/' + kl_name
+//	if (kl_path.endsWith('/'))
+//	{
+//		kl_path = kl_path + kl_name;
+//	}
+//	else {
+//		kl_path = kl_path + '/' + kl_name;
+//	}
+//	emit mergekl(kl_name,kl_path);
+//}
