@@ -85,9 +85,6 @@
     <ClCompile Include="Srcs\MainWindow\KMMainWindowEditMenu.cpp">
       <Filter>Srcs\MainWindow</Filter>
     </ClCompile>
-    <ClCompile Include="Srcs\MainWindow\kmui_mergeseparatekl_memu.cpp">
-      <Filter>Srcs\MainWindow</Filter>
-    </ClCompile>
     <ClCompile Include="Srcs\MainWindow\kmui_search_memu.cpp">
       <Filter>Srcs\MainWindow</Filter>
     </ClCompile>
