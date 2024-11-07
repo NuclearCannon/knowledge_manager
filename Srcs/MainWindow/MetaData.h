@@ -46,14 +46,9 @@ public:
 };
 
 
-
-
-
 class MetaData
 {
-
 private:
-
 	std::map<int,Tag*> tags;
 	std::map<int,EntryMeta*> entrys;  // 词条集合
 	std::set<int> anchors;  // 锚点
@@ -62,16 +57,8 @@ private:
 public:
 	MetaData();
 	~MetaData();
-
-
-	
-	//int load(const char* path);// 加载方法，成功return 0
-
 	// 加载方法，成功return 0
 	int load(QFile&);
-
-	//void dump(const char* path);// 保存方法
-
 	// 保存方法
 	void dump(QFile&);
 
@@ -195,11 +182,7 @@ public:
 	// 锚点不存在：return 0
 	// 词条不存在：return -1
 	int hasAnchor(int entry_id);
-
 	// 取锚点集合
 	const std::set<int>& getAnchors() const;
-
-
-
 };
 
