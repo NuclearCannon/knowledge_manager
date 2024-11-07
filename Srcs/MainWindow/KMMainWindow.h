@@ -65,6 +65,15 @@ private slots:
 	void actAddImageBlock();  // 添加一个图片块
 	void actAddHeaderBlock();  // 添加一个标题块
 
+	// 样式部分槽函数
+	void actBold();
+	void actItalic();
+	void actStrike();
+	void actUnderline();
+	void actSetTypeCode();
+	void actSetTypeLink();
+	void actSetTypeNormal();
+
 	// 标签部分槽函数
 	void actSearchLabel();  // 搜索标签
 	void actRecentLabel();  // 最近使用的标签
@@ -73,9 +82,6 @@ private slots:
 	// 搜索部分槽函数
 	void actSearchEntry();//搜索词条打开函数
 	void actSearchkl();//搜索库打开函数
-	//void actSearchMultikl();//多库搜素打开函数
-	//void actopenmergekl();  // 合库
-	//void actopenseparatekl();  // 分库
 
 	// 锚点、关联标签、标签、大纲 槽函数
 	void relatedEntriedButtonClicked();  // 关联词条

@@ -108,6 +108,7 @@
     <ClCompile Include="Srcs\main.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindow.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindowEditMenu.cpp" />
+    <ClCompile Include="Srcs\MainWindow\KMMainWindowFormatMenu.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindow_file_memu.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindow_tag_menu.cpp" />
     <ClCompile Include="Srcs\MainWindow\kmui_search_memu.cpp" />

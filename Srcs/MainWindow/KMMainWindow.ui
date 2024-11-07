@@ -245,13 +245,35 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <property name="title">
      <string>格式</string>
     </property>
-    <addaction name="act_overbold"/>
-    <addaction name="act_italic"/>
-    <addaction name="act_underline"/>
-    <addaction name="act_delete_line"/>
-    <addaction name="act_inline_formula"/>
-    <addaction name="act_inline_code"/>
-    <addaction name="act_insert_image"/>
+    <widget class="QMenu" name="menu_set_text_type">
+     <property name="title">
+      <string>设为文本类型</string>
+     </property>
+     <addaction name="act_set_type_normal"/>
+     <addaction name="act_set_type_code"/>
+     <addaction name="act_set_type_link"/>
+    </widget>
+    <widget class="QMenu" name="menu_set_style">
+     <property name="title">
+      <string>设置文本样式</string>
+     </property>
+     <addaction name="act_bold"/>
+     <addaction name="act_italic"/>
+     <addaction name="act_underline"/>
+     <addaction name="act_strike"/>
+    </widget>
+    <widget class="QMenu" name="menu_remove_style">
+     <property name="title">
+      <string>移除文本样式</string>
+     </property>
+     <addaction name="act_remove_bold"/>
+     <addaction name="act_remove_italic"/>
+     <addaction name="act_remove_underline"/>
+     <addaction name="act_remove_strike"/>
+    </widget>
+    <addaction name="menu_set_text_type"/>
+    <addaction name="menu_set_style"/>
+    <addaction name="menu_remove_style"/>
    </widget>
    <widget class="QMenu" name="menu_tag">
     <property name="title">
@@ -429,7 +451,7 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <string>Ctrl+C</string>
    </property>
   </action>
-  <action name="act_overbold">
+  <action name="act_bold">
    <property name="text">
     <string>加粗</string>
    </property>
@@ -453,14 +475,9 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <string>Ctrl+U</string>
    </property>
   </action>
-  <action name="act_delete_line">
+  <action name="act_strike">
    <property name="text">
     <string>删除线</string>
-   </property>
-  </action>
-  <action name="act_inline_formula">
-   <property name="text">
-    <string>内联公式</string>
    </property>
   </action>
   <action name="act_inline_code">
@@ -556,6 +573,51 @@ QTabBar::tab:selected, QTabBar::tab:hover {
   <action name="act_point_out">
    <property name="text">
     <string>添加关联指出</string>
+   </property>
+  </action>
+  <action name="act_set_type_normal">
+   <property name="text">
+    <string>普通文本</string>
+   </property>
+  </action>
+  <action name="act_set_type_code">
+   <property name="text">
+    <string>内联代码</string>
+   </property>
+  </action>
+  <action name="act_set_type_link">
+   <property name="text">
+    <string>链接</string>
+   </property>
+  </action>
+  <action name="actionli">
+   <property name="text">
+    <string>li</string>
+   </property>
+  </action>
+  <action name="actionst">
+   <property name="text">
+    <string>st</string>
+   </property>
+  </action>
+  <action name="act_remove_bold">
+   <property name="text">
+    <string>移除加粗</string>
+   </property>
+  </action>
+  <action name="act_remove_italic">
+   <property name="text">
+    <string>移除斜体</string>
+   </property>
+  </action>
+  <action name="act_remove_underline">
+   <property name="text">
+    <string>移除下划线</string>
+   </property>
+  </action>
+  <action name="act_remove_strike">
+   <property name="text">
+    <string>移除删除线</string>
    </property>
   </action>
  </widget>

@@ -115,6 +115,9 @@
     <ClCompile Include="Srcs\public.cpp">
       <Filter>Srcs</Filter>
     </ClCompile>
+    <ClCompile Include="Srcs\MainWindow\KMMainWindowFormatMenu.cpp">
+      <Filter>Srcs\MainWindow</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Srcs\Compress\compression.h">
