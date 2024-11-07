@@ -184,7 +184,7 @@
      <x>0</x>
      <y>0</y>
      <width>553</width>
-     <height>22</height>
+     <height>18</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu">
@@ -194,8 +194,6 @@
     <addaction name="act_create_entry"/>
     <addaction name="act_delete_entry"/>
     <addaction name="act_save_kl"/>
-    <addaction name="act_merge_kl"/>
-    <addaction name="act_separate_kl"/>
     <addaction name="act_open_start_window"/>
     <addaction name="act_set_current_entry_as_anchor"/>
    </widget>
@@ -260,7 +258,6 @@
     </property>
     <addaction name="act_search_kl"/>
     <addaction name="act_search_entry"/>
-    <addaction name="act_search_multi_kl"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>

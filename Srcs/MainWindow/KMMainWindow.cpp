@@ -4,11 +4,11 @@
 #include <QCloseEvent>
 #include <QDir>
 #include <QAbstractButton>
-
 #include "KMMainWindow.h"
 #include "../public.h"
 #include "../Compress/compression.h"
 #include "../EntryWidget/EntryWidget.h"
+#include "MetaData.h"
 
 KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path, QWidget* parent)
 {
@@ -493,8 +493,10 @@ void KMMainWindow::tagButtonClicked()
 
 	EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->currentWidget());
 	int entry_id = entry_widget->getEntryId();
+	const EntryMeta* entry_meta = meta_data.getEntry(entry_id);
 
-	const auto& tags = meta_data.getTagsOfEntry(entry_id);
+	const auto& tags = entry_meta->getTags();
+	
 
 	for (int tag_id : tags)
 	{

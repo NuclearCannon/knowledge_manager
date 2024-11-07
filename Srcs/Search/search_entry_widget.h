@@ -17,20 +17,9 @@ private:
     int id;
     QString title;
 public:
-    SeachEntryItem(int id, const QString& title) :
-        id(id),
-        title(title),
-        QListWidgetItem(title)
-    {
-
-    }
-
-    ~SeachEntryItem() = default;
-
-    int getId() const
-    {
-        return id;
-    }
+    SeachEntryItem(int id, const QString& title);
+    ~SeachEntryItem();
+    int getId() const;
 };
 
 
@@ -47,7 +36,6 @@ private:
 public:
     explicit search(QWidget* parent, const MetaData& meta);
     ~search();
-    //void initial();
     int getResult() const;
 signals:
     void updateTabWidget(const QString& klName, const QString& klPath, QWidget* widget, const QString& fileName);
@@ -60,6 +48,8 @@ private:
     void putEntriesByTitle(const QString& target);
     void putEntriesByTags(const std::set<int>& tag_set);
     void putEntriesByTags(const QString& tag_str);
+
+    void addItem(int id, const QString& title);
 };
 
 #endif // SEARCH_H

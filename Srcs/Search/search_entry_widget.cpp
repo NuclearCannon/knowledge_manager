@@ -5,13 +5,43 @@
 #include <QDebug>
 #include "../EntryWidget/EntryWidget.h"
 #include "search_entry_widget.h"
-#include "ui_search_entry_widget.h"
+#include "../MainWindow/MetaData.h"
 
 int getIdBySearchEntryDialog(const MetaData& meta)
 {
     search dialog(0, meta);
     dialog.exec();
     return dialog.getResult();
+}
+
+static bool isSubset(const std::set<int> sub_set, const std::set<int> super_set)
+{
+    for (int i : sub_set)
+    {
+        auto iter = super_set.lower_bound(i);
+        if (iter == super_set.end() || *iter != i)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
+SeachEntryItem::SeachEntryItem(int id, const QString& title) :
+    id(id),
+    title(title),
+    QListWidgetItem(title)
+{
+
+}
+
+SeachEntryItem::~SeachEntryItem() = default;
+
+int SeachEntryItem::getId() const
+{
+    return id;
 }
 
 
@@ -33,6 +63,8 @@ search::search(QWidget* parent, const MetaData& meta):
     connect(ui->search_text, &QLineEdit::textChanged, this, &search::onSearchTextChanged);//文本框内容改变
     // 连接复选框的状态变化信号到槽函数
     connect(button_group, &QButtonGroup::idClicked, this, &search::onCheckBoxStateChanged);//选择框内容改变
+    connect(ui->list_widget, &QListWidget::itemClicked, this, &search::onListItemClicked);
+    putAllEntries();
 }
 
 search::~search()
@@ -67,7 +99,7 @@ void search::putEntriesByTags(const QString& tag_str)
 {
     auto list = tag_str.split(' ');  // 按空格切分
     std::set<int> tag_set;
-    for (auto tag : meta.getTags())
+    for (const Tag *tag : meta.getTags())
     {
         for (const auto& tag_name : list)
         {
@@ -85,8 +117,12 @@ void search::putEntriesByTags(const std::set<int>& tag_set)
     ui->list_widget->clear();
     for (auto entry : meta.getEntries())
     {
-        // 待实现
-        qWarning() << "search::putEntriesByTags待实现";
+        // 判断目标集合是不是entry的集合的子集
+        qDebug() << entry->id() << entry->title();
+        if (isSubset(tag_set, entry->getTags()))
+        {
+            ui->list_widget->addItem(new SeachEntryItem(entry->id(), entry->title()));
+        }
     }
 }
 
@@ -135,4 +171,12 @@ void search::onListItemClicked(QListWidgetItem* item) {
 int search::getResult() const
 {
     return result;
+}
+
+void search::addItem(int id, const QString& title)
+{
+    SeachEntryItem* item = new SeachEntryItem(id, title);
+    ui->list_widget->addItem(item);
+    
+
 }
