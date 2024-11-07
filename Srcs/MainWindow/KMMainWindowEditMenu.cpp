@@ -94,6 +94,7 @@ void KMMainWindow::actAddHeaderBlock()
 void KMMainWindow::addPointOut()
 {
 	int from, to;
+
 	auto current = getCurrentEntryWidget();
 	if (!current)
 	{
@@ -107,6 +108,13 @@ void KMMainWindow::addPointOut()
 		qWarning() << "KMMainWindow::addPointOut(): to<0";
 		return;
 	}
+
+	if (from == to)
+	{
+		QMessageBox::warning(this, "Warning", QStringLiteral("不能添加自己到自己的关联"));
+		return;
+	}
+
 	// 添加一条关联
 	int rtn = meta_data.insertLinkRelationship(from, to);
 	if (rtn == -3)

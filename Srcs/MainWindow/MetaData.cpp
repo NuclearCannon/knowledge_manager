@@ -402,6 +402,7 @@ std::vector<const EntryMeta*> MetaData::getEntries() const
 
 int MetaData::insertLinkRelationship(int from, int to)
 {
+	if (from == to)return -4;
 	auto from_iter = entrys.find(from);
 	if (from_iter == entrys.end())return -1;
 	auto to_iter = entrys.find(to);
