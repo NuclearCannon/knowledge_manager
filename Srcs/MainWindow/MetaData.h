@@ -146,6 +146,7 @@ public:
 	// from未找到：return -1
 	// to未找到：return -2
 	// 这条关系已经存在了：return -3
+	// from == to：添加失败，return -4
 	// 一切正常：return 0
 	int insertLinkRelationship(int from, int to);
 

@@ -199,6 +199,12 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 
 	ui.left_tab_widget->tabBar()->hide();  // 隐藏tabbar
 
+	// 设置右键菜单，缺少该设置，右键菜单无法弹出
+	anchor_list->setContextMenuPolicy(Qt::CustomContextMenu);   
+	in_entries_list->setContextMenuPolicy(Qt::CustomContextMenu);
+	out_entries_list->setContextMenuPolicy(Qt::CustomContextMenu);
+
+
 	// 左边的锚点、关联、标签、大纲的按钮
 	connect(ui.anchor_button, &QPushButton::clicked, this, &KMMainWindow::anchorButtonClicked);
 	connect(ui.related_entries_button, &QPushButton::clicked, this, &KMMainWindow::relatedEntriedButtonClicked);
@@ -209,6 +215,10 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 	connect(out_entries_list, &QListWidget::itemClicked, this, &KMMainWindow::relatedEntryItemClicked);
 	connect(in_entries_list, &QListWidget::itemClicked, this, &KMMainWindow::relatedEntryItemClicked);
 	connect(anchor_list, &QListWidget::itemClicked, this, &KMMainWindow::anchorItemClicked);
+	// 右键点击
+	connect(anchor_list, &QListWidget::customContextMenuRequested, this, &KMMainWindow::anchorItemRightClicked);
+	connect(in_entries_list, &QListWidget::customContextMenuRequested, this, &KMMainWindow::relatedEntryItemRightClicked);
+	connect(out_entries_list, &QListWidget::customContextMenuRequested, this, &KMMainWindow::relatedEntryItemRightClicked);
 
 	// tabwidget相关
 	connect(ui.tab_widget, &QTabWidget::tabCloseRequested, this, &KMMainWindow::acttabCloseRequested);  // 点击tab关闭按钮时，关闭特定的tab
@@ -456,6 +466,59 @@ void KMMainWindow::relatedEntryItemClicked(QListWidgetItem* item)
 	}
 }
 
+// 槽：右键关联词条中的条目，弹出菜单，指出词条的菜单包括 跳转、删除，指入词条的菜单包括 跳转
+void KMMainWindow::relatedEntryItemRightClicked(const QPoint& pos)
+{
+	QWidget* related_entries_widget = ui.left_tab_widget->widget(1);
+	QListWidget* out_entries_list = static_cast<QListWidget*>(related_entries_widget->layout()->itemAt(1)->widget());
+	QListWidget* in_entries_list = static_cast<QListWidget*>(related_entries_widget->layout()->itemAt(3)->widget());
+
+	bool point_to = true;  // 是否是指出的词条
+
+	QListWidgetItem* item = out_entries_list->itemAt(pos);
+	if (item == nullptr)
+	{
+		point_to = false;
+		item = in_entries_list->itemAt(pos);
+		if (item == nullptr) return;
+	}
+
+	QMenu menu(related_entries_widget);
+	menu.setStyleSheet(
+		"QMenu { background-color: #ffffff; border: 1px solid #cccccc; }"
+		"QMenu::item { background-color: transparent; padding: 8px 16px; margin: 0px; }"
+		"QMenu::item:selected { background-color: #f0f0f0; color: #000000; }"
+	);
+
+	QAction* jump_action = new QAction("跳转", &menu);
+	menu.addAction(jump_action);
+
+	connect(jump_action, &QAction::triggered, this, [=]() {
+		relatedEntryItemClicked(item);
+	});
+
+	if (point_to) {
+		QAction* delete_action = new QAction("删除", &menu);
+		menu.addAction(delete_action);
+
+		connect(delete_action, &QAction::triggered, this, [=]() {
+			int entry_id = getCurrentEntryWidget()->getEntryId();
+			int point_to_entry_id = item->data(Qt::UserRole).toInt();
+			int rnt = meta_data.removeLinkRelationship(entry_id, point_to_entry_id);
+			if (rnt == -2)
+			{
+				QMessageBox::warning(this, "错误", "删除关联失败，关联对应的词条不存在");
+				return;
+			}
+			relatedEntriedButtonClicked();
+
+			handleKLChanged();
+		});
+	}
+
+	menu.exec(QCursor::pos());
+}
+
 // 槽：锚点
 void KMMainWindow::anchorButtonClicked()
 {
@@ -495,6 +558,51 @@ void KMMainWindow::anchorItemClicked(QListWidgetItem* item)
 	{
 		QMessageBox::warning(this, "错误", "打开词条失败：" + item->text());
 	}
+}
+
+// 槽：右键锚点中的条目，弹出菜单
+void KMMainWindow::anchorItemRightClicked(const QPoint& pos)
+{
+	QListWidget* anchor_list = static_cast<QListWidget*>(ui.left_tab_widget->widget(0));
+	QListWidgetItem* item = anchor_list->itemAt(pos);
+	if (item == nullptr) return;
+
+	QMenu menu(anchor_list);
+	QAction* jump_action = new QAction("跳转", &menu);
+	QAction* delete_action = new QAction("删除", &menu);
+	menu.addAction(jump_action);
+	menu.addAction(delete_action);
+
+	menu.setStyleSheet(
+		"QMenu { background-color: #ffffff; border: 1px solid #cccccc; }"
+		"QMenu::item { background-color: transparent; padding: 8px 16px; margin: 0px; }"
+		"QMenu::item:selected { background-color: #f0f0f0; color: #000000; }"
+	);
+
+	connect(jump_action, &QAction::triggered, this, [=]() {
+		anchorItemClicked(item);
+	});
+
+
+	connect(delete_action, &QAction::triggered, this, [=]() {
+		int entry_id = item->data(Qt::UserRole).toInt();
+		int rnt = meta_data.removeAnchor(entry_id);
+		if (rnt == -1)
+		{
+			QMessageBox::warning(this, "错误", "删除锚点失败，不存在该锚点");
+			return;
+		}
+		else if (rnt == -2) 
+		{
+			QMessageBox::warning(this, "错误", "删除锚点失败，锚点对应的词条不存在");
+			return;
+		}
+		anchorButtonClicked();
+
+		handleKLChanged();
+	});
+
+	menu.exec(QCursor::pos());
 }
 
 // 槽：标签

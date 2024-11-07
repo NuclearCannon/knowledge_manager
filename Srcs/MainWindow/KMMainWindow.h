@@ -9,9 +9,6 @@
 
 class EntryWidget;
 
-// 临时使用的函数，用于复制文件夹？？？
-bool copyDirectory(const QString& srcPath, const QString& destPath);
-
 class KMMainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -83,8 +80,10 @@ private slots:
 	// 锚点、关联标签、标签、大纲 槽函数
 	void relatedEntriedButtonClicked();  // 关联词条
 	void relatedEntryItemClicked(QListWidgetItem* item);  // 左键关联词条中的条目，跳转到对应的词条
+	void relatedEntryItemRightClicked(const QPoint& pos);  // 右键关联词条中的条目，弹出菜单，指出词条的菜单包括 跳转、删除，指入词条的菜单包括 跳转
 	void anchorButtonClicked();  // 锚点
 	void anchorItemClicked(QListWidgetItem* item);  // 左键锚点中的条目，跳转到对应的词条
+	void anchorItemRightClicked(const QPoint& pos);  // 右键锚点中的条目，弹出菜单，包括 跳转、删除
 	void synopsisButtonClicked();  // 大纲
 	void refreshSynopsis();  // 处于大纲tab时，刷新大纲，设置的目的是响应 EntryArea::titleChange 信号，防止大纲更新时从其他标签切换到大纲
 	void synopsisItemClicked(QListWidgetItem* item);  // 左键大纲中的条目，跳转到对应的词条
