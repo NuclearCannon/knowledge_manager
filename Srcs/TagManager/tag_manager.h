@@ -26,10 +26,20 @@ public slots:
 	void actDeleteTag();  // 删除标签
 	void actEditTag();  // 修改标签
 	void actSortTag();  // 标签字典序排序
+	
+	void tagItemClicked(QListWidgetItem* item);  // 选中后再次点击取消选中
 
 private:
     Ui::TagManager *ui;
 	KMMainWindow* main_window;  // 主窗口，用来获得当前打开的知识库相关信息
+	QListWidgetItem* last_clicked_item;  // 上次点击的标签项（用于取消选中）
+	
+	// 自定义item中的数据角色
+	enum CustomRoles {
+		IdRole = Qt::UserRole + 1,
+		ColorRole,
+		NameRole
+	};
 };
 
 #endif // LABEL_MANAGER_H

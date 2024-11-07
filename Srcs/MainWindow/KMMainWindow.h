@@ -50,6 +50,9 @@ public:
 	// 返回是否成功跳转
 	bool openEntry(int entry_id);
 
+	// 获得tab_widget当前的EntryWidget*，如果没有则返回nullptr
+	EntryWidget* getCurrentEntryWidget();
+
 private slots:
 	// 文件菜单相关的槽函数
 	void actCreateEntry();  // 点击新建文件时，创建一个新的tab

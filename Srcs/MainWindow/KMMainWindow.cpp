@@ -69,6 +69,10 @@ KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path, QWidget*
 		delete km;
 		return nullptr;
 	}
+
+	// 默认先显示锚点
+	km->anchorButtonClicked();  
+
 	return km;
 }
 
@@ -222,9 +226,6 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 	ui.left_tab_widget->addTab(tag_list, "标签");
 	ui.left_tab_widget->addTab(synopsis_list, "大纲");
 
-
-	anchorButtonClicked();  // 默认显示锚点
-
 	for (int i = 0; i < ui.left_tab_widget->tabBar()->count(); ++i) {
 		ui.left_tab_widget->tabBar()->setTabButton(i, QTabBar::RightSide, nullptr); // 移除关闭按钮
 	}
@@ -317,8 +318,24 @@ bool KMMainWindow::openEntry(int entry_id)
 // 关闭时，询问未保存的词条，从 current_kl_list 中删除当前库
 void KMMainWindow::closeEvent(QCloseEvent* event)
 {
-	// 保存知识库
-	actSaveKL();
+	// 询问是否保存
+	if (!is_saved)
+	{
+		QMessageBox box(QMessageBox::Warning, "警告", "是否保存当前知识库？", QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, this);
+		box.button(QMessageBox::Yes)->setText("是");
+		box.button(QMessageBox::No)->setText("否");
+		box.button(QMessageBox::Cancel)->setText("取消");
+		int rnt = box.exec();
+		if (rnt == QMessageBox::Yes)
+		{
+			actSaveKL();
+		}
+		else if (rnt == QMessageBox::Cancel)
+		{
+			event->ignore();
+			return;
+		}
+	}
 	
 	// 从 current_kl_list 中删除当前库
 	if (removeKLFromCurrentKLList(getKLName(), getOriginalKLPath()) == Status::Error)
@@ -367,6 +384,13 @@ QString KMMainWindow::getTempKLPath() const
 MetaData& KMMainWindow::getMetaData()
 {
 	return meta_data;
+}
+
+// 获得tab_widget当前的EntryWidget
+EntryWidget* KMMainWindow::getCurrentEntryWidget()
+{
+	if (ui.tab_widget->count() == 0) return nullptr;
+	return static_cast<EntryWidget*>(ui.tab_widget->currentWidget());
 }
 
 // 槽：关联词条
@@ -464,7 +488,7 @@ void KMMainWindow::anchorButtonClicked()
 		item->setData(Qt::UserRole, entry_id);
 		anchor_list->addItem(item);
 
-		//qDebug() << "锚点：" << entry_meta->title();
+		qDebug() << "锚点：" << entry_meta->title();
 	}
 }
 
