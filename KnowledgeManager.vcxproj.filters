@@ -94,22 +94,10 @@
     <ClCompile Include="Srcs\MainWindow\MetaData.cpp">
       <Filter>Srcs\MainWindow</Filter>
     </ClCompile>
-    <ClCompile Include="Srcs\Search\merge_kl.cpp">
-      <Filter>Srcs\Search</Filter>
-    </ClCompile>
-    <ClCompile Include="Srcs\Search\merge_kl_same_name.cpp">
-      <Filter>Srcs\Search</Filter>
-    </ClCompile>
     <ClCompile Include="Srcs\Search\search_entry_widget.cpp">
       <Filter>Srcs\Search</Filter>
     </ClCompile>
     <ClCompile Include="Srcs\Search\search_kl_widget.cpp">
-      <Filter>Srcs\Search</Filter>
-    </ClCompile>
-    <ClCompile Include="Srcs\Search\search_multi_kl_widget.cpp">
-      <Filter>Srcs\Search</Filter>
-    </ClCompile>
-    <ClCompile Include="Srcs\Search\separate_kl.cpp">
       <Filter>Srcs\Search</Filter>
     </ClCompile>
     <ClCompile Include="Srcs\StartWindow\new_kl_guidance.cpp">
@@ -179,22 +167,10 @@
     <QtMoc Include="Srcs\MainWindow\KMMainWindow.h">
       <Filter>Srcs\MainWindow</Filter>
     </QtMoc>
-    <QtMoc Include="Srcs\Search\merge_kl.h">
-      <Filter>Srcs\Search</Filter>
-    </QtMoc>
-    <QtMoc Include="Srcs\Search\merge_kl_same_name.h">
-      <Filter>Srcs\Search</Filter>
-    </QtMoc>
     <QtMoc Include="Srcs\Search\search_entry_widget.h">
       <Filter>Srcs\Search</Filter>
     </QtMoc>
     <QtMoc Include="Srcs\Search\search_kl_widget.h">
-      <Filter>Srcs\Search</Filter>
-    </QtMoc>
-    <QtMoc Include="Srcs\Search\search_multi_kl_widget.h">
-      <Filter>Srcs\Search</Filter>
-    </QtMoc>
-    <QtMoc Include="Srcs\Search\separate_kl.h">
       <Filter>Srcs\Search</Filter>
     </QtMoc>
     <QtMoc Include="Srcs\StartWindow\new_kl_guidance.h">
@@ -214,22 +190,10 @@
     <QtUic Include="Srcs\MainWindow\KMMainWindow.ui">
       <Filter>Srcs\MainWindow</Filter>
     </QtUic>
-    <QtUic Include="Srcs\Search\merge_kl.ui">
-      <Filter>Srcs\Search</Filter>
-    </QtUic>
-    <QtUic Include="Srcs\Search\merge_kl_same_name.ui">
-      <Filter>Srcs\Search</Filter>
-    </QtUic>
     <QtUic Include="Srcs\Search\search_entry_widget.ui">
       <Filter>Srcs\Search</Filter>
     </QtUic>
     <QtUic Include="Srcs\Search\search_kl_widget.ui">
-      <Filter>Srcs\Search</Filter>
-    </QtUic>
-    <QtUic Include="Srcs\Search\search_multi_kl_widget.ui">
-      <Filter>Srcs\Search</Filter>
-    </QtUic>
-    <QtUic Include="Srcs\Search\separate_kl.ui">
       <Filter>Srcs\Search</Filter>
     </QtUic>
     <QtUic Include="Srcs\StartWindow\newklguidance.ui">
