@@ -204,7 +204,7 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 
 	// 设置样式表
 	ui.left_part->setStyleSheet("background-color: transparent; border: none; padding-left: 5px; padding-right: 2px;");
-	ui.left_tab_widget->setStyleSheet("QTabWidget::pane { border: 0; }");
+	ui.left_tab_widget->setStyleSheet("QTabWidget::pane { border: 0; margin-top: 10px}");
 
 	out_label->setStyleSheet("background-color: transparent; font-size: 14px;");
 	out_entries_list->setStyleSheet("background-color: transparent; border: none;");
@@ -245,6 +245,7 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 
 	// tabwidget相关
 	connect(ui.tab_widget, &QTabWidget::tabCloseRequested, this, &KMMainWindow::acttabCloseRequested);  // 点击tab关闭按钮时，关闭特定的tab
+	connect(ui.tab_widget, &QTabWidget::currentChanged, this, &KMMainWindow::tabWidgetChanged);  // tab改变时，更新左边的锚点、关联、标签、大纲
 
 	// 文件菜单
 	connect(ui.act_create_entry, &QAction::triggered, this, &KMMainWindow::actCreateEntry);  // 点击新建文件时，创建一个新的tab
@@ -396,14 +397,34 @@ EntryWidget* KMMainWindow::getCurrentEntryWidget()
 	return static_cast<EntryWidget*>(ui.tab_widget->currentWidget());
 }
 
+// tab改变时，更新锚点、关联词条、大纲、标签
+void KMMainWindow::tabWidgetChanged(int index)
+{
+	if (index == -1) return;
+
+	int i = ui.left_tab_widget->currentIndex();
+	switch (i)  // 锚点不需要更新
+	{
+		case 1:
+			relatedEntriedButtonClicked();
+			break;
+		case 2:
+			tagButtonClicked();
+			break;
+		case 3:
+			synopsisButtonClicked();
+			break;
+	}
+}
+
 // 槽：关联词条
 void KMMainWindow::relatedEntriedButtonClicked()
 {
 	// 设置三个按钮的样式
-	ui.related_entries_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px; border-bottom: 2px solid black; font-weight: bold;");
-	ui.anchor_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
-	ui.synopsis_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
-	ui.tag_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
+	ui.related_entries_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px; border-bottom: 3px solid black; font-weight: bold;");
+	ui.anchor_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
+	ui.synopsis_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
+	ui.tag_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
 
 	// 设置left_tab_widget的当前tab
 	ui.left_tab_widget->setCurrentIndex(1);
@@ -471,10 +492,10 @@ void KMMainWindow::relatedEntryItemClicked(QListWidgetItem* item)
 // 槽：锚点
 void KMMainWindow::anchorButtonClicked()
 {
-	ui.related_entries_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
-	ui.anchor_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px; border-bottom: 2px solid black; font-weight: bold;");
-	ui.synopsis_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
-	ui.tag_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
+	ui.related_entries_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
+	ui.anchor_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px; border-bottom: 3px solid black; font-weight: bold;");
+	ui.synopsis_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
+	ui.tag_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
 	ui.left_tab_widget->setCurrentIndex(0);
 
 	// 从元数据刷新锚点列表
@@ -512,10 +533,10 @@ void KMMainWindow::anchorItemClicked(QListWidgetItem* item)
 // 槽：标签
 void KMMainWindow::tagButtonClicked()
 {
-	ui.related_entries_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
-	ui.anchor_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
-	ui.synopsis_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
-	ui.tag_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px; border-bottom: 2px solid black; font-weight: bold;");
+	ui.related_entries_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
+	ui.anchor_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
+	ui.synopsis_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
+	ui.tag_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px; border-bottom: 3px solid black; font-weight: bold;");
 	ui.left_tab_widget->setCurrentIndex(2);
 
 	QListWidget* tag_list = static_cast<QListWidget*>(ui.left_tab_widget->widget(2));
@@ -541,16 +562,13 @@ void KMMainWindow::tagButtonClicked()
 	}
 }
 
-// 槽：大纲
-void KMMainWindow::synopsisButtonClicked()
+// 处于大纲tab时，刷新大纲
+void KMMainWindow::refreshSynopsis()
 {
-	ui.related_entries_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
-	ui.anchor_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
-	ui.synopsis_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px; border-bottom: 2px solid black; font-weight: bold;");
-	ui.tag_button->setStyleSheet("border: none; background: transparent; padding-bottom: 5px;");
-	ui.left_tab_widget->setCurrentIndex(3);
+	// 如果当前不是展示大纲，直接返回
+	if (ui.left_tab_widget->currentIndex() != 3) return;
 
-	// 当前的词条获得大纲
+	// 从当前的词条获得大纲
 	QListWidget* synopsis_list = static_cast<QListWidget*>(ui.left_tab_widget->widget(3));
 	synopsis_list->clear();
 
@@ -564,7 +582,7 @@ void KMMainWindow::synopsisButtonClicked()
 	for (const auto& it : synopsis)
 	{
 		QListWidgetItem* item = new QListWidgetItem(synopsis_list);
-		
+
 		QString text;
 		for (int i = 1; i < it.level; ++i) text += "  ";
 		text += it.text;
@@ -573,6 +591,18 @@ void KMMainWindow::synopsisButtonClicked()
 		item->setData(Qt::UserRole, it.position);
 		synopsis_list->addItem(item);
 	}
+}
+
+// 槽：大纲
+void KMMainWindow::synopsisButtonClicked()
+{
+	ui.related_entries_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
+	ui.anchor_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
+	ui.synopsis_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px; border-bottom: 3px solid black; font-weight: bold;");
+	ui.tag_button->setStyleSheet("border: none; background: transparent; padding-bottom: 10px; font-size: 16px;");
+	ui.left_tab_widget->setCurrentIndex(3);
+
+	refreshSynopsis();
 }
 
 // 槽：大纲列表的左键点击
@@ -595,7 +625,7 @@ bool KMMainWindow::addEntryToTab(EntryWidget* entry_widget, const QString& entry
 	ui.tab_widget->addTab(entry_widget, entry_title);
 
 	connect(entry_widget->getEntryArea(), &EntryArea::contentChange, this, &KMMainWindow::handleKLChanged);
-	connect(entry_widget->getEntryArea(), &EntryArea::titleChange, this, &KMMainWindow::synopsisButtonClicked);
+	connect(entry_widget->getEntryArea(), &EntryArea::titleChange, this, &KMMainWindow::refreshSynopsis);
 
 	ui.tab_widget->setCurrentWidget(entry_widget);
 

@@ -141,6 +141,8 @@ void KMMainWindow::actDeleteEntry()
 		// 删除entry_widget
 		delete entry_widget;
 		entry_widget = nullptr;
+
+		handleKLChanged();
 	}
 }
 

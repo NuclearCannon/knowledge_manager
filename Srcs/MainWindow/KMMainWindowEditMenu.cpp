@@ -121,4 +121,5 @@ void KMMainWindow::addPointOut()
 		relatedEntriedButtonClicked();
 	}
 
+	handleKLChanged();
 }

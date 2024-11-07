@@ -73,7 +73,7 @@ private slots:
 	void actRecentLabel();  // 最近使用的标签
 	void actManageLabel();  // 管理标签
 
-	//新加
+	// 搜索部分槽函数
 	void actSearchEntry();//搜索词条打开函数
 	void actSearchkl();//搜索库打开函数
 	//void actSearchMultikl();//多库搜素打开函数
@@ -86,8 +86,12 @@ private slots:
 	void anchorButtonClicked();  // 锚点
 	void anchorItemClicked(QListWidgetItem* item);  // 左键锚点中的条目，跳转到对应的词条
 	void synopsisButtonClicked();  // 大纲
+	void refreshSynopsis();  // 处于大纲tab时，刷新大纲，设置的目的是响应 EntryArea::titleChange 信号，防止大纲更新时从其他标签切换到大纲
 	void synopsisItemClicked(QListWidgetItem* item);  // 左键大纲中的条目，跳转到对应的词条
 	void tagButtonClicked();  // 标签
+
+	// 词条tab相关的槽函数
+	void tabWidgetChanged(int index);  // tab改变时，更新锚点、关联词条、大纲、标签
 
 	// 知识库发生变化时，更新MainWindow的标题（在知识库名称后面加" *"）
 	void handleKLChanged();  
