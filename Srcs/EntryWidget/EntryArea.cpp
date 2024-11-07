@@ -97,6 +97,7 @@ int EntryArea::load()
     // 文件打开成功
     QTextStream stream(&entry_file);
     doc.load_string(stream.readAll().toStdString().c_str());
+    entry_file.close();
     // 从字符串加载XML内容到doc中  
     pugi::xml_node root = doc.root();
     for (pugi::xml_node child = root.first_child(); child; child = child.next_sibling())

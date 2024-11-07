@@ -152,6 +152,8 @@ TextBlockBrowser::TextBlockBrowser(TextBlockWidget* parent) :
     setReadOnly(false);
     setOpenLinks(false);
     setTabStopDistance(20);
+    setStyleSheet("TextBlockBrowser:hover { background-color: #E0E0E0; border: none; }  TextBlockBrowser { background-color: #F3F3F3; border: none; }");
+    //setTextCursor()
 }
 
 void TextBlockBrowser::setStyleOnSelection(FormatItem x, bool value)
@@ -253,8 +255,8 @@ TextBlockWidget::TextBlockWidget(QWidget* parent) :
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // 安装事件过滤器
-    FocusEventFilter fff(this);
-    text_browser->installEventFilter(&fff);
+    text_browser->installEventFilter(filter);
+    this->installEventFilter(filter);
 
     // 连接更改信号
     connect(text_browser, &TextBlockBrowser::textChanged, this, &TextBlockWidget::emitContentChange);
@@ -393,4 +395,5 @@ void TextBlockWidget::onAnchorClicked(const QUrl& url)
         // do nothing
         qDebug() << "onAnchorClicked blocked because ctrl is not pressed";
     }
+    
 }

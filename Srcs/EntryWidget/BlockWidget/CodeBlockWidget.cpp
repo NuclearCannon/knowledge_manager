@@ -229,9 +229,9 @@ CodeBlockWidget::CodeBlockWidget(QWidget* parent) :BlockWidget(parent), code_edi
     connect(languange_box, &LanguageComboBox::currentTextChanged, this, &CodeBlockWidget::updateHighlighter);
     
     // 安装事件过滤器
-    FocusEventFilter fff(this);
-    code_edit->installEventFilter(&fff);
-    languange_box->installEventFilter(&fff);
+
+    code_edit->installEventFilter(filter);
+    languange_box->installEventFilter(filter);
     // 代码块设置高亮
     updateHighlighter();
     justifyHeight();// 调整一次高度
