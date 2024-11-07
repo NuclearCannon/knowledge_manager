@@ -28,6 +28,7 @@ public:
 
 	int getEntryId() const;
 
+	// 处理词条标题和内容的变化
 	void handleContentChange();
 
 	bool saveEntry();

@@ -460,6 +460,7 @@ void EntryArea::contentChangeSlot()
     {
         saved = false;
         emit contentChange();  // 仅在下降沿触发
+        //qDebug() << "contentChange\n";
     }
 
 }
@@ -467,7 +468,7 @@ void EntryArea::contentChangeSlot()
 void EntryArea::titleChangeSlot()
 {
 
-	qDebug() << "titleChange\n";
+	//qDebug() << "titleChange\n";
     emit titleChange();
 }
 
