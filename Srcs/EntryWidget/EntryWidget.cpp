@@ -40,6 +40,7 @@ EntryWidget* EntryWidget::construct(int _entry_id, QWidget* parent, KMMainWindow
 	}
 
 	connect(entry_widget->entry_area, &EntryArea::contentChange, entry_widget, &EntryWidget::handleContentChange);
+	connect(entry_widget->entry_area, &EntryArea::titleChange, entry_widget, &EntryWidget::handleContentChange);
 
 	// 设置布局
 	QVBoxLayout* layout = new QVBoxLayout;

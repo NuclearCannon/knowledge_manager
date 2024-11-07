@@ -267,8 +267,7 @@ void KMMainWindow::handleKLChanged()
 	}
 }
 
-// 根据entry_id，跳转到对应的词条，如果词条已经打开，则直接跳转，否则打开词条
-// 返回是否成功跳转
+// 根据entry_id，跳转到对应的词条，如果词条已经打开，则直接跳转，否则打开词条，返回是否成功跳转
 bool KMMainWindow::openEntry(int entry_id)
 {
 	// 先判断是否已经加到tab_widget中，如果是就直接将其设为当前tab
