@@ -42,18 +42,15 @@ public:
 	inline int id() const;
 
 	inline const QString& title() const;
+	// 获得一个词条的标签集
+	const std::set<int>& getTags() const;
 
 };
 
 
-
-
-
 class MetaData
 {
-
 private:
-
 	std::map<int,Tag*> tags;
 	std::map<int,EntryMeta*> entrys;  // 词条集合
 	std::set<int> anchors;  // 锚点
@@ -62,16 +59,8 @@ private:
 public:
 	MetaData();
 	~MetaData();
-
-
-	
-	//int load(const char* path);// 加载方法，成功return 0
-
 	// 加载方法，成功return 0
 	int load(QFile&);
-
-	//void dump(const char* path);// 保存方法
-
 	// 保存方法
 	void dump(QFile&);
 
@@ -150,6 +139,8 @@ public:
 
 	// 获得词条集（所有的）
 	std::vector<const EntryMeta*> getEntries() const;
+	
+	
 
 	// 插入一条指向关系
 	// from未找到：return -1
@@ -195,11 +186,7 @@ public:
 	// 锚点不存在：return 0
 	// 词条不存在：return -1
 	int hasAnchor(int entry_id);
-
 	// 取锚点集合
 	const std::set<int>& getAnchors() const;
-
-
-
 };
 

@@ -114,12 +114,8 @@
     <ClCompile Include="Srcs\MainWindow\kmui_search_memu.cpp" />
     <ClCompile Include="Srcs\MainWindow\MetaData.cpp" />
     <ClCompile Include="Srcs\public.cpp" />
-    <ClCompile Include="Srcs\Search\merge_kl.cpp" />
-    <ClCompile Include="Srcs\Search\merge_kl_same_name.cpp" />
     <ClCompile Include="Srcs\Search\search_entry_widget.cpp" />
     <ClCompile Include="Srcs\Search\search_kl_widget.cpp" />
-    <ClCompile Include="Srcs\Search\search_multi_kl_widget.cpp" />
-    <ClCompile Include="Srcs\Search\separate_kl.cpp" />
     <ClCompile Include="Srcs\StartWindow\new_kl_guidance.cpp" />
     <ClCompile Include="Srcs\StartWindow\startwindow.cpp" />
     <ClCompile Include="Srcs\TagManager\tag_edit_dialog.cpp" />
@@ -135,12 +131,8 @@
     <QtMoc Include="Srcs\TagManager\tag_edit_dialog.h" />
     <QtMoc Include="Srcs\StartWindow\startwindow.h" />
     <QtMoc Include="Srcs\StartWindow\new_kl_guidance.h" />
-    <QtMoc Include="Srcs\Search\separate_kl.h" />
-    <QtMoc Include="Srcs\Search\search_multi_kl_widget.h" />
     <QtMoc Include="Srcs\Search\search_kl_widget.h" />
     <QtMoc Include="Srcs\Search\search_entry_widget.h" />
-    <QtMoc Include="Srcs\Search\merge_kl_same_name.h" />
-    <QtMoc Include="Srcs\Search\merge_kl.h" />
     <QtMoc Include="Srcs\MainWindow\KMMainWindow.h" />
     <QtMoc Include="Srcs\EntryWidget\EntryWidget.h" />
     <QtMoc Include="Srcs\EntryWidget\EntryArea.h" />
@@ -154,12 +146,8 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Srcs\MainWindow\KMMainWindow.ui" />
-    <QtUic Include="Srcs\Search\merge_kl.ui" />
-    <QtUic Include="Srcs\Search\merge_kl_same_name.ui" />
     <QtUic Include="Srcs\Search\search_entry_widget.ui" />
     <QtUic Include="Srcs\Search\search_kl_widget.ui" />
-    <QtUic Include="Srcs\Search\search_multi_kl_widget.ui" />
-    <QtUic Include="Srcs\Search\separate_kl.ui" />
     <QtUic Include="Srcs\StartWindow\newklguidance.ui" />
     <QtUic Include="Srcs\StartWindow\startwindow.ui" />
     <QtUic Include="Srcs\TagManager\tag_edit_dialog.ui" />

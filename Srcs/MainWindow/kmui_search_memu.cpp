@@ -7,21 +7,20 @@
 #include "KMMainWindow.h"
 #include "../Search/search_kl_widget.h"
 #include "../Search/search_entry_widget.h"
-#include "../Search/search_multi_kl_widget.h"
 
 //搜索词条打开函数
-void KMMainWindow::actSearchEntry() {
-
-	QListWidget* muti_kl_nameandpath;
-	// 添加所需搜索的库及其路径到muti_kl_nameandpath
-	muti_kl_nameandpath = new QListWidget();
-	QString itemText = kl_name + " - " + original_kl_path;
-	QListWidgetItem* item = new QListWidgetItem(itemText);
-	muti_kl_nameandpath->addItem(item);
-	search* new_search_widget = new search(this, muti_kl_nameandpath);
-	connect(new_search_widget, &search::updateTabWidget, this, &KMMainWindow::onUpdateTabWidget);//建立连接，打开相应文件
-	new_search_widget->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
-	new_search_widget->show();
+void KMMainWindow::actSearchEntry()
+{
+	int result_id = getIdBySearchEntryDialog(meta_data);
+	if (result_id < 0)
+	{
+		qDebug() << "KMMainWindow::actSearchEntry(): result_id < 0:" << result_id;
+	}
+	bool success = openEntry(result_id);
+	if (!success)
+	{
+		qWarning() << "KMMainWindow::actSearchEntry(): openEntry(" << result_id << ") fail!";
+	}
 };
 //搜索完打开词条函数
 void KMMainWindow::onUpdateTabWidget(const QString& klName, const QString& klPath, QWidget* widget, const QString& fileName) {
@@ -59,11 +58,4 @@ void KMMainWindow::actSearchkl() {
 	search_kl_widget* search_kl = new search_kl_widget(this, kl_name);
 	search_kl->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
 	search_kl->show();
-};
-//多库搜素打开函数
-void KMMainWindow::actSearchMultikl() {
-	search_multi_kl_widget* search_multi_kl = new search_multi_kl_widget(this, kl_name);
-	connect(search_multi_kl, &search_multi_kl_widget::search_multi_kl_updateTabWidget, this, &KMMainWindow::onUpdateTabWidget);//建立连接，打开相应文件
-	search_multi_kl->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
-	search_multi_kl->show();
 };

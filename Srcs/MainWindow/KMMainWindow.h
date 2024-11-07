@@ -41,7 +41,7 @@ public:
 	QString getTempKLPath() const;
 
 	// 获取元数据
-	const MetaData& getMetaData() const;
+	MetaData& getMetaData();
 
 	//void addTab(QWidget* widget, const QString& label);//新加
 	void onUpdateTabWidget(const QString& klName, const QString& klPath, QWidget* widget, const QString& fileName);//搜索完打开词条函数
@@ -49,6 +49,9 @@ public:
 	// 根据entry_id，跳转到对应的词条，如果词条已经打开，则直接跳转，否则打开词条
 	// 返回是否成功跳转
 	bool openEntry(int entry_id);
+
+	// 获得tab_widget当前的EntryWidget*，如果没有则返回nullptr
+	EntryWidget* getCurrentEntryWidget();
 
 private slots:
 	// 文件菜单相关的槽函数
@@ -70,23 +73,32 @@ private slots:
 	void actRecentLabel();  // 最近使用的标签
 	void actManageLabel();  // 管理标签
 
-	//新加
+	// 搜索部分槽函数
 	void actSearchEntry();//搜索词条打开函数
 	void actSearchkl();//搜索库打开函数
-	void actSearchMultikl();//多库搜素打开函数
-	void actopenmergekl();  // 合库
-	void actopenseparatekl();  // 分库
+	//void actSearchMultikl();//多库搜素打开函数
+	//void actopenmergekl();  // 合库
+	//void actopenseparatekl();  // 分库
 
-	// 关联标签、锚点、大纲 槽函数
+	// 锚点、关联标签、标签、大纲 槽函数
 	void relatedEntriedButtonClicked();  // 关联词条
 	void relatedEntryItemClicked(QListWidgetItem* item);  // 左键关联词条中的条目，跳转到对应的词条
 	void anchorButtonClicked();  // 锚点
 	void anchorItemClicked(QListWidgetItem* item);  // 左键锚点中的条目，跳转到对应的词条
 	void synopsisButtonClicked();  // 大纲
+	void refreshSynopsis();  // 处于大纲tab时，刷新大纲，设置的目的是响应 EntryArea::titleChange 信号，防止大纲更新时从其他标签切换到大纲
 	void synopsisItemClicked(QListWidgetItem* item);  // 左键大纲中的条目，跳转到对应的词条
+	void tagButtonClicked();  // 标签
+
+	// 词条tab相关的槽函数
+	void tabWidgetChanged(int index);  // tab改变时，更新锚点、关联词条、大纲、标签
 
 	// 知识库发生变化时，更新MainWindow的标题（在知识库名称后面加" *"）
 	void handleKLChanged();  
+
+	// 指出指入
+	void addPointOut();
+
 
 signals:
 	void klChanged();  // 知识库发生变化时，发出信号

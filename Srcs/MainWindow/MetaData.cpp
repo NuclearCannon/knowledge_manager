@@ -3,6 +3,7 @@
 #include <queue>
 #include <QTextStream>
 #include <sstream>
+#include <set>
 
 Tag::Tag(int id, const QColor& color, const QString& name) :
 	m_id(id),
@@ -43,6 +44,10 @@ inline const QString& EntryMeta::title() const
 	return m_title;
 }
 
+const std::set<int>& EntryMeta::getTags() const
+{
+	return tagIds;
+}
 
 MetaData::MetaData() = default;
 MetaData::~MetaData()
@@ -88,6 +93,13 @@ int MetaData::loadFromPugiDoc(pugi::xml_document& doc)
 		}
 	}
 
+	// 解析anchors
+	pugi::xml_node anchors_node = meta.child("anchors");
+	for (pugi::xml_node anchor = anchors_node.first_child(); anchor; anchor = anchor.next_sibling())
+	{
+		anchors.insert(anchor.attribute("id").as_int());
+	}
+
 	// 将队列中的链接关系反映到对象
 	while (!links_queue.empty())
 	{
@@ -97,22 +109,12 @@ int MetaData::loadFromPugiDoc(pugi::xml_document& doc)
 		entrys[from]->out.insert(to);
 		entrys[to]->in.insert(from);
 	}
-
 	return 0;
 }
 
 
-//int MetaData::load(const char* path)
-//{
-//	
-//	pugi::xml_document doc;
-//	doc.load_file(path);
-//	return loadFromPugiDoc(doc);
-//}
-
 int MetaData::load(QFile& file)
 {
-
 	pugi::xml_document doc;
 	QTextStream stream(&file);
 	QString text = stream.readAll();
@@ -129,7 +131,7 @@ void MetaData::dumpToPugiDoc(pugi::xml_document& doc)
 	pugi::xml_node meta = doc.append_child("meta");
 	pugi::xml_node tag_set_node = meta.append_child("tag-set");
 	pugi::xml_node entrys_node = meta.append_child("entrys");
-
+	pugi::xml_node anchors_node = meta.append_child("anchors");
 
 	for (const auto& tag_pair : tags)
 	{
@@ -162,15 +164,15 @@ void MetaData::dumpToPugiDoc(pugi::xml_document& doc)
 			links.append_child("link").append_attribute("dest").set_value(dest);
 		}
 	}
+	for (int anchor : anchors)
+	{
+		anchors_node.append_child("anchor").append_attribute("id").set_value(anchor);
+	}
+
+	
 }
 
-//void MetaData::dump(const char* path)
-//{
-//	pugi::xml_document doc;
-//	dumpToPugiDoc(doc);
-//	doc.save_file(path);
-//	
-//}
+
 
 void MetaData::dump(QFile& file)
 {
@@ -395,6 +397,8 @@ std::vector<const EntryMeta*> MetaData::getEntries() const
 
 	return result;
 }
+
+
 
 int MetaData::insertLinkRelationship(int from, int to)
 {

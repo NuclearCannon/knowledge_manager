@@ -49,17 +49,10 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0">
        <property name="spacing">
         <number>0</number>
        </property>
-       <item>
-        <widget class="QPushButton" name="related_entries_button">
-         <property name="text">
-          <string>关联词条</string>
-         </property>
-        </widget>
-       </item>
        <item>
         <widget class="QPushButton" name="anchor_button">
          <property name="sizePolicy">
@@ -76,6 +69,20 @@
          </property>
          <property name="text">
           <string>锚点</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="related_entries_button">
+         <property name="text">
+          <string>关联</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="tag_button">
+         <property name="text">
+          <string>标签</string>
          </property>
         </widget>
        </item>
@@ -129,6 +136,25 @@
       <height>0</height>
      </size>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QTabWidget::pane { /* The tab widget frame */
+    border-top: 2px solid #f0f0f0;
+}
+
+QTabBar::tab {
+    padding: 8px 10px; 
+    background: #e0e0e0;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    min-width: 80px;
+    border: 1px solid #cccccc;
+}
+
+QTabBar::tab:selected, QTabBar::tab:hover {
+    background: #fcfcfc;
+    border-color: rgb(228, 228, 228);
+}</string>
+    </property>
     <property name="tabPosition">
      <enum>QTabWidget::TabPosition::North</enum>
     </property>
@@ -180,6 +206,9 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <widget class="QMenu" name="menu">
     <property name="title">
      <string>文件</string>
@@ -187,8 +216,6 @@
     <addaction name="act_create_entry"/>
     <addaction name="act_delete_entry"/>
     <addaction name="act_save_kl"/>
-    <addaction name="act_merge_kl"/>
-    <addaction name="act_separate_kl"/>
     <addaction name="act_open_start_window"/>
     <addaction name="act_set_current_entry_as_anchor"/>
    </widget>
@@ -212,6 +239,7 @@
     <addaction name="act_insert_block_above"/>
     <addaction name="act_insert_block_below"/>
     <addaction name="menu_8"/>
+    <addaction name="act_point_out"/>
    </widget>
    <widget class="QMenu" name="menu_3">
     <property name="title">
@@ -253,7 +281,6 @@
     </property>
     <addaction name="act_search_kl"/>
     <addaction name="act_search_entry"/>
-    <addaction name="act_search_multi_kl"/>
    </widget>
    <addaction name="menu"/>
    <addaction name="menu_2"/>
@@ -533,6 +560,11 @@
   <action name="act_set_current_entry_as_anchor">
    <property name="text">
     <string>将当前词条设为锚点</string>
+   </property>
+  </action>
+  <action name="act_point_out">
+   <property name="text">
+    <string>添加关联指出</string>
    </property>
   </action>
  </widget>

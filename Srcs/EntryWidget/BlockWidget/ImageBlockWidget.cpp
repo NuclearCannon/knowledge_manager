@@ -69,7 +69,7 @@ static bool copyFileWithUniqueName(const QString& sourceFilePath, const QDir& de
 
 ImageBlockWidget::ImageBlockWidget(QWidget* parent, const QDir& attachment_dir) :
     BlockWidget(parent),
-    label(new QLabel("点击这里插入图片", this)),
+    label(new QLabel("双击插入图片", this)),
     layout(new QVBoxLayout(this)),
     loaded(false),
     pixmap(0),
