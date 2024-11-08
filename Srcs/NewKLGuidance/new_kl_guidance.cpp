@@ -11,30 +11,30 @@
 
 NewKLGuidance::NewKLGuidance(QWidget* parent, bool _is_temp_kl, QString _temp_kl_path)
     : QDialog(parent)
-    , ui(new Ui::new_kl_guidance)
 	, is_temp_kl(_is_temp_kl)
 	, temp_kl_path(_temp_kl_path)
 	, new_kl_name("")
 	, new_kl_path("")
 {
-    ui->setupUi(this);
+    ui.setupUi(this);
+	
+	setWindowTitle("新建知识库");
 	
 	// 设置知识库路径为默认路径
-	ui->kl_path_lineEdit->setText(default_path_for_all_kls);
+	ui.kl_path_lineEdit->setText(default_path_for_all_kls);
 
 	// 点击创建新的库文件按钮
-	connect(ui->create_button, &QPushButton::clicked, this, &NewKLGuidance::createButtonClicked);
+	connect(ui.create_button, &QPushButton::clicked, this, &NewKLGuidance::createButtonClicked);
 	// 点击选择路径按钮
-	connect(ui->select_path_button, &QPushButton::clicked, this, &NewKLGuidance::selectPathButtonClicked);
+	connect(ui.select_path_button, &QPushButton::clicked, this, &NewKLGuidance::selectPathButtonClicked);
 
-	connect(ui->create_button, &QPushButton::clicked, this, &QDialog::accept);
+	connect(ui.create_button, &QPushButton::clicked, this, &QDialog::accept);
 
-	//connect(ui->create_button, &QPushButton::clicked, this, &NewKLGuidance::emit_merge_kl_signal);
+	//connect(ui.create_button, &QPushButton::clicked, this, &NewKLGuidance::emit_merge_kl_signal);
 }
 
 NewKLGuidance::~NewKLGuidance()
 {
-    delete ui;
 }
 
 // 获得输入的库名
@@ -53,8 +53,8 @@ QString NewKLGuidance::getKLPath() const
 void NewKLGuidance::createButtonClicked()
 {
 	// 获取用户输入的库名，如果输入的库名为空，则在创建按钮上面显示一个提示：知识库名不能为空
-	QString kl_name = ui->kl_name_lineEdit->text();
-	QString target_kl_path = ui->kl_path_lineEdit->text();
+	QString kl_name = ui.kl_name_lineEdit->text();
+	QString target_kl_path = ui.kl_path_lineEdit->text();
 	QDir target_kl_dir(target_kl_path);  // 目标文件夹，新的知识库将放在这个文件夹下
 	if (kl_name.isEmpty())
 	{
@@ -187,25 +187,25 @@ void NewKLGuidance::selectPathButtonClicked()
 	if (!kl_path.isEmpty())
 	{
 		// 将选择的路径显示在输入框中
-		ui->kl_path_lineEdit->setText(kl_path);
+		ui.kl_path_lineEdit->setText(kl_path);
 	}
 }
 
 //新加
 //void NewKLGuidance::emit_merge_kl_signal() {
-//	QString kl_name = ui->kl_name_lineEdit->text();
+//	QString kl_name = ui.kl_name_lineEdit->text();
 //	// 获取输入的知识库路径
-//	QString kl_path = ui->kl_path_lineEdit->text();
+//	QString kl_path = ui.kl_path_lineEdit->text();
 //	if (kl_name.isEmpty())
 //	{
 //		// 调整输入框下面的占位标签，显示“知识库名不能为空”
-//		ui->hint_label->setText("知识库名不能为空");
+//		ui.hint_label->setText("知识库名不能为空");
 //		return;
 //	}
 //	else if (kl_path.isEmpty())
 //	{
 //		// 调整输入框下面的占位标签，显示“知识库路径不能为空”
-//		ui->hint_label->setText("知识库路径不能为空");
+//		ui.hint_label->setText("知识库路径不能为空");
 //		return;
 //	}
 //

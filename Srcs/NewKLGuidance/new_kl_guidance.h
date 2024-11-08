@@ -30,7 +30,7 @@ public slots:
 
     //void emit_merge_kl_signal();//新加
 private:
-    Ui::new_kl_guidance *ui;
+    Ui::new_kl_guidance ui;
 	bool is_temp_kl;  // 是否是临时库
 	QString temp_kl_path;  // 临时库的位置（不带.km）
 	QString new_kl_name;  // 库名

@@ -22,7 +22,7 @@ void KMMainWindow::actTabCloseRequested(int index)
 
 // 文件菜单相关的槽函数
 
-// 槽：点击新建文件时，创建一个新的tab
+// 槽：点击新建词条时，创建一个新的词条并加载到tab
 void KMMainWindow::actCreateEntry()
 {
 	// 设置一个dialog输入词条名称
@@ -41,6 +41,8 @@ void KMMainWindow::actCreateEntry()
 	layout->addLayout(layout1);
 	layout->addLayout(layout2);
 	dialog.setLayout(layout);
+
+	dialog.setWindowTitle("新建词条");
 
 	connect(&ok_btn, &QPushButton::clicked, &dialog, &QDialog::accept);
 	connect(&cancel_btn, &QPushButton::clicked, &dialog, &QDialog::reject);
@@ -429,5 +431,6 @@ void KMMainWindow::actRecentKnowledgeLibrary()
 		QMessageBox::warning(this, "错误", "打开最近打开的知识库列表失败！");
 		return;
 	}
+	recent_kl_window->setWindowFlags(Qt::Window);
 	recent_kl_window->show();
 }

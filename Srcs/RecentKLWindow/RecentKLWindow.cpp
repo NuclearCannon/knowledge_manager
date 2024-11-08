@@ -25,6 +25,8 @@ RecentKLWindow::RecentKLWindow(QWidget* parent)
 {
 	ui.setupUi(this);  // listWidget的样式表在ui文件中设置了
 
+	setWindowTitle("最近打开的知识库");
+
 	ui.hint_label->setText("最近打开的知识库：");
 	ui.search_lineEdit->setStyleSheet("border: 0px;");
 
@@ -86,6 +88,8 @@ bool RecentKLWindow::refreshListWidget()
 
 	// 关闭文件
 	recent_kl_list.close();
+
+	return true;
 }
 
 // 槽：点击listWidget中的item，就进入到这个item对应的知识库，这里是新建一个main_window

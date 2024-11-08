@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>484</width>
-    <height>428</height>
+    <width>580</width>
+    <height>366</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>km启动窗口</string>
+   <string/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="2" column="0">
@@ -42,8 +42,8 @@ QListWidget::item {
    margin: 1px;  /* 设置项目的外边距为1像素 */
 }
 QListWidget::item:selected {
-   background-color: #a0c4ff;  /* 设置选中项目的背景颜色为浅蓝色 */
-   color: white;  /* 设置选中项目的字体颜色为白色 */
+   background-color: rgb(235, 235, 235); 
+   color: white;
 }</string>
      </property>
     </widget>

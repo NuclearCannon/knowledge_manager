@@ -767,7 +767,7 @@ void KMMainWindow::refreshSynopsis()
 		QListWidgetItem* item = new QListWidgetItem(synopsis_list);
 
 		QString text;
-		for (int i = 1; i < it.level; ++i) text += "  ";
+		for (int i = 1; i < it.level; ++i) text += "    ";
 		text += it.text;
 
 		item->setText(text);
