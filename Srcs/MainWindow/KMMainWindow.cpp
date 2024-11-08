@@ -236,6 +236,18 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 	connect(ui.act_add_code_block, &QAction::triggered, this, &KMMainWindow::actAddCodeBlock);  // 添加一个代码块
 	connect(ui.act_add_image_block, &QAction::triggered, this, &KMMainWindow::actAddImageBlock);  // 添加一个图片块
 	connect(ui.act_add_header_block, &QAction::triggered, this, &KMMainWindow::actAddHeaderBlock);  // 添加一个标题块
+	// 样式菜单
+	connect(ui.act_set_type_code, &QAction::triggered, this, &KMMainWindow::actSetTypeCode);
+	connect(ui.act_set_type_link, &QAction::triggered, this, &KMMainWindow::actSetTypeLink);
+	connect(ui.act_set_type_normal, &QAction::triggered, this, &KMMainWindow::actSetTypeNormal);
+	connect(ui.act_bold, &QAction::triggered, this, &KMMainWindow::actBold);
+	connect(ui.act_italic, &QAction::triggered, this, &KMMainWindow::actItalic);
+	connect(ui.act_strike, &QAction::triggered, this, &KMMainWindow::actStrike);
+	connect(ui.act_underline, &QAction::triggered, this, &KMMainWindow::actUnderline);
+	connect(ui.act_remove_bold, &QAction::triggered, this, &KMMainWindow::actRemoveBold);
+	connect(ui.act_remove_italic, &QAction::triggered, this, &KMMainWindow::actRemoveItalic);
+	connect(ui.act_remove_strike, &QAction::triggered, this, &KMMainWindow::actRemoveStrike);
+	connect(ui.act_remove_underline, &QAction::triggered, this, &KMMainWindow::actRemoveUnderline);
 
 	// 标签部分
 	connect(ui.act_search_label, &QAction::triggered, this, &KMMainWindow::actSearchLabel);  // 搜索标签

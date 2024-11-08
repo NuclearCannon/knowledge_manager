@@ -70,6 +70,10 @@ private slots:
 	void actItalic();
 	void actStrike();
 	void actUnderline();
+	void actRemoveBold();
+	void actRemoveItalic();
+	void actRemoveStrike();
+	void actRemoveUnderline();
 	void actSetTypeCode();
 	void actSetTypeLink();
 	void actSetTypeNormal();
