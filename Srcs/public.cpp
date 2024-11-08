@@ -18,6 +18,8 @@ QString default_path_for_temp_kls;  // 默认的临时知识库的存放位置
 int recent_kl_list_limit = 10;  // 最近打开的知识库列表的最大长度
 int recent_entry_list_limit = 10;  // 最近打开的词条列表最大长度
 
+// 注意：存入文件的路径是绝对路径，且一定是带.km的路径
+
 // 将打开的库文件名称加到最近打开的库文件列表中，作为列表第一项（就是放在txt文件开头）
 Status addKLToRecentKLList(const QString kl_name, const QString kl_path)
 {

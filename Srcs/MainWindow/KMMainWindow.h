@@ -55,18 +55,33 @@ public:
 
 private slots:
 	// 文件菜单相关的槽函数
-	void actCreateEntry();  // 点击新建文件时，创建一个新的tab
+	void actCreateEntry();  // 点击新建词条时，创建一个新的词条并加载到tab
 	void acttabCloseRequested(int index);  // 点击tab关闭按钮时，关闭特定的tab
-	void actDeleteEntry();  // 点击删除文件时，询问并删除当前词条，同时删除对应的tab
-	void actSaveKL();  // 点击保存库时，保存当前库
-	void actOpenStartWindow();  // 点击打开启动窗口
+	void actDeleteEntry();  // 点击删除词条时，询问并删除当前词条，同时删除对应的tab
 	void actSetCurrentEntryAsAnchor();  // 设置当前词条为锚点
+	void actSaveKL();  // 点击保存库时，保存当前库
+	void actCreateNewKnowledgeLibrary();  // 点击新建知识库时，新建一个知识库
+	void actOpenKnowledgeLibrary();  // 点击打开知识库
+	void actRecentKnowledgeLibrary();  // 点击最近打开的知识库时，弹出最近打开的知识库列表
 
 	// 编辑菜单相关的槽函数
 	void actAddTextBlock();  // 点击添加文本块时，添加一个文本块
 	void actAddCodeBlock();  // 添加一个代码块
 	void actAddImageBlock();  // 添加一个图片块
 	void actAddHeaderBlock();  // 添加一个标题块
+
+	// 样式部分槽函数
+	void actBold();
+	void actItalic();
+	void actStrike();
+	void actUnderline();
+	void actRemoveBold();
+	void actRemoveItalic();
+	void actRemoveStrike();
+	void actRemoveUnderline();
+	void actSetTypeCode();
+	void actSetTypeLink();
+	void actSetTypeNormal();
 
 	// 标签部分槽函数
 	void actSearchLabel();  // 搜索标签
@@ -76,9 +91,6 @@ private slots:
 	// 搜索部分槽函数
 	void actSearchEntry();//搜索词条打开函数
 	void actSearchkl();//搜索库打开函数
-	//void actSearchMultikl();//多库搜素打开函数
-	//void actopenmergekl();  // 合库
-	//void actopenseparatekl();  // 分库
 
 	// 锚点、关联标签、标签、大纲 槽函数
 	void relatedEntriedButtonClicked();  // 关联词条
@@ -111,7 +123,7 @@ protected:
 private:
 	explicit KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path);
 
-	// 构造KMMainWindow的辅助函数，用于加载库
+	// 构造KMMainWindow的辅助函数，用于加载库：解压original_kl_path到temp_kl_path，加载meta_data
 	bool initialize();
 
 	// 添加一个tab，返回是否添加成功，不要直接调用ui.tab_widget->addTab

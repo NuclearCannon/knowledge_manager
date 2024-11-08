@@ -108,16 +108,16 @@
     <ClCompile Include="Srcs\main.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindow.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindowEditMenu.cpp" />
+    <ClCompile Include="Srcs\MainWindow\KMMainWindowFormatMenu.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindow_file_memu.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindow_tag_menu.cpp" />
-    <ClCompile Include="Srcs\MainWindow\kmui_mergeseparatekl_memu.cpp" />
     <ClCompile Include="Srcs\MainWindow\kmui_search_memu.cpp" />
     <ClCompile Include="Srcs\MainWindow\MetaData.cpp" />
+    <ClCompile Include="Srcs\NewKLGuidance\new_kl_guidance.cpp" />
     <ClCompile Include="Srcs\public.cpp" />
+    <ClCompile Include="Srcs\RecentKLWindow\RecentKLWindow.cpp" />
     <ClCompile Include="Srcs\Search\search_entry_widget.cpp" />
     <ClCompile Include="Srcs\Search\search_kl_widget.cpp" />
-    <ClCompile Include="Srcs\StartWindow\new_kl_guidance.cpp" />
-    <ClCompile Include="Srcs\StartWindow\startwindow.cpp" />
     <ClCompile Include="Srcs\TagManager\tag_edit_dialog.cpp" />
     <ClCompile Include="Srcs\TagManager\tag_manager.cpp" />
   </ItemGroup>
@@ -126,11 +126,11 @@
     <ClInclude Include="Srcs\Compress\miniz.h" />
     <ClInclude Include="Srcs\EntryWidget\BlockWidget\BlockWidgets.h" />
     <ClInclude Include="Srcs\MainWindow\MetaData.h" />
+    <QtMoc Include="Srcs\NewKLGuidance\new_kl_guidance.h" />
     <ClInclude Include="Srcs\public.h" />
+    <QtMoc Include="Srcs\RecentKLWindow\RecentKLWindow.h" />
     <QtMoc Include="Srcs\TagManager\tag_manager.h" />
     <QtMoc Include="Srcs\TagManager\tag_edit_dialog.h" />
-    <QtMoc Include="Srcs\StartWindow\startwindow.h" />
-    <QtMoc Include="Srcs\StartWindow\new_kl_guidance.h" />
     <QtMoc Include="Srcs\Search\search_kl_widget.h" />
     <QtMoc Include="Srcs\Search\search_entry_widget.h" />
     <QtMoc Include="Srcs\MainWindow\KMMainWindow.h" />
@@ -146,10 +146,10 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Srcs\MainWindow\KMMainWindow.ui" />
+    <QtUic Include="Srcs\NewKLGuidance\newklguidance.ui" />
+    <QtUic Include="Srcs\RecentKLWindow\RecentKLWindow.ui" />
     <QtUic Include="Srcs\Search\search_entry_widget.ui" />
     <QtUic Include="Srcs\Search\search_kl_widget.ui" />
-    <QtUic Include="Srcs\StartWindow\newklguidance.ui" />
-    <QtUic Include="Srcs\StartWindow\startwindow.ui" />
     <QtUic Include="Srcs\TagManager\tag_edit_dialog.ui" />
     <QtUic Include="Srcs\TagManager\tag_manager.ui" />
   </ItemGroup>

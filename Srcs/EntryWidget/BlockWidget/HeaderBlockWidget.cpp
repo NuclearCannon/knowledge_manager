@@ -13,12 +13,9 @@ HeaderBlockWidget::HeaderBlockWidget(QWidget* parent) :
 {
     layout = new QVBoxLayout(this);
     line = new QLineEdit(this);
-
-
     line->setMinimumHeight(32);
     line->setFont(h1Font);
-    FocusEventFilter fff(this);
-    line->installEventFilter(&fff);
+    line->installEventFilter(filter);
     layout->addWidget(line);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     connect(line, &QLineEdit::textChanged, this, &HeaderBlockWidget::emitContentChange);

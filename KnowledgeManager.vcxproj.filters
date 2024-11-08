@@ -30,11 +30,14 @@
     <Filter Include="Srcs\Search">
       <UniqueIdentifier>{6e561301-e008-4299-a757-7901e8881520}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Srcs\StartWindow">
-      <UniqueIdentifier>{f4eccac2-25ce-4c7d-aeb1-540de191ac92}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Srcs\TagManager">
       <UniqueIdentifier>{ffb8ab8d-819b-45b7-a06c-8cf831ee4d63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\RecentKLWindow">
+      <UniqueIdentifier>{b3812ca5-140b-4206-9a69-1991f219ec7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\NewKLGuidance">
+      <UniqueIdentifier>{2a04d5ab-d5e6-4890-b32b-f35a397a094b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -85,9 +88,6 @@
     <ClCompile Include="Srcs\MainWindow\KMMainWindowEditMenu.cpp">
       <Filter>Srcs\MainWindow</Filter>
     </ClCompile>
-    <ClCompile Include="Srcs\MainWindow\kmui_mergeseparatekl_memu.cpp">
-      <Filter>Srcs\MainWindow</Filter>
-    </ClCompile>
     <ClCompile Include="Srcs\MainWindow\kmui_search_memu.cpp">
       <Filter>Srcs\MainWindow</Filter>
     </ClCompile>
@@ -100,12 +100,6 @@
     <ClCompile Include="Srcs\Search\search_kl_widget.cpp">
       <Filter>Srcs\Search</Filter>
     </ClCompile>
-    <ClCompile Include="Srcs\StartWindow\new_kl_guidance.cpp">
-      <Filter>Srcs\StartWindow</Filter>
-    </ClCompile>
-    <ClCompile Include="Srcs\StartWindow\startwindow.cpp">
-      <Filter>Srcs\StartWindow</Filter>
-    </ClCompile>
     <ClCompile Include="Srcs\TagManager\tag_edit_dialog.cpp">
       <Filter>Srcs\TagManager</Filter>
     </ClCompile>
@@ -117,6 +111,15 @@
     </ClCompile>
     <ClCompile Include="Srcs\public.cpp">
       <Filter>Srcs</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\MainWindow\KMMainWindowFormatMenu.cpp">
+      <Filter>Srcs\MainWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\RecentKLWindow\RecentKLWindow.cpp">
+      <Filter>Srcs\RecentKLWindow</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\NewKLGuidance\new_kl_guidance.cpp">
+      <Filter>Srcs\NewKLGuidance</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -173,17 +176,17 @@
     <QtMoc Include="Srcs\Search\search_kl_widget.h">
       <Filter>Srcs\Search</Filter>
     </QtMoc>
-    <QtMoc Include="Srcs\StartWindow\new_kl_guidance.h">
-      <Filter>Srcs\StartWindow</Filter>
-    </QtMoc>
-    <QtMoc Include="Srcs\StartWindow\startwindow.h">
-      <Filter>Srcs\StartWindow</Filter>
-    </QtMoc>
     <QtMoc Include="Srcs\TagManager\tag_edit_dialog.h">
       <Filter>Srcs\TagManager</Filter>
     </QtMoc>
     <QtMoc Include="Srcs\TagManager\tag_manager.h">
       <Filter>Srcs\TagManager</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\RecentKLWindow\RecentKLWindow.h">
+      <Filter>Srcs\RecentKLWindow</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\NewKLGuidance\new_kl_guidance.h">
+      <Filter>Srcs\NewKLGuidance</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -196,17 +199,17 @@
     <QtUic Include="Srcs\Search\search_kl_widget.ui">
       <Filter>Srcs\Search</Filter>
     </QtUic>
-    <QtUic Include="Srcs\StartWindow\newklguidance.ui">
-      <Filter>Srcs\StartWindow</Filter>
-    </QtUic>
-    <QtUic Include="Srcs\StartWindow\startwindow.ui">
-      <Filter>Srcs\StartWindow</Filter>
-    </QtUic>
     <QtUic Include="Srcs\TagManager\tag_edit_dialog.ui">
       <Filter>Srcs\TagManager</Filter>
     </QtUic>
     <QtUic Include="Srcs\TagManager\tag_manager.ui">
       <Filter>Srcs\TagManager</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\RecentKLWindow\RecentKLWindow.ui">
+      <Filter>Srcs\RecentKLWindow</Filter>
+    </QtUic>
+    <QtUic Include="Srcs\NewKLGuidance\newklguidance.ui">
+      <Filter>Srcs\NewKLGuidance</Filter>
     </QtUic>
   </ItemGroup>
 </Project>

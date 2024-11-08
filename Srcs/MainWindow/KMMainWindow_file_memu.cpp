@@ -7,9 +7,9 @@
 
 #include "KMMainWindow.h"
 #include "../EntryWidget/EntryWidget.h"
-#include "../StartWindow/startwindow.h"
 #include "../Compress/compression.h"
-#include "../StartWindow/new_kl_guidance.h"
+#include "../NewKLGuidance/new_kl_guidance.h"
+#include "../RecentKLWindow/RecentKLWindow.h"
 #include "../public.h"
 
 // tab相关的槽函数
@@ -21,7 +21,8 @@ void KMMainWindow::acttabCloseRequested(int index)
 }
 
 // 文件菜单相关的槽函数
-// 点击新建文件时，创建一个新的tab
+
+// 槽：点击新建文件时，创建一个新的tab
 void KMMainWindow::actCreateEntry()
 {
 	// 设置一个dialog输入词条名称
@@ -104,7 +105,7 @@ void KMMainWindow::actCreateEntry()
 	//}
 }
 
-// 点击删除文件时，询问并删除当前词条，同时删除对应的tab
+// 槽：点击删除文件时，询问并删除当前词条，同时删除对应的tab
 void KMMainWindow::actDeleteEntry()
 {
 	if (ui.tab_widget->count() == 0)
@@ -148,7 +149,7 @@ void KMMainWindow::actDeleteEntry()
 	}
 }
 
-// 点击保存库时，保存当前库
+// 槽：点击保存库时，保存当前库
 void KMMainWindow::actSaveKL()
 {
 	// 如果是临时库，则询问是否保存
@@ -211,7 +212,6 @@ void KMMainWindow::actSaveKL()
 			// 修改kl_name, original_kl_path，temp_kl_path
 			QString old_kl_name = kl_name;
 			kl_name = new_kl_guidance.getKLName();
-			setWindowTitle("km - " + kl_name);
 
 			original_kl_path = new_kl_guidance.getKLPath();
 
@@ -257,16 +257,7 @@ void KMMainWindow::actSaveKL()
 	}
 	
 	is_saved = true;
-	setWindowTitle("km-" + kl_name);
-}
-
-// 槽：点击打开启动窗口
-void KMMainWindow::actOpenStartWindow()
-{
-	StartWindow* start_window = new StartWindow();
-	start_window->setWindowFlags(Qt::Window);  // 独立窗口
-	start_window->refreshListWidget();  // 刷新listWidget
-	start_window->show();
+	setWindowTitle("km - " + kl_name);
 }
 
 // 槽：设置当前词条为锚点
@@ -304,4 +295,117 @@ void KMMainWindow::actSetCurrentEntryAsAnchor()
 
 }
 
+// 槽：点击新建知识库时，新建一个知识库
+void KMMainWindow::actCreateNewKnowledgeLibrary()
+{
+	NewKLGuidance new_kl_guidance(this);
+	new_kl_guidance.setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
+	new_kl_guidance.exec();
+}
 
+// 槽：点击打开知识库时，打开一个知识库
+void KMMainWindow::actOpenKnowledgeLibrary()
+{
+	// 打开一个文件选择对话框，选择一个.km文件
+	QString open_kl_path = QFileDialog::getOpenFileName(this, "打开知识库", "", "知识库文件(*.km)");
+	if (open_kl_path.isEmpty())
+	{
+		return;
+	}
+
+	// 解析出kl_name，并去掉".km"
+	QString open_kl_name = open_kl_path.split('/').last();
+	open_kl_name = open_kl_name.left(kl_name.lastIndexOf('.'));
+
+	// 如果当前库是临时库，且没有作任何修改，则直接在当前窗口打开新的知识库
+	if (is_temp_kl && !is_saved)
+	{
+		// 先从current_kl_list中修改为新的kl_name和kl_path
+		Status status = modifyKLInCurrentKLList(kl_name, original_kl_path, open_kl_name, open_kl_path);
+		if (status == Status::Error)
+		{
+			QMessageBox::warning(this, "错误", "修改current_kl_list失败！");
+			return;
+		}
+		else if (status == Status::Failure)
+		{
+			QMessageBox::warning(this, "错误", "修改current_kl_list失败！未找到原知识库！");
+			return;
+		}
+
+		// 写入recent_kl_list
+		status = addKLToRecentKLList(open_kl_name, open_kl_path);
+		if (status == Status::Error)
+		{
+			// 回滚current_kl_list
+			status = modifyKLInCurrentKLList(open_kl_name, open_kl_path, kl_name, original_kl_path);
+			if (status == Status::Error)
+			{
+				QMessageBox::warning(this, "错误", "修改current_kl_list失败！");
+				return;
+			}
+			else if (status == Status::Failure)
+			{
+				QMessageBox::warning(this, "错误", "修改current_kl_list失败！未找到原知识库！");
+				return;
+			}
+			QMessageBox::warning(this, "错误", "无法打开或操作文件：" + open_kl_path);
+			return;
+		}
+
+		// 修改kl_name, original_kl_path，temp_kl_path
+		kl_name = open_kl_name;
+		original_kl_path = open_kl_path;
+		temp_kl_path = open_kl_path.left(open_kl_path.lastIndexOf('/')) + "/" + kl_name;
+
+		// 初始化，加载元数据
+		if (!initialize())
+		{
+			// 回滚recent_kl_list
+			status = removeKLFromRecentKLList(open_kl_name, open_kl_path);
+			if (status == Status::Error) QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + open_kl_path);
+			removeKLFromCurrentKLList(open_kl_name, open_kl_path);
+			// 回滚current_kl_list
+			status = modifyKLInCurrentKLList(open_kl_name, open_kl_path, kl_name, original_kl_path);
+			if (status == Status::Error)
+			{
+				QMessageBox::warning(this, "错误", "修改current_kl_list失败！");
+				return;
+			}
+			else if (status == Status::Failure)
+			{
+				QMessageBox::warning(this, "错误", "修改current_kl_list失败！未找到原知识库！");
+				return;
+			}
+
+			QMessageBox::warning(this, "错误", "无法打开库文件：" + open_kl_path);
+			return;
+		}
+
+		anchorButtonClicked();
+
+		setWindowTitle("km - " + kl_name);
+	}
+	else  // 否则，打开一个新的窗口
+	{
+		KMMainWindow* main_window = KMMainWindow::construct(open_kl_name, open_kl_path);
+		if (main_window == nullptr)
+		{
+			QMessageBox::warning(this, "错误", "打开知识库失败！");
+			return;
+		}
+		main_window->show();
+	}
+}
+
+// 槽：点击最近打开的知识库时，弹出最近打开的知识库列表
+void KMMainWindow::actRecentKnowledgeLibrary()
+{
+	RecentKLWindow* recent_kl_window = RecentKLWindow::construct(this);
+	if (recent_kl_window == nullptr)
+	{
+		QMessageBox::warning(this, "错误", "打开最近打开的知识库列表失败！");
+		return;
+	}
+	recent_kl_window->show();
+}

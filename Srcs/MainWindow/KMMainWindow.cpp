@@ -96,8 +96,44 @@ KMMainWindow* KMMainWindow::construct()
 		int kl_num = kl_name.mid(7, kl_name.size() - 10).toInt() + 1;
 		kl_name = "未命名的知识库" + QString::number(kl_num);
 	}
+	
+	// 构建meta_data.xml
+	QString kl_path = default_path_for_temp_kls + "/" + kl_name;
+	QDir kl_dir(kl_path);
+	if (kl_dir.exists())
+	{
+		if (!kl_dir.removeRecursively())
+		{
+			QMessageBox::warning(nullptr, "错误", "无法删除临时知识库：" + kl_path);
+			return nullptr;
+		}
+	}
 
-	QString kl_path = default_path_for_temp_kls + "/" + kl_name + ".km";  // 这里加上".km"是为了统一写到文件中
+	if (!kl_dir.mkpath(kl_path))
+	{
+		QMessageBox::warning(nullptr, "错误", "无法创建临时知识库：" + kl_path);
+		return nullptr;
+	}
+
+	QFile meta_data_file(kl_path + "/meta_data.xml");
+	if (!meta_data_file.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		QMessageBox::warning(nullptr, "错误", "无法打开文件用于写入：" + meta_data_file.errorString());
+		return nullptr;
+	}
+
+	MetaData meta_data;
+	try
+	{
+		meta_data.dump(meta_data_file);
+	}
+	catch (...)
+	{
+		QMessageBox::warning(nullptr, "错误", "创建知识库元数据失败！");
+		return nullptr;
+	}
+
+	kl_path += ".km";  // 这里加上".km"是为了统一写到文件中
 
 	// 添加到 当前打开 的知识库列表
 	Status status = addKLToCurrentKLList(kl_name, kl_path);
@@ -130,14 +166,17 @@ KMMainWindow* KMMainWindow::construct()
 bool KMMainWindow::initialize()
 {
 	// 从original_kl_path中解压库文件到temp_kl_path
-	QDir original_kl_dir(original_kl_path);
-	QDir temp_kl_dir(temp_kl_path);
+	//QDir original_kl_dir(original_kl_path);
+	//QDir temp_kl_dir(temp_kl_path);
 
-	// 解压
-	if (!decompress_zip(original_kl_path.toStdString(), temp_kl_path.toStdString()))
+	if (!is_temp_kl)
 	{
-		QMessageBox::warning(this, "错误", "解压知识库失败：" + original_kl_path);
-		return false;
+		// 解压
+		if (!decompress_zip(original_kl_path.toStdString(), temp_kl_path.toStdString()))
+		{
+			QMessageBox::warning(this, "错误", "解压知识库失败：" + original_kl_path);
+			return false;
+		}
 	}
 
 	QFile meta_data_file(temp_kl_path + "/meta_data.xml");
@@ -278,15 +317,30 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path)
 	// 文件菜单
 	connect(ui.act_create_entry, &QAction::triggered, this, &KMMainWindow::actCreateEntry);  // 点击新建文件时，创建一个新的tab
 	connect(ui.act_delete_entry, &QAction::triggered, this, &KMMainWindow::actDeleteEntry);  // 点击删除文件时，询问并删除当前词条，同时删除对应的tab
-	connect(ui.act_save_kl, &QAction::triggered, this, &KMMainWindow::actSaveKL);  // 点击保存库时，保存当前库
-	connect(ui.act_open_start_window, &QAction::triggered, this, &KMMainWindow::actOpenStartWindow);  // 点击打开启动窗口
 	connect(ui.act_set_current_entry_as_anchor, &QAction::triggered, this, &KMMainWindow::actSetCurrentEntryAsAnchor);  // 设置当前词条为锚点
+	connect(ui.act_save_kl, &QAction::triggered, this, &KMMainWindow::actSaveKL);  // 点击保存库时，保存当前库
+	connect(ui.act_create_new_knowledge_library, &QAction::triggered, this, &KMMainWindow::actCreateNewKnowledgeLibrary);  // 点击新建知识库时，新建一个知识库
+	connect(ui.act_open_knowledge_library, &QAction::triggered, this, &KMMainWindow::actOpenKnowledgeLibrary);  // 点击打开知识库时，打开一个知识库
+	connect(ui.act_recent_knowledge_library, &QAction::triggered, this, &KMMainWindow::actRecentKnowledgeLibrary);  // 点击最近打开的知识库时，弹出最近打开的知识库列表
+	
 
 	// 编辑菜单
 	connect(ui.act_add_text_block, &QAction::triggered, this, &KMMainWindow::actAddTextBlock);  // 添加一个文本块
 	connect(ui.act_add_code_block, &QAction::triggered, this, &KMMainWindow::actAddCodeBlock);  // 添加一个代码块
 	connect(ui.act_add_image_block, &QAction::triggered, this, &KMMainWindow::actAddImageBlock);  // 添加一个图片块
 	connect(ui.act_add_header_block, &QAction::triggered, this, &KMMainWindow::actAddHeaderBlock);  // 添加一个标题块
+	// 样式菜单
+	connect(ui.act_set_type_code, &QAction::triggered, this, &KMMainWindow::actSetTypeCode);
+	connect(ui.act_set_type_link, &QAction::triggered, this, &KMMainWindow::actSetTypeLink);
+	connect(ui.act_set_type_normal, &QAction::triggered, this, &KMMainWindow::actSetTypeNormal);
+	connect(ui.act_bold, &QAction::triggered, this, &KMMainWindow::actBold);
+	connect(ui.act_italic, &QAction::triggered, this, &KMMainWindow::actItalic);
+	connect(ui.act_strike, &QAction::triggered, this, &KMMainWindow::actStrike);
+	connect(ui.act_underline, &QAction::triggered, this, &KMMainWindow::actUnderline);
+	connect(ui.act_remove_bold, &QAction::triggered, this, &KMMainWindow::actRemoveBold);
+	connect(ui.act_remove_italic, &QAction::triggered, this, &KMMainWindow::actRemoveItalic);
+	connect(ui.act_remove_strike, &QAction::triggered, this, &KMMainWindow::actRemoveStrike);
+	connect(ui.act_remove_underline, &QAction::triggered, this, &KMMainWindow::actRemoveUnderline);
 
 	// 标签部分
 	connect(ui.act_search_label, &QAction::triggered, this, &KMMainWindow::actSearchLabel);  // 搜索标签

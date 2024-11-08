@@ -4,7 +4,6 @@
 #include <QMessageBox>
 
 #include "MainWindow/KMMainWindow.h"
-#include "StartWindow/StartWindow.h"
 #include "public.h"
 
 /*
@@ -20,8 +19,6 @@ bool initGlobalVariables();  // 初始化全局变量
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    //KMMainWindow w;
-    //w.show();
 
 	// 全局变量初始化，对数据文件夹检查
 	if (!initGlobalVariables())
@@ -29,10 +26,14 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	StartWindow sw;
-	// 初始化listWidget
-	sw.refreshListWidget();
-	sw.show();
+	KMMainWindow* km_main_window = KMMainWindow::construct();
+	if (km_main_window == nullptr)
+	{
+		return -1;
+	}
+	
+	km_main_window->show();
+
     return a.exec();
 }
 

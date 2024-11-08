@@ -4,6 +4,8 @@
 #include <QFocusEvent>
 
 class EntryArea;  // 对BlockArea进行声明，方便定义友元
+class FocusEventFilter;
+
 
 enum class BlockType  // 块的四种类型
 {
@@ -21,6 +23,7 @@ private:
 	void setNext(BlockWidget* p);
 protected:
 	BlockWidget* last, * next;
+	FocusEventFilter* filter;
 public:
 	BlockWidget(QWidget* parent);
 	virtual ~BlockWidget();
@@ -53,6 +56,6 @@ private:
 	BlockWidget* const target;
 	static BlockWidget* focus;
 protected:
-	bool eventFilter(QObject* watched, QFocusEvent* event);
+	bool eventFilter(QObject* watched, QEvent* event);
 };
 
