@@ -21,14 +21,7 @@ KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path)
 		QMessageBox::warning(nullptr, "错误", "知识库不存在：" + kl_path);
 		return nullptr;
 	}
-	if (_temp_kl_dir.exists())  // 如果temp_kl_path已经存在，删除
-	{
-		if (!_temp_kl_dir.removeRecursively())
-		{
-			QMessageBox::warning(nullptr, "错误", "无法删除临时知识库：" + _temp_kl_path);
-			return nullptr;
-		}
-	}
+
 	if (!kl_path.endsWith(kl_name + ".km"))  // kl_path要以kl_name + ".zip"结尾
 	//if (!kl_path.endsWith(kl_name))  // kl_path要以kl_name + ".zip"结尾
 	{
@@ -36,20 +29,12 @@ KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path)
 		return nullptr;
 	}
 
-
-	// 添加到 最近打开 的知识库列表
-	Status status = addKLToRecentKLList(kl_name, kl_path);
+	// 添加到 当前打开 的知识库列表
+	Status status = addKLToCurrentKLList(kl_name, kl_path);
 	if (status == Status::Error)
 	{
 		QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + kl_path);
 		return nullptr;
-	}
-	// 添加到 当前打开 的知识库列表
-	status = addKLToCurrentKLList(kl_name, kl_path);
-	if (status == Status::Error)
-	{
-		QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + kl_path);
-		return nullptr; 
 	}
 	else if (status == Status::Failure)
 	{
@@ -57,13 +42,32 @@ KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path)
 		return nullptr;
 	}
 
+	// 添加到 最近打开 的知识库列表
+	status = addKLToRecentKLList(kl_name, kl_path);
+	if (status == Status::Error)
+	{
+		removeKLFromCurrentKLList(kl_name, kl_path);  // 回滚current_kl_list
+		QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + kl_path);
+		return nullptr;
+	}
+
+	if (_temp_kl_dir.exists())  // 如果temp_kl_path已经存在，删除
+	{
+		if (!_temp_kl_dir.removeRecursively())
+		{
+			removeKLFromCurrentKLList(kl_name, kl_path);  // 回滚current_kl_list
+			removeKLFromRecentKLList(kl_name, kl_path);  // 回滚recent_kl_list
+			QMessageBox::warning(nullptr, "错误", "无法删除临时知识库：" + _temp_kl_path);
+			return nullptr;
+		}
+	}
+
 	KMMainWindow* km = new KMMainWindow(false, kl_name, kl_path);
 	
 	if (!km->initialize())
 	{
 		// 失败了要回滚
-		status = removeKLFromRecentKLList(kl_name, kl_path);
-		if (status == Status::Error) QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + kl_path);
+		removeKLFromRecentKLList(kl_name, kl_path);
 		removeKLFromCurrentKLList(kl_name, kl_path);
 
 		delete km;
@@ -311,7 +315,7 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path)
 	connect(out_entries_list, &QListWidget::customContextMenuRequested, this, &KMMainWindow::relatedEntryItemRightClicked);
 
 	// tabwidget相关
-	connect(ui.tab_widget, &QTabWidget::tabCloseRequested, this, &KMMainWindow::acttabCloseRequested);  // 点击tab关闭按钮时，关闭特定的tab
+	connect(ui.tab_widget, &QTabWidget::tabCloseRequested, this, &KMMainWindow::actTabCloseRequested);  // 点击tab关闭按钮时，关闭特定的tab
 	connect(ui.tab_widget, &QTabWidget::currentChanged, this, &KMMainWindow::tabWidgetChanged);  // tab改变时，更新左边的锚点、关联、标签、大纲
 
 	// 文件菜单
@@ -367,7 +371,7 @@ void KMMainWindow::handleKLChanged()
 {
 	if (is_saved) {
 		// 设置窗口的标题
-		this->setWindowTitle("km-" + kl_name + " *");
+		this->setWindowTitle("km - " + kl_name + " *");
 		is_saved = false;
 	}
 }

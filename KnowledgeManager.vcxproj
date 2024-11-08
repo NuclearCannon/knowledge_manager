@@ -109,8 +109,8 @@
     <ClCompile Include="Srcs\MainWindow\KMMainWindow.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindowEditMenu.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindowFormatMenu.cpp" />
-    <ClCompile Include="Srcs\MainWindow\KMMainWindow_file_memu.cpp" />
-    <ClCompile Include="Srcs\MainWindow\KMMainWindow_tag_menu.cpp" />
+    <ClCompile Include="Srcs\MainWindow\KMMainWindowFileMenu.cpp" />
+    <ClCompile Include="Srcs\MainWindow\KMMainWindowTagMenu.cpp" />
     <ClCompile Include="Srcs\MainWindow\kmui_search_memu.cpp" />
     <ClCompile Include="Srcs\MainWindow\MetaData.cpp" />
     <ClCompile Include="Srcs\NewKLGuidance\new_kl_guidance.cpp" />

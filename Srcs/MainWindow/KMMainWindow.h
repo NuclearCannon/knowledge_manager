@@ -56,7 +56,7 @@ public:
 private slots:
 	// 文件菜单相关的槽函数
 	void actCreateEntry();  // 点击新建词条时，创建一个新的词条并加载到tab
-	void acttabCloseRequested(int index);  // 点击tab关闭按钮时，关闭特定的tab
+	void actTabCloseRequested(int index);  // 点击tab关闭按钮时，关闭特定的tab
 	void actDeleteEntry();  // 点击删除词条时，询问并删除当前词条，同时删除对应的tab
 	void actSetCurrentEntryAsAnchor();  // 设置当前词条为锚点
 	void actSaveKL();  // 点击保存库时，保存当前库

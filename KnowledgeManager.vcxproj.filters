@@ -79,10 +79,10 @@
     <ClCompile Include="Srcs\MainWindow\KMMainWindow.cpp">
       <Filter>Srcs\MainWindow</Filter>
     </ClCompile>
-    <ClCompile Include="Srcs\MainWindow\KMMainWindow_file_memu.cpp">
+    <ClCompile Include="Srcs\MainWindow\KMMainWindowFileMenu.cpp">
       <Filter>Srcs\MainWindow</Filter>
     </ClCompile>
-    <ClCompile Include="Srcs\MainWindow\KMMainWindow_tag_menu.cpp">
+    <ClCompile Include="Srcs\MainWindow\KMMainWindowTagMenu.cpp">
       <Filter>Srcs\MainWindow</Filter>
     </ClCompile>
     <ClCompile Include="Srcs\MainWindow\KMMainWindowEditMenu.cpp">
