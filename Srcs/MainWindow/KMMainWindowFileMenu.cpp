@@ -231,7 +231,7 @@ void KMMainWindow::actSaveKL()
 			}
 
 			// 修改current_kl_list
-			Status status = modifyKLInCurrentKLList(old_kl_name, old_temp_kl_path, kl_name, original_kl_path);
+			Status status = modifyKLInCurrentKLList(old_kl_name, old_temp_kl_path + ".km", kl_name, original_kl_path);
 			if (status == Status::Error)
 			{
 				QMessageBox::warning(this, "错误", "修改current_kl_list失败！");

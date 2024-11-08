@@ -282,15 +282,7 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <property name="title">
      <string>标签</string>
     </property>
-    <widget class="QMenu" name="menu_7">
-     <property name="title">
-      <string>添加标签</string>
-     </property>
-     <addaction name="act_search_label"/>
-     <addaction name="act_recent_label"/>
-    </widget>
-    <addaction name="menu_7"/>
-    <addaction name="act_manage_label"/>
+    <addaction name="act_manage_tag"/>
    </widget>
    <widget class="QMenu" name="menu_search">
     <property name="title">
@@ -538,7 +530,7 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <string>打开启动窗口</string>
    </property>
   </action>
-  <action name="act_manage_label">
+  <action name="act_manage_tag">
    <property name="text">
     <string>管理标签</string>
    </property>

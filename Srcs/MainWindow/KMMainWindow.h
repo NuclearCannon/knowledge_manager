@@ -84,8 +84,6 @@ private slots:
 	void actSetTypeNormal();
 
 	// 标签部分槽函数
-	void actSearchLabel();  // 搜索标签
-	void actRecentLabel();  // 最近使用的标签
 	void actManageLabel();  // 管理标签
 
 	// 搜索部分槽函数

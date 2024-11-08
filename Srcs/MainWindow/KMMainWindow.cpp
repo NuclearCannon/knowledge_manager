@@ -206,6 +206,11 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path)
 {
 	temp_kl_path = default_path_for_temp_kls + "/" + kl_name;
 
+	if (is_temp_kl)
+	{
+		original_kl_path = "";  // 临时知识库没有原始路径，置为空以禁止使用
+	}
+
 	ui.setupUi(this);
 
 	// 设置窗口的大小
@@ -347,9 +352,7 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path)
 	connect(ui.act_remove_underline, &QAction::triggered, this, &KMMainWindow::actRemoveUnderline);
 
 	// 标签部分
-	connect(ui.act_search_label, &QAction::triggered, this, &KMMainWindow::actSearchLabel);  // 搜索标签
-	connect(ui.act_recent_label, &QAction::triggered, this, &KMMainWindow::actRecentLabel);  // 最近使用的标签
-	connect(ui.act_manage_label, &QAction::triggered, this, &KMMainWindow::actManageLabel);  // 管理标签
+	connect(ui.act_manage_tag, &QAction::triggered, this, &KMMainWindow::actManageLabel);  // 管理标签
 
 
 	connect(ui.act_search_entry, &QAction::triggered, this, &KMMainWindow::actSearchEntry);//点击搜素词条时，打开搜索框
