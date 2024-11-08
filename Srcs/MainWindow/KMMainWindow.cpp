@@ -10,7 +10,7 @@
 #include "../EntryWidget/EntryWidget.h"
 #include "MetaData.h"
 
-KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path, QWidget* parent)
+KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path)
 {
 	// 文件检查
 	QString _temp_kl_path = default_path_for_temp_kls + "/" + kl_name;
@@ -18,21 +18,21 @@ KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path, QWidget*
 	QFile _original_kl_file(kl_path);
 	if (!_original_kl_file.exists())  // 如果kl_path不存在，提示
 	{
-		QMessageBox::warning(parent, "错误", "知识库不存在：" + kl_path);
+		QMessageBox::warning(nullptr, "错误", "知识库不存在：" + kl_path);
 		return nullptr;
 	}
 	if (_temp_kl_dir.exists())  // 如果temp_kl_path已经存在，删除
 	{
 		if (!_temp_kl_dir.removeRecursively())
 		{
-			QMessageBox::warning(parent, "错误", "无法删除临时知识库：" + _temp_kl_path);
+			QMessageBox::warning(nullptr, "错误", "无法删除临时知识库：" + _temp_kl_path);
 			return nullptr;
 		}
 	}
 	if (!kl_path.endsWith(kl_name + ".km"))  // kl_path要以kl_name + ".zip"结尾
 	//if (!kl_path.endsWith(kl_name))  // kl_path要以kl_name + ".zip"结尾
 	{
-		QMessageBox::warning(parent, "错误", "知识库路径错误：" + kl_path);
+		QMessageBox::warning(nullptr, "错误", "知识库路径错误：" + kl_path);
 		return nullptr;
 	}
 
@@ -41,29 +41,29 @@ KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path, QWidget*
 	Status status = addKLToRecentKLList(kl_name, kl_path);
 	if (status == Status::Error)
 	{
-		QMessageBox::warning(parent, "错误", "无法打开或操作文件：" + kl_path);
+		QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + kl_path);
 		return nullptr;
 	}
 	// 添加到 当前打开 的知识库列表
 	status = addKLToCurrentKLList(kl_name, kl_path);
 	if (status == Status::Error)
 	{
-		QMessageBox::warning(parent, "错误", "无法打开或操作文件：" + kl_path);
+		QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + kl_path);
 		return nullptr; 
 	}
 	else if (status == Status::Failure)
 	{
-		QMessageBox::warning(parent, "错误", "知识库已经打开\n知识库位置：" + kl_path);
+		QMessageBox::warning(nullptr, "错误", "知识库已经打开\n知识库位置：" + kl_path);
 		return nullptr;
 	}
 
-	KMMainWindow* km = new KMMainWindow(kl_name, kl_path);
+	KMMainWindow* km = new KMMainWindow(false, kl_name, kl_path);
 	
 	if (!km->initialize())
 	{
 		// 失败了要回滚
 		status = removeKLFromRecentKLList(kl_name, kl_path);
-		if (status == Status::Error) QMessageBox::warning(parent, "错误", "无法打开或操作文件：" + kl_path);
+		if (status == Status::Error) QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + kl_path);
 		removeKLFromCurrentKLList(kl_name, kl_path);
 
 		delete km;
@@ -72,6 +72,57 @@ KMMainWindow* KMMainWindow::construct(QString kl_name, QString kl_path, QWidget*
 
 	// 默认先显示锚点
 	km->anchorButtonClicked();  
+
+	return km;
+}
+
+KMMainWindow* KMMainWindow::construct()
+{
+	// 将要分配临时知识库的名称，约定临时知识库的名称都以“未命名的知识库”开头，后面跟递增的数字
+	QString kl_name = getLatestTempKLName();
+
+	if (kl_name == "")
+	{
+		kl_name = "未命名的知识库1";
+	}
+	else if (kl_name == "Error")
+	{
+		QMessageBox::warning(nullptr, "错误", "无法创建临时知识库");
+		return nullptr;
+	}
+	else
+	{
+		// 获取最后一个未命名的知识库的编号并加1（需要去掉最后的".km"）
+		int kl_num = kl_name.mid(7, kl_name.size() - 10).toInt() + 1;
+		kl_name = "未命名的知识库" + QString::number(kl_num);
+	}
+
+	QString kl_path = default_path_for_temp_kls + "/" + kl_name + ".km";  // 这里加上".km"是为了统一写到文件中
+
+	// 添加到 当前打开 的知识库列表
+	Status status = addKLToCurrentKLList(kl_name, kl_path);
+	if (status == Status::Error)
+	{
+		QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + kl_path);
+		return nullptr;
+	}
+	else if (status == Status::Failure)
+	{
+		QMessageBox::warning(nullptr, "错误", "知识库已经打开\n知识库位置：" + kl_path);
+		return nullptr;
+	}
+
+	KMMainWindow* km = new KMMainWindow(true, kl_name, kl_path);
+
+	if (!km->initialize())
+	{
+		removeKLFromCurrentKLList(kl_name, kl_path);
+		delete km;
+		return nullptr;
+	}
+
+	// 默认先显示锚点
+	km->anchorButtonClicked();
 
 	return km;
 }
@@ -107,8 +158,8 @@ bool KMMainWindow::initialize()
 	return true;
 }
 
-KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
-	: QMainWindow(nullptr), kl_name(_kl_name), original_kl_path(_kl_path), is_saved(true)
+KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path)
+	: QMainWindow(nullptr), kl_name(_kl_name), original_kl_path(_kl_path), is_saved(true), is_temp_kl(temp_kl)
 {
 	temp_kl_path = default_path_for_temp_kls + "/" + kl_name;
 
@@ -118,7 +169,7 @@ KMMainWindow::KMMainWindow(QString _kl_name, QString _kl_path)
 	this->resize(1200, 600);
 
 	// 设置窗口的标题
-	this->setWindowTitle("km-" + kl_name);
+	this->setWindowTitle("km - " + kl_name);
 
 	// 刚进入程序时，清空tab_widget
 	ui.tab_widget->clear();

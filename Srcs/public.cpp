@@ -190,4 +190,76 @@ Status removeKLFromCurrentKLList(const QString kl_name, const QString kl_path)
 	return Status::Success;
 }
 
+// 获取当前打开的库文件列表中最新的以"未命名的知识库"开头的知识库名称
+QString getLatestTempKLName()
+{
+	QString current_kl_list_path = data_path + '/' + "current_kl_list.txt";
+	QFile current_kl_list(current_kl_list_path);
+	if (!current_kl_list.open(QIODevice::ReadOnly))
+	{
+		if (!current_kl_list.open(QIODevice::WriteOnly))
+		{
+			return "Error";
+		}
+
+		return "";
+	}
+
+	QString latest_temp_kl_name = "";
+	QTextStream in(&current_kl_list);
+	while (!in.atEnd())
+	{
+		QString kl_name = in.readLine();
+		QString kl_path = in.readLine();
+		if (kl_name.startsWith("未命名的知识库"))
+		{
+			latest_temp_kl_name = kl_name;
+			break;  // 第一个以"未命名的知识库"开头的就是最新的
+		}
+	}
+	current_kl_list.close();
+	return latest_temp_kl_name;
+}
+
+// 根据旧的库名和路径，新的库名和路径，修改当前打开的库文件列表中的库名和路径，如果找不到旧的库名和路径，则返回Failure，如果修改失败，则返回Error
+Status modifyKLInCurrentKLList(const QString& old_kl_name, const QString& old_kl_path, const QString& new_kl_name, const QString& new_kl_path)
+{
+	QString current_kl_list_path = data_path + '/' + "current_kl_list.txt";
+	QFile current_kl_list(current_kl_list_path);
+	if (!current_kl_list.open(QIODevice::ReadOnly))
+	{
+		return Status::Error;
+	}
+
+	bool found = false;
+
+	QString existing_content = "";
+	QTextStream in(&current_kl_list);
+	while (!in.atEnd())
+	{
+		QString _kl_name = in.readLine();
+		QString _kl_path = in.readLine();
+		if (old_kl_name == _kl_name && old_kl_path == _kl_path)
+		{
+			existing_content += new_kl_name + '\n' + new_kl_path + '\n';
+			found = true;
+		}
+		else
+		{
+			existing_content += _kl_name + '\n' + _kl_path + '\n';
+		}
+	}
+	current_kl_list.close();
+
+	if (!found) return Status::Failure;
+
+	if (!current_kl_list.open(QIODevice::WriteOnly)) return Status::Error;
+
+	QTextStream out(&current_kl_list);
+	out << existing_content;
+
+	current_kl_list.close();
+	return Status::Success;
+}
+
 

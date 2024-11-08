@@ -10,13 +10,16 @@
 #include "../public.h"
 #include "../Compress/compression.h"
 
-NewKLGuidance::NewKLGuidance(QWidget *parent)
-    : QWidget(parent)
+NewKLGuidance::NewKLGuidance(QWidget* parent, bool _is_temp_kl, QString _temp_kl_path)
+    : QDialog(parent)
     , ui(new Ui::new_kl_guidance)
+	, is_temp_kl(_is_temp_kl)
+	, temp_kl_path(_temp_kl_path)
+	, new_kl_name("")
+	, new_kl_path("")
 {
     ui->setupUi(this);
 	
-
 	// 设置知识库路径为默认路径
 	ui->kl_path_lineEdit->setText(default_path_for_all_kls);
 
@@ -24,6 +27,8 @@ NewKLGuidance::NewKLGuidance(QWidget *parent)
 	connect(ui->create_button, &QPushButton::clicked, this, &NewKLGuidance::createButtonClicked);
 	// 点击选择路径按钮
 	connect(ui->select_path_button, &QPushButton::clicked, this, &NewKLGuidance::selectPathButtonClicked);
+
+	connect(ui->create_button, &QPushButton::clicked, this, &QDialog::accept);
 
 	//connect(ui->create_button, &QPushButton::clicked, this, &NewKLGuidance::emit_merge_kl_signal);
 }
@@ -33,112 +38,145 @@ NewKLGuidance::~NewKLGuidance()
     delete ui;
 }
 
+// 获得输入的库名
+QString NewKLGuidance::getKLName() const
+{
+	return new_kl_name;
+}
+
+// 获得输入的库路径
+QString NewKLGuidance::getKLPath() const
+{
+	return new_kl_path;
+}
+
 // 槽：点击创建新的库文件按钮
 void NewKLGuidance::createButtonClicked()
 {
 	// 获取用户输入的库名，如果输入的库名为空，则在创建按钮上面显示一个提示：知识库名不能为空
 	QString kl_name = ui->kl_name_lineEdit->text();
-	QString path = ui->kl_path_lineEdit->text();
-	QDir target_dir(path);
+	QString target_kl_path = ui->kl_path_lineEdit->text();
+	QDir target_kl_dir(target_kl_path);  // 目标文件夹，新的知识库将放在这个文件夹下
 	if (kl_name.isEmpty())
 	{
 		QMessageBox::warning(this, "错误", "知识库名不能为空");
 		return;
 	}
-	else if (path.isEmpty())
+	else if (target_kl_path.isEmpty())
 	{
 		QMessageBox::warning(this, "错误", "知识库路径不能为空");
 		return;
 	}
-	else if (!target_dir.exists())
+	else if (!target_kl_dir.exists())
 	{
 		QMessageBox::warning(this, "错误", "知识库路径不存在");
 		return;
 	}
-	else if (target_dir.exists(kl_name + ".km"))
+	else if (target_kl_dir.exists(kl_name + ".km"))
 	{
 		QMessageBox::warning(this, "错误", "目标文件夹存在同名知识库");
 		return;
 	}
 
-	QString kl_path;
-
 	// 将kl_path修改为path + '/' + kl_name
-	if (path.endsWith('/'))
+	if (target_kl_path.endsWith('/'))
 	{
-		kl_path = path + kl_name;
+		target_kl_path = target_kl_path + kl_name;
 	}
 	else {
-		kl_path = path + '/' + kl_name;
+		target_kl_path = target_kl_path + '/' + kl_name;
 	}
 
-	// 在对应位置建立一个文件夹
-	QDir kl_dir(kl_path);
-	if (!kl_dir.mkpath(kl_path))
+	// 更新自己的变量
+	new_kl_name = kl_name;
+	new_kl_path = target_kl_path + ".km";
+
+	if (!is_temp_kl)
 	{
-		QMessageBox::warning(this, "错误", "创建知识库文件夹失败！");
-		return;
-	}
+		QDir kl_dir(target_kl_path);  // 知识库文件夹
+		// 在对应位置创建知识库文件夹
+		if (!kl_dir.mkpath(target_kl_path))
+		{
+			QMessageBox::warning(this, "错误", "创建知识库文件夹失败！");
+			return;
+		}
 
-	QFile meta_data_file(kl_path + "/meta_data.xml");
+		QFile meta_data_file(target_kl_path + "/meta_data.xml");
 
-	if (!meta_data_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-		//qDebug() << "无法打开文件用于写入:" << file.errorString();
-		QMessageBox::warning(this, "错误", "无法打开文件用于写入：" + meta_data_file.errorString());
-		return;
-	}
-	
-	// 元数据初始化
-	MetaData new_meta_data;
-	try {
-		new_meta_data.dump(meta_data_file);
-	}
-	catch (...) {
-		QMessageBox::warning(this, "错误", "创建知识库元数据失败！");
-		return;
-	}
+		if (!meta_data_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+			//qDebug() << "无法打开文件用于写入:" << file.errorString();
+			QMessageBox::warning(this, "错误", "无法打开文件用于写入：" + meta_data_file.errorString());
+			return;
+		}
 
-	meta_data_file.close();
+		// 元数据初始化
+		MetaData new_meta_data;
+		try {
+			new_meta_data.dump(meta_data_file);
+		}
+		catch (...) {
+			QMessageBox::warning(this, "错误", "创建知识库元数据失败！");
+			return;
+		}
 
-	//压缩文件夹
-	if (!compress_folder(kl_path.toStdString(), kl_path.toStdString() + ".km"))
-	{
+		meta_data_file.close();
+
+		//压缩文件夹
+		if (!compress_folder(target_kl_path.toStdString(), new_kl_path.toStdString()))
+		{
+			// 删除刚刚创建的文件夹
+			if (!kl_dir.removeRecursively())
+			{
+				QMessageBox::warning(this, "错误", "删除知识库文件夹失败！");
+				return;
+			}
+
+			QMessageBox::warning(this, "错误", "压缩知识库失败！");
+			return;
+		}
+
 		// 删除刚刚创建的文件夹
 		if (!kl_dir.removeRecursively())
 		{
 			QMessageBox::warning(this, "错误", "删除知识库文件夹失败！");
 			return;
 		}
-	
-		QMessageBox::warning(this, "错误", "压缩知识库失败！");
-		return;
-	}
 
-	// 删除刚刚创建的文件夹
-	if (!kl_dir.removeRecursively())
+		// 关闭父窗口
+		StartWindow* parent_window = dynamic_cast<StartWindow*>(this->parent());
+		if (parent_window)
+		{
+			parent_window->close();
+			//parent_window->deleteLater();
+		}
+
+		KMMainWindow* km = KMMainWindow::construct(new_kl_name, new_kl_path);
+		if (km == nullptr)
+		{
+			QMessageBox::warning(this, "错误", "打开知识库失败！");
+			return;
+		}
+		km->show();
+
+		// 关闭new_kl_guidance
+		this->close();
+	}
+	else
 	{
-		QMessageBox::warning(this, "错误", "删除知识库文件夹失败！");
-		return;
-	}
+		// 首先检查一下临时文件夹是否存在
+		QDir temp_dir(temp_kl_path);
+		if (!temp_dir.exists()) {
+			QMessageBox::warning(this, QStringLiteral("错误"), "临时文件夹不存在：" + temp_kl_path);
+			return;
+		}
 
-	// 关闭父窗口
-	StartWindow* parent_window = dynamic_cast<StartWindow*>(this->parent());
-	if (parent_window)
-	{
-		parent_window->close();
-		//parent_window->deleteLater();
+		// 压缩文件夹
+		if (!compress_folder(temp_kl_path.toStdString(), target_kl_path.toStdString() + ".km"))
+		{
+			QMessageBox::warning(this, "错误", "压缩知识库失败！");
+			return;
+		}
 	}
-
-	KMMainWindow* km = KMMainWindow::construct(kl_name, kl_path + ".km", nullptr);
-	if (km == nullptr)
-	{
-		QMessageBox::warning(this, "错误", "打开知识库失败！");
-		return;
-	}
-	km->show();
-
-	// 关闭new_kl_guidance
-	this->close();
 	//this->deleteLater();
 
 	// 打印所有的widget

@@ -88,7 +88,9 @@ void StartWindow::createNewKLButtonClicked()
 	// 打开新的库文件创建窗口
 	NewKLGuidance* new_kl_guidance = new NewKLGuidance(this);
 	new_kl_guidance->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
-	new_kl_guidance->show();
+	new_kl_guidance->exec();
+	
+	delete new_kl_guidance;
 }
 
 // 槽：点击listWidget中的item，就进入到这个item对应的知识库，这里是新建一个main_window

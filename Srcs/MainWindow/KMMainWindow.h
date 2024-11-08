@@ -20,10 +20,13 @@ private:
 	QString temp_kl_path;  // 知识库临时路径（解压后的路径），实际中用到的全是这个路径，末尾不带.km
 	MetaData meta_data;  // 知识库的元数据
 	int is_saved;  // 记录当前库是否已经保存，用于MainWindow标题的改变和关闭时询问
+	int is_temp_kl;  // 记录当前库是否是临时库，用于关闭时询问以及保存时的判断
 
 public:
 	// 静态函数，用来构造一个新的KMMainWindow窗口，禁止直接构造
-	static KMMainWindow* construct(QString kl_name, QString kl_path, QWidget* parent = nullptr);
+	static KMMainWindow* construct(QString kl_name, QString kl_path);
+	// 静态函数，用来构造一个新的KMMainWindow窗口，禁止直接构造，此函数用于建立临时知识库（即刚打开软件时的知识库）
+	static KMMainWindow* construct();
 
 	KMMainWindow(const KMMainWindow&) = delete;
 	KMMainWindow& operator=(const KMMainWindow&) = delete;
@@ -106,7 +109,7 @@ protected:
 	void closeEvent(QCloseEvent* event) override;  // 关闭时，询问未保存的词条，从 current_kl_list 中删除当前库
 
 private:
-	explicit KMMainWindow(QString _kl_name, QString _kl_path);
+	explicit KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path);
 
 	// 构造KMMainWindow的辅助函数，用于加载库
 	bool initialize();
