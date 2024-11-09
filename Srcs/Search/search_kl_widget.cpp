@@ -4,25 +4,25 @@
 #include "search_kl_widget.h"
 #include "ui_search_kl_widget.h"
 #include "../MainWindow/KMMainWindow.h"
+#include "../public.h"
 
-extern QString data_path;
-search_kl_widget::search_kl_widget(QWidget *parent, QString kl_name,bool ifseparatekl)
+search_kl_widget::search_kl_widget(KMMainWindow* _main_window, QWidget *parent, QString kl_name,bool ifseparatekl)
     : QWidget(parent)
+	, father(parent)
     , now_kl_name(kl_name)
     , if_separate_kl(ifseparatekl)
-    , ui(new Ui::search_kl_widget)
+	, main_window(_main_window)
 {
-    ui->setupUi(this);
+    ui.setupUi(this);
     this->setWindowTitle("搜索库");
     initial();//初始化
      // 连接搜索框的 textChanged 信号到 onSearchTextChanged 槽函数
-    connect(ui->search_text, &QLineEdit::textChanged, this, &search_kl_widget::onSearchTextChanged);
-   // connect(ui->recent_kl, &QPushButton::clicked, this, &search_kl_widget::recentkl);
+    connect(ui.search_text, &QLineEdit::textChanged, this, &search_kl_widget::searchTextChanged);
+   // connect(ui.recent_kl, &QPushButton::clicked, this, &search_kl_widget::recentkl);
 }
 
 search_kl_widget::~search_kl_widget()
 {
-    delete ui;
 }
 //初始化
 void search_kl_widget::initial() {
@@ -57,24 +57,24 @@ void search_kl_widget::initial() {
         }
     }
     file.close();
-	ui->show_listWidget->clear();  // 需要清空列表再添加新的内容
+	ui.show_listWidget->clear();  // 需要清空列表再添加新的内容
     QListWidgetItem* item;
     for (int i = 0; i < libraryNames.count(); ++i) {
         QString combinedText = libraryNames[i] + " - " + libraryPaths[i];
         item = new QListWidgetItem(combinedText);
-        ui->show_listWidget->addItem(item);
+        ui.show_listWidget->addItem(item);
     }
-    disconnect(ui->show_listWidget, &QListWidget::itemClicked, this, &search_kl_widget::onListklClicked);//断开之前的连接
+    disconnect(ui.show_listWidget, &QListWidget::itemClicked, this, &search_kl_widget::listklClicked);//断开之前的连接
     // 没有找到匹配项  
-    if (ui->show_listWidget->count() == 0) {
+    if (ui.show_listWidget->count() == 0) {
         QMessageBox::information(this, "搜索结果", "没有最近使用的库。");
     }
     else {
-        connect(ui->show_listWidget, &QListWidget::itemClicked, this, &search_kl_widget::onListklClicked);//建立连接
+        connect(ui.show_listWidget, &QListWidget::itemClicked, this, &search_kl_widget::listklClicked);//建立连接
     }
 };
 
-void search_kl_widget::onSearchTextChanged(const QString& text)
+void search_kl_widget::searchTextChanged(const QString& text)
 {
     if (text.isEmpty()) {
         initial();//调用初始化函数
@@ -86,9 +86,9 @@ void search_kl_widget::onSearchTextChanged(const QString& text)
 //搜素库的函数
 void search_kl_widget::searchclicked() {
     // 获取搜索文本  
-    QString search_text = ui->search_text->text();
+    QString search_text = ui.search_text->text();
    // 清空QListWidget中的旧结果  
-    ui->show_listWidget->clear();
+    ui.show_listWidget->clear();
     // 定义文件路径（在当前路径下添加\data\kl_list.txt）  
     QString filePath = QDir(data_path).filePath("recent_kl_list.txt");
     // 注意：在Windows上，应使用正斜杠("/")或双反斜杠("\\")作为路径分隔符，  
@@ -149,20 +149,20 @@ void search_kl_widget::searchclicked() {
         if (libraryNames[i].contains(search_text, Qt::CaseInsensitive)) {
             // 如果库名包含搜索文本，则显示库名和路径  
             item = new QListWidgetItem(libraryNames[i] + " - " + libraryPaths[i]);
-            ui->show_listWidget->addItem(item);
+            ui.show_listWidget->addItem(item);
         }
     }
-    disconnect(ui->show_listWidget, &QListWidget::itemClicked, this, &search_kl_widget::onListklClicked);//断开之前的连接
+    disconnect(ui.show_listWidget, &QListWidget::itemClicked, this, &search_kl_widget::listklClicked);//断开之前的连接
     // 没有找到匹配项  
-    if (ui->show_listWidget->count() == 0) {
+    if (ui.show_listWidget->count() == 0) {
     }
     else {
-        connect(ui->show_listWidget, &QListWidget::itemClicked, this, &search_kl_widget::onListklClicked);//建立连接
+        connect(ui.show_listWidget, &QListWidget::itemClicked, this, &search_kl_widget::listklClicked);//建立连接
     }
 }
 
 
-void search_kl_widget::onListklClicked(QListWidgetItem* item) {
+void search_kl_widget::listklClicked(QListWidgetItem* item) {
     if (item) {
         QString fullText = item->text(); // 获取完整的文本，包含名字和路径  
         QStringList parts = fullText.split("-"); // 使用 "-" 分割字符串  
@@ -177,28 +177,11 @@ void search_kl_widget::onListklClicked(QListWidgetItem* item) {
             QMessageBox::warning(nullptr, "格式错误", "项目文本格式不正确，请确保使用 '-' 分隔名字和路径。", QMessageBox::Ok);
         }
         QString filePath = searchPath;
-        open_kl(filePath, fileName);// 调用open_entry函数打开文件  
+		main_window->openKnowledgeLibrary(filePath);  // openKnowledgeLibrary函数遇到错误会弹出错误对话框
         this->close();
      }
 } 
-void search_kl_widget::open_kl(const QString& filePath, const QString fileName) {
-    // 新建一个main_window
-    //if (if_separate_kl == 0) {
-    KMMainWindow* main_window = KMMainWindow::construct(fileName, filePath);
-	if (main_window == nullptr) {
-		QMessageBox::warning(this, "错误", "无法打开知识库：" + filePath);
-		return;
-	}
-    main_window->show();
-    //}
-    //else {
-    //    separate_kl* separate_window = new separate_kl(this,fileName ,filePath );
-    //    separate_window->setWindowTitle("分库");
-    //    connect(separate_window, &separate_kl::goback_separatekl, this, &search_kl_widget::gobackseparatekl);
-    //    separate_window->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
-    //    separate_window->show();
-    //}
-};
+
 void search_kl_widget::gobackseparatekl() {
     this->show();
 };

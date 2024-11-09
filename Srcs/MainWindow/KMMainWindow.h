@@ -5,7 +5,6 @@
 
 #include "ui_KMMainWindow.h"
 #include "MetaData.h"
-//#include "../EntryWidget/EntryWidget.h"
 
 class EntryWidget;
 
@@ -50,8 +49,15 @@ public:
 	// 返回是否成功跳转
 	bool openEntry(int entry_id);
 
+	// 打开知识库函数，kl_path带.km后缀，该函数遇到错误会弹出错误对话框，返回是否成功打开
+	// 如果是临时知识库且没有保存，则在这个MainWindow打开，否则新建一个窗口打开
+	bool openKnowledgeLibrary(const QString& open_kl_path);  
+
 	// 获得tab_widget当前的EntryWidget*，如果没有则返回nullptr
 	EntryWidget* getCurrentEntryWidget();
+
+	// 添加标签，这是给TagManager调用的
+	void addTagToCurrentEntry(int tag_id);
 
 private slots:
 	// 文件菜单相关的槽函数
@@ -84,7 +90,7 @@ private slots:
 	void actSetTypeNormal();
 
 	// 标签部分槽函数
-	void actManageLabel();  // 管理标签
+	void actManageTag();  // 管理标签
 
 	// 搜索部分槽函数
 	void actSearchEntry();//搜索词条打开函数
@@ -101,6 +107,8 @@ private slots:
 	void refreshSynopsis();  // 处于大纲tab时，刷新大纲，设置的目的是响应 EntryArea::titleChange 信号，防止大纲更新时从其他标签切换到大纲
 	void synopsisItemClicked(QListWidgetItem* item);  // 左键大纲中的条目，跳转到对应的词条
 	void tagButtonClicked();  // 标签
+	void tagItemClicked(QListWidgetItem* item);  // 左键点击后标签取消选中
+	void tagItemRightClicked(const QPoint& pos);  // 右键标签中的条目，弹出菜单，包括 删除
 
 	// 词条tab相关的槽函数
 	void tabWidgetChanged(int index);  // tab改变时，更新锚点、关联词条、大纲、标签

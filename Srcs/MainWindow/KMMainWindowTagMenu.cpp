@@ -4,7 +4,7 @@
 #include "../TagManager/tag_manager.h"
 
 // 管理标签
-void KMMainWindow::actManageLabel()
+void KMMainWindow::actManageTag()
 {
 	TagManager* tag_manager = new TagManager(this, this);
 	connect(tag_manager, &TagManager::tagChanged, this, &KMMainWindow::handleKLChanged);

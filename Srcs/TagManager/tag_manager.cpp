@@ -15,6 +15,7 @@ TagManager::TagManager(KMMainWindow* _main_window, QWidget* parent)
 	// 设置窗口标题
 	setWindowTitle("标签管理-" + main_window->getKLName());
 
+	connect(ui->add_to_curren_entry_button, &QPushButton::clicked, this, &TagManager::actAddTag);
 	connect(ui->new_tag_button, &QPushButton::clicked, this, &TagManager::actNewTag);
 	connect(ui->delete_tag_button, &QPushButton::clicked, this, &TagManager::actDeleteTag);
 	connect(ui->edit_tag_button, &QPushButton::clicked, this, &TagManager::actEditTag);
@@ -60,6 +61,20 @@ void TagManager::refreshTagList()
 	}
 	// 将选中的item取消选中
 	ui->tag_list_widget->setCurrentItem(nullptr);
+}
+
+// 槽：添加标签
+void TagManager::actAddTag()
+{
+	QListWidgetItem* item = ui->tag_list_widget->currentItem();
+	if (item == nullptr)
+	{
+		QMessageBox::warning(this, "错误", "请选择一个标签");
+		return;
+	}
+
+	int tag_id = item->data(IdRole).toInt();
+	main_window->addTagToCurrentEntry(tag_id);
 }
 
 // 槽：新建标签

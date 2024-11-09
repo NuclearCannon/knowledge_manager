@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>search_kl_widget</class>
- <widget class="QWidget" name="search_kl_widget">
+ <class>search_kl_widget_ui</class>
+ <widget class="QWidget" name="search_kl_widget_ui">
   <property name="geometry">
    <rect>
     <x>0</x>

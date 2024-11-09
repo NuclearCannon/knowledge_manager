@@ -302,7 +302,7 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path)
 	anchor_list->setContextMenuPolicy(Qt::CustomContextMenu);   
 	in_entries_list->setContextMenuPolicy(Qt::CustomContextMenu);
 	out_entries_list->setContextMenuPolicy(Qt::CustomContextMenu);
-
+	tag_list->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	// 左边的锚点、关联、标签、大纲的按钮
 	connect(ui.anchor_button, &QPushButton::clicked, this, &KMMainWindow::anchorButtonClicked);
@@ -314,10 +314,12 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path)
 	connect(out_entries_list, &QListWidget::itemClicked, this, &KMMainWindow::relatedEntryItemClicked);
 	connect(in_entries_list, &QListWidget::itemClicked, this, &KMMainWindow::relatedEntryItemClicked);
 	connect(anchor_list, &QListWidget::itemClicked, this, &KMMainWindow::anchorItemClicked);
+	connect(tag_list, &QListWidget::itemClicked, this, &KMMainWindow::tagItemClicked);
 	// 右键点击
 	connect(anchor_list, &QListWidget::customContextMenuRequested, this, &KMMainWindow::anchorItemRightClicked);
 	connect(in_entries_list, &QListWidget::customContextMenuRequested, this, &KMMainWindow::relatedEntryItemRightClicked);
 	connect(out_entries_list, &QListWidget::customContextMenuRequested, this, &KMMainWindow::relatedEntryItemRightClicked);
+	connect(tag_list, &QListWidget::customContextMenuRequested, this, &KMMainWindow::tagItemRightClicked);
 
 	// tabwidget相关
 	connect(ui.tab_widget, &QTabWidget::tabCloseRequested, this, &KMMainWindow::actTabCloseRequested);  // 点击tab关闭按钮时，关闭特定的tab
@@ -352,7 +354,7 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path)
 	connect(ui.act_remove_underline, &QAction::triggered, this, &KMMainWindow::actRemoveUnderline);
 
 	// 标签部分
-	connect(ui.act_manage_tag, &QAction::triggered, this, &KMMainWindow::actManageLabel);  // 管理标签
+	connect(ui.act_manage_tag, &QAction::triggered, this, &KMMainWindow::actManageTag);  // 管理标签
 
 
 	connect(ui.act_search_entry, &QAction::triggered, this, &KMMainWindow::actSearchEntry);//点击搜素词条时，打开搜索框
@@ -478,6 +480,33 @@ MetaData& KMMainWindow::getMetaData()
 	return meta_data;
 }
 
+// 添加标签，这是给TagManager调用的
+void KMMainWindow::addTagToCurrentEntry(int tag_id)
+{
+	EntryWidget* entry_widget = getCurrentEntryWidget();
+	if (entry_widget == nullptr) return;
+	int rnt = meta_data.addTagToEntry(tag_id, entry_widget->getEntryId());
+	if (rnt == -1)
+	{
+		QMessageBox::warning(this, "错误", "该词条已经有该标签！");
+	}
+	else if (rnt == -2)
+	{
+		QMessageBox::warning(this, "错误", "添加标签失败！标签不存在！");
+	}
+	else if (rnt == -3)
+	{
+		QMessageBox::warning(this, "错误", "添加标签失败！词条不存在！");
+	}
+
+	if (ui.left_tab_widget->currentIndex() == 2)
+	{
+		tagButtonClicked();
+	}
+
+	handleKLChanged();
+}
+
 // 获得tab_widget当前的EntryWidget
 EntryWidget* KMMainWindow::getCurrentEntryWidget()
 {
@@ -488,8 +517,6 @@ EntryWidget* KMMainWindow::getCurrentEntryWidget()
 // tab改变时，更新锚点、关联词条、大纲、标签
 void KMMainWindow::tabWidgetChanged(int index)
 {
-	if (index == -1) return;
-
 	int i = ui.left_tab_widget->currentIndex();
 	switch (i)  // 锚点不需要更新
 	{
@@ -503,6 +530,123 @@ void KMMainWindow::tabWidgetChanged(int index)
 			synopsisButtonClicked();
 			break;
 	}
+}
+
+// 打开知识库函数，kl_path带.km后缀，该函数遇到错误会弹出错误对话框，返回是否成功打开
+bool KMMainWindow::openKnowledgeLibrary(const QString& open_kl_path)
+{
+	QFile open_kl_dir(open_kl_path);
+	if (!open_kl_dir.exists())
+	{
+		QMessageBox::warning(this, "错误", "知识库不存在：" + open_kl_path);
+		return false;
+	}
+
+	// 解析出kl_name，并去掉".km"
+	QString open_kl_name = open_kl_path.split('/').last();
+	open_kl_name = open_kl_name.left(open_kl_name.lastIndexOf('.'));
+
+	// 如果当前库是临时库，且没有作任何修改，则直接在当前窗口打开新的知识库
+	if (is_temp_kl && is_saved)
+	{
+		// 添加到current_kl_list
+		Status status = addKLToCurrentKLList(open_kl_name, open_kl_path);
+		if (status == Status::Error)
+		{
+			QMessageBox::warning(this, "错误", "无法打开或操作文件：" + open_kl_path);
+			return false;
+		}
+		else if (status == Status::Failure)
+		{
+			QMessageBox::warning(this, "错误", "知识库已经打开\n知识库位置：" + open_kl_path);
+			return false;
+		}
+
+		// 删除current_kl_lits中的临时库
+		status = removeKLFromCurrentKLList(kl_name, original_kl_path);
+		if (status == Status::Error)
+		{
+			QMessageBox::warning(this, "错误", "删除current_kl_list中的临时库失败！");
+			return false;
+		}
+
+		// 写入recent_kl_list
+		status = addKLToRecentKLList(open_kl_name, open_kl_path);
+		if (status == Status::Error)
+		{
+			// 回滚current_kl_list
+			status = modifyKLInCurrentKLList(open_kl_name, open_kl_path, kl_name, original_kl_path);
+			if (status == Status::Error)
+			{
+				QMessageBox::warning(this, "错误", "修改current_kl_list失败！");
+				return false;
+			}
+			else if (status == Status::Failure)
+			{
+				QMessageBox::warning(this, "错误", "修改current_kl_list失败！未找到原知识库！");
+				return false;
+			}
+			QMessageBox::warning(this, "错误", "无法打开或操作文件：" + open_kl_path);
+			return false;
+		}
+
+		// 备份当前的kl_name，original_kl_path，temp_kl_path
+		QString old_kl_name = kl_name;
+		QString old_original_kl_path = original_kl_path;
+		QString old_temp_kl_path = temp_kl_path;
+
+		// 修改kl_name, original_kl_path，temp_kl_path，is_temp_kl，在这里修改是因为initialize函数会用到这些变量
+		kl_name = open_kl_name;
+		original_kl_path = open_kl_path;
+		temp_kl_path = default_path_for_temp_kls + "/" + kl_name;
+		is_temp_kl = false;
+
+		// 初始化，加载元数据
+		if (!initialize())
+		{
+			// 回滚变量
+			kl_name = old_kl_name;
+			original_kl_path = old_original_kl_path;
+			temp_kl_path = old_temp_kl_path;
+			is_temp_kl = true;
+
+			// 回滚recent_kl_list
+			status = removeKLFromRecentKLList(open_kl_name, open_kl_path);
+			if (status == Status::Error) QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + open_kl_path);
+			removeKLFromCurrentKLList(open_kl_name, open_kl_path);
+			// 回滚current_kl_list
+			status = modifyKLInCurrentKLList(open_kl_name, open_kl_path, kl_name, original_kl_path);
+			if (status == Status::Error)
+			{
+				QMessageBox::warning(this, "错误", "修改current_kl_list失败！");
+				return false;
+			}
+			else if (status == Status::Failure)
+			{
+				QMessageBox::warning(this, "错误", "修改current_kl_list失败！未找到原知识库！");
+				return false;
+			}
+
+			QMessageBox::warning(this, "错误", "无法打开库文件：" + open_kl_path);
+			return false;
+		}
+
+		anchorButtonClicked();
+
+		setWindowTitle("km - " + kl_name);
+	}
+	else  // 否则，打开一个新的窗口
+	{
+		KMMainWindow* main_window = KMMainWindow::construct(open_kl_name, open_kl_path);
+		if (main_window == nullptr)
+		{
+			QMessageBox::warning(this, "错误", "打开知识库失败！");
+			return false;
+		}
+		main_window->show();
+	}
+
+	return true;
 }
 
 // 槽：关联词条
@@ -742,10 +886,74 @@ void KMMainWindow::tagButtonClicked()
 		const Tag* tag = meta_data.getTag(tag_id);
 		if (tag == nullptr) continue;
 		QListWidgetItem* item = new QListWidgetItem(tag_list);
-		item->setText(tag->name());
-		item->setData(Qt::UserRole, tag_id);
+		item->setSizeHint(QSize(0, 40));
+		item->setData(Qt::UserRole, tag->id());
+
+		QWidget* show_tag_widget = new QWidget();
+		QWidget* color_widget = new QWidget();
+		color_widget->setFixedSize(20, 20);
+		color_widget->setStyleSheet("background-color: " + tag->color().name());
+
+		QHBoxLayout* layout = new QHBoxLayout();
+		layout->addWidget(color_widget);
+		layout->addWidget(new QLabel(tag->name()));
+		show_tag_widget->setLayout(layout);
+
 		tag_list->addItem(item);
+
+		tag_list->setItemWidget(item, show_tag_widget);
 	}
+}
+
+// 槽：标签列表的左键点击
+void KMMainWindow::tagItemClicked(QListWidgetItem* item)
+{
+	QListWidget* tag_list = static_cast<QListWidget*>(ui.left_tab_widget->widget(2));
+	tag_list->setCurrentItem(nullptr);
+}
+
+// 槽：标签列表的右键点击
+void KMMainWindow::tagItemRightClicked(const QPoint& pos)
+{
+	QListWidget* tag_list = static_cast<QListWidget*>(ui.left_tab_widget->widget(2));
+	QListWidgetItem* item = tag_list->itemAt(pos);
+	if (item == nullptr) return;
+
+	QMenu menu(tag_list);
+	QAction* delete_action = new QAction("删除", &menu);
+	menu.addAction(delete_action);
+
+	menu.setStyleSheet(
+		"QMenu { background-color: #ffffff; border: 1px solid #cccccc; }"
+		"QMenu::item { background-color: transparent; padding: 8px 16px; margin: 0px; }"
+		"QMenu::item:selected { background-color: #f0f0f0; color: #000000; }"
+	);
+
+	connect(delete_action, &QAction::triggered, this, [=]() {
+		int entry_id = getCurrentEntryWidget()->getEntryId();
+		int tag_id = item->data(Qt::UserRole).toInt();
+		int rnt = meta_data.removeTagFromEntry(tag_id, entry_id);
+		if (rnt == -1)
+		{
+			QMessageBox::warning(this, "错误", "删除标签失败，当前词条没有该标签");
+			return;
+		}
+		else if (rnt == -2)
+		{
+			QMessageBox::warning(this, "错误", "删除标签失败，标签不存在");
+			return;
+		}
+		else if (rnt == -3)
+		{
+			QMessageBox::warning(this, "错误", "删除标签失败，词条不存在");
+			return;
+		}
+		tagButtonClicked();
+
+		handleKLChanged();
+		});
+
+	menu.exec(QCursor::pos());
 }
 
 // 处于大纲tab时，刷新大纲

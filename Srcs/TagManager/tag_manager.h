@@ -22,11 +22,12 @@ signals:
 	void tagChanged();  // 标签改变（新增、删除或者编辑）
 
 public slots:
+	void actAddTag();  // 添加标签
 	void actNewTag();  // 新建标签
 	void actDeleteTag();  // 删除标签
 	void actEditTag();  // 修改标签
 	void actSortTag();  // 标签字典序排序
-	
+
 	void tagItemClicked(QListWidgetItem* item);  // 选中后再次点击取消选中
 
 private:

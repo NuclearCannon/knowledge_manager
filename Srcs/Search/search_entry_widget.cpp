@@ -60,10 +60,10 @@ search::search(QWidget* parent, const MetaData& meta):
     button_group->addButton(ui->check_box_title, 0);
     button_group->addButton(ui->check_box_tag, 1);
     //connect(ui->pushButton, &QPushButton::clicked, this, &search::open_go_back);
-    connect(ui->search_text, &QLineEdit::textChanged, this, &search::onSearchTextChanged);//文本框内容改变
+    connect(ui->search_text, &QLineEdit::textChanged, this, &search::searchTextChanged);//文本框内容改变
     // 连接复选框的状态变化信号到槽函数
-    connect(button_group, &QButtonGroup::idClicked, this, &search::onCheckBoxStateChanged);//选择框内容改变
-    connect(ui->list_widget, &QListWidget::itemClicked, this, &search::onListItemClicked);
+    connect(button_group, &QButtonGroup::idClicked, this, &search::checkBoxStateChanged);//选择框内容改变
+    connect(ui->list_widget, &QListWidget::itemClicked, this, &search::listItemClicked);
     putAllEntries();
 }
 
@@ -126,7 +126,7 @@ void search::putEntriesByTags(const std::set<int>& tag_set)
     }
 }
 
-void search::onSearchTextChanged()
+void search::searchTextChanged()
 {      
     if (ui->search_text->text().isEmpty()) {
         putAllEntries();
@@ -139,7 +139,7 @@ void search::onSearchTextChanged()
     }
 }
 
-void search::onCheckBoxStateChanged(int id)
+void search::checkBoxStateChanged(int id)
 {
     // 确保只有一个复选框被选中
     for (int i = 0; i < button_group->buttons().size(); ++i) {
@@ -147,11 +147,11 @@ void search::onCheckBoxStateChanged(int id)
             button_group->button(i)->setChecked(false);
         }
     }
-    onSearchTextChanged();
+    searchTextChanged();
 }
 
 
-void search::onListItemClicked(QListWidgetItem* item) {
+void search::listItemClicked(QListWidgetItem* item) {
     SeachEntryItem* entry_item = dynamic_cast<SeachEntryItem*>(item);
     if (entry_item == nullptr)
     {

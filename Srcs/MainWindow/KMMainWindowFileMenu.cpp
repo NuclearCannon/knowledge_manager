@@ -16,7 +16,6 @@
 // 点击tab关闭按钮时，关闭特定的tab
 void KMMainWindow::actTabCloseRequested(int index)
 {
-	//qDebug() << "atabCloseRequested index = " << index << '\n';
 	ui.tab_widget->removeTab(index);
 }
 
@@ -317,115 +316,14 @@ void KMMainWindow::actOpenKnowledgeLibrary()
 		return;
 	}
 
-	// 解析出kl_name，并去掉".km"
-	QString open_kl_name = open_kl_path.split('/').last();
-	open_kl_name = open_kl_name.left(open_kl_name.lastIndexOf('.'));
-
-	// 如果当前库是临时库，且没有作任何修改，则直接在当前窗口打开新的知识库
-	if (is_temp_kl && is_saved)
-	{
-		// 添加到current_kl_list
-		Status status = addKLToCurrentKLList(open_kl_name, open_kl_path);
-		if (status == Status::Error)
-		{
-			QMessageBox::warning(this, "错误", "无法打开或操作文件：" + open_kl_path);
-			return;
-		}
-		else if (status == Status::Failure)
-		{
-			QMessageBox::warning(this, "错误", "知识库已经打开\n知识库位置：" + open_kl_path);
-			return;
-		}
-
-		// 删除current_kl_lits中的临时库
-		status = removeKLFromCurrentKLList(kl_name, original_kl_path);
-		if (status == Status::Error)
-		{
-			QMessageBox::warning(this, "错误", "删除current_kl_list中的临时库失败！");
-			return;
-		}
-
-		// 写入recent_kl_list
-		status = addKLToRecentKLList(open_kl_name, open_kl_path);
-		if (status == Status::Error)
-		{
-			// 回滚current_kl_list
-			status = modifyKLInCurrentKLList(open_kl_name, open_kl_path, kl_name, original_kl_path);
-			if (status == Status::Error)
-			{
-				QMessageBox::warning(this, "错误", "修改current_kl_list失败！");
-				return;
-			}
-			else if (status == Status::Failure)
-			{
-				QMessageBox::warning(this, "错误", "修改current_kl_list失败！未找到原知识库！");
-				return;
-			}
-			QMessageBox::warning(this, "错误", "无法打开或操作文件：" + open_kl_path);
-			return;
-		}
-
-		// 备份当前的kl_name，original_kl_path，temp_kl_path
-		QString old_kl_name = kl_name;
-		QString old_original_kl_path = original_kl_path;
-		QString old_temp_kl_path = temp_kl_path;
-
-		// 修改kl_name, original_kl_path，temp_kl_path，is_temp_kl，在这里修改是因为initialize函数会用到这些变量
-		kl_name = open_kl_name;
-		original_kl_path = open_kl_path;
-		temp_kl_path = default_path_for_temp_kls + "/" + kl_name;
-		is_temp_kl = false;
-
-		// 初始化，加载元数据
-		if (!initialize())
-		{
-			// 回滚变量
-			kl_name = old_kl_name;
-			original_kl_path = old_original_kl_path;
-			temp_kl_path = old_temp_kl_path;
-			is_temp_kl = true;
-
-			// 回滚recent_kl_list
-			status = removeKLFromRecentKLList(open_kl_name, open_kl_path);
-			if (status == Status::Error) QMessageBox::warning(nullptr, "错误", "无法打开或操作文件：" + open_kl_path);
-			removeKLFromCurrentKLList(open_kl_name, open_kl_path);
-			// 回滚current_kl_list
-			status = modifyKLInCurrentKLList(open_kl_name, open_kl_path, kl_name, original_kl_path);
-			if (status == Status::Error)
-			{
-				QMessageBox::warning(this, "错误", "修改current_kl_list失败！");
-				return;
-			}
-			else if (status == Status::Failure)
-			{
-				QMessageBox::warning(this, "错误", "修改current_kl_list失败！未找到原知识库！");
-				return;
-			}
-
-			QMessageBox::warning(this, "错误", "无法打开库文件：" + open_kl_path);
-			return;
-		}
-
-		anchorButtonClicked();
-
-		setWindowTitle("km - " + kl_name);
-	}
-	else  // 否则，打开一个新的窗口
-	{
-		KMMainWindow* main_window = KMMainWindow::construct(open_kl_name, open_kl_path);
-		if (main_window == nullptr)
-		{
-			QMessageBox::warning(this, "错误", "打开知识库失败！");
-			return;
-		}
-		main_window->show();
-	}
+	// 打开知识库
+	openKnowledgeLibrary(open_kl_path);  // 函数遇到错误会弹出错误对话框
 }
 
 // 槽：点击最近打开的知识库时，弹出最近打开的知识库列表
 void KMMainWindow::actRecentKnowledgeLibrary()
 {
-	RecentKLWindow* recent_kl_window = RecentKLWindow::construct(this);
+	RecentKLWindow* recent_kl_window = RecentKLWindow::construct(this, this);
 	if (recent_kl_window == nullptr)
 	{
 		QMessageBox::warning(this, "错误", "打开最近打开的知识库列表失败！");

@@ -40,9 +40,9 @@ public:
 signals:
     void updateTabWidget(const QString& klName, const QString& klPath, QWidget* widget, const QString& fileName);
 private slots:
-    void onListItemClicked(QListWidgetItem* item);
-    void onSearchTextChanged();
-    void onCheckBoxStateChanged(int id);
+    void listItemClicked(QListWidgetItem* item);
+    void searchTextChanged();
+    void checkBoxStateChanged(int id);
 private:
     void putAllEntries();  // 显示所有结果到list中
     void putEntriesByTitle(const QString& target);

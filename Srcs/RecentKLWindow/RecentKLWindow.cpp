@@ -5,12 +5,11 @@
 
 #include "RecentKLWindow.h"
 #include "ui_RecentKLWindow.h"
-#include "../MainWindow/KMMainWindow.h"
 #include "../public.h"
 
-RecentKLWindow* RecentKLWindow::construct(QWidget* parent)
+RecentKLWindow* RecentKLWindow::construct(QWidget* parent, KMMainWindow* _main_window)
 {
-	RecentKLWindow* recent_kl_window = new RecentKLWindow(parent);
+	RecentKLWindow* recent_kl_window = new RecentKLWindow(parent, _main_window);
 	if (!recent_kl_window->refreshListWidget())
 	{
 		QMessageBox::warning(recent_kl_window, "错误", "无法打开或操作文件：" + data_path + "/recent_kl_list.txt");
@@ -20,8 +19,8 @@ RecentKLWindow* RecentKLWindow::construct(QWidget* parent)
 	return recent_kl_window;
 }
 
-RecentKLWindow::RecentKLWindow(QWidget* parent)
-    : QWidget(parent)
+RecentKLWindow::RecentKLWindow(QWidget* parent, KMMainWindow* _main_window)
+	: QWidget(parent), main_window(_main_window)
 {
 	ui.setupUi(this);  // listWidget的样式表在ui文件中设置了
 
@@ -104,14 +103,7 @@ void RecentKLWindow::listWidgetItemClicked(QListWidgetItem* item)
 	QFile dir(kl_path);
 	if (dir.exists()) 
 	{
-		// 进入main_window
-		KMMainWindow* main_window = KMMainWindow::construct(kl_name, kl_path);
-		if (main_window == nullptr)
-		{
-			QMessageBox::warning(this, "错误", "无法打开库文件：" + kl_path);
-			return;
-		}
-		main_window->show();
+		main_window->openKnowledgeLibrary(kl_path);
 		this->close();
 	}
 	else

@@ -32,7 +32,7 @@
    <item row="0" column="1">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="add_to_curren_entry">
+      <widget class="QPushButton" name="add_to_curren_entry_button">
        <property name="styleSheet">
         <string notr="true"/>
        </property>
