@@ -129,7 +129,7 @@ KMMainWindow* KMMainWindow::construct()
 	MetaData meta_data;
 	try
 	{
-		meta_data.dump(meta_data_file);
+		meta_data.dumpQtXml(meta_data_file);
 	}
 	catch (...)
 	{
@@ -194,7 +194,7 @@ bool KMMainWindow::initialize()
 		QMessageBox::warning(this, "错误", "打开meta_data.xml失败：" + meta_data_file.errorString());
 		return false;
 	}
-	meta_data.load(meta_data_file);
+	meta_data.loadQtXml(meta_data_file);
 
 	meta_data_file.close();
 

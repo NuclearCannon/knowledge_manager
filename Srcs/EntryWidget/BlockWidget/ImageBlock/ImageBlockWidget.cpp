@@ -178,3 +178,16 @@ void ImageBlockWidget::importFromPugi(const pugi::xml_node& node)
     filename = node.attribute("src").as_string();
     pixmap = new QPixmap(attachment_dir.absoluteFilePath(filename));
 }
+
+
+void ImageBlockWidget::exportToQtXml(QDomElement& dest, QDomDocument& dom_doc)
+{
+    dest.setTagName("image-block");
+    dest.setAttribute("src", filename);
+}
+
+void ImageBlockWidget::importFromQtXml(QDomElement& src)
+{
+    filename = src.attribute("src");
+    pixmap = new QPixmap(attachment_dir.absoluteFilePath(filename));
+}

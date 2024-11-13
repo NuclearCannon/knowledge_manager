@@ -111,7 +111,7 @@ void NewKLGuidance::createButtonClicked()
 		// 元数据初始化
 		MetaData new_meta_data;
 		try {
-			new_meta_data.dump(meta_data_file);
+			new_meta_data.dumpQtXml(meta_data_file);
 		}
 		catch (...) {
 			QMessageBox::warning(this, "错误", "创建知识库元数据失败！");

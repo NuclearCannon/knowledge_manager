@@ -102,3 +102,15 @@ void CodeBlockWidget::handleLanguageChanged()
     updateHighlighter();
     emitContentChange();
 }
+
+void CodeBlockWidget::exportToQtXml(QDomElement& dest, QDomDocument& dom_doc)
+{
+    dest.setTagName("code-block");
+    dest.setAttribute("language", languange_box->currentIndex());
+    dest.appendChild(dom_doc.createTextNode(code_edit->toPlainText()));
+}
+void CodeBlockWidget::importFromQtXml(QDomElement& src)
+{
+    languange_box->setCurrentIndex(src.attribute("language").toInt());
+    code_edit->setPlainText(src.firstChild().toText().data());
+}

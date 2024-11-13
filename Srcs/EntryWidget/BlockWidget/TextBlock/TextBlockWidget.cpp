@@ -3,81 +3,11 @@
 #include <QTextBlock>
 #include <QTextDocumentFragment>
 #include <QDialogButtonBox>
-#include <QLabel>
 #include <QApplication>
 #include <QProcess>
-static const int FORMAT_IS_CODE = 1000;  // 只要是个比较大的数字就行
-static const int FORMAT_IS_LINK = 1001;
 
 
-// 这些静态函数仅用于本文件内
-static int createFormatCode(bool bold, bool italic, bool underline, bool strike)
-{
-    int format_code = 0;
-    if (bold)format_code |= 0b1000;
-    if (italic)format_code |= 0b100;
-    if (underline)format_code |= 0b10;
-    if (strike)format_code |= 0b1;
-    return format_code;
-}
-
-static void decodeFormatCode(int format_code, bool& bold, bool& italic, bool& underline, bool& strike)
-{
-    strike = format_code & 0b1;
-    underline = format_code & 0b10;
-    italic = format_code & 0b100;
-    bold = format_code & 0b1000;
-}
-
-
-
-static TextType getQTextCharFormatType(const QTextCharFormat& format)
-{
-
-    if(format.hasProperty(FORMAT_IS_CODE))return TextType::code;
-    if(format.hasProperty(FORMAT_IS_LINK))return TextType::link;
-    return TextType::normal;
-
-}
-
-
-static QTextCharFormat normalFormat(bool bold, bool italic, bool underline, bool strike)
-{
-    QTextCharFormat format;
-    if (bold)format.setFontWeight(QFont::Bold);
-    format.setFontItalic(italic);
-    format.setFontUnderline(underline);
-    format.setFontStrikeOut(strike);
-    return format;
-}
-
-static QTextCharFormat codeFormat()
-{
-    QTextCharFormat code_format;
-    // 设置字体  
-    QFont font;
-    font.setFamily("Courier New"); // 使用等宽字体来模拟代码风格  
-    font.setFixedPitch(true);       // 确保字体是等宽的  
-    font.setPointSize(10);          // 设置字体大小  
-    code_format.setFont(font); 
-    QColor codeColor(0, 0, 128);
-    code_format.setForeground(codeColor);
-    code_format.setProperty(FORMAT_IS_CODE, true);
-    return code_format;
-}
-
-static QTextCharFormat linkFormat(const QString& href)
-{
-    QTextCharFormat link_format;
-    link_format.setAnchor(true);
-    link_format.setAnchorHref(href);
-    link_format.setForeground(QColor(Qt::blue));
-    link_format.setUnderlineStyle(QTextCharFormat::SingleUnderline);
-    link_format.setProperty(FORMAT_IS_LINK, true);
-    return link_format;
-}
-
-static void openUrlInDefaultBrowser(const QUrl& url) {
+void openUrlInDefaultBrowser(const QUrl& url) {
     // 将QUrl转换为QString
     QString urlString = url.toString();
 
@@ -97,51 +27,6 @@ static void openUrlInDefaultBrowser(const QUrl& url) {
     }
 }
 
-InputUrlDialog::InputUrlDialog(QWidget* parent, const QString& text) : QDialog(parent)
-{
-    QVBoxLayout* layout = new QVBoxLayout(this);
-
-    QLabel* label = new QLabel(text, this);
-    lineEdit = new QLineEdit(this);
-
-    layout->addWidget(label);
-    layout->addWidget(lineEdit);
-
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, this);
-
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &InputUrlDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &InputUrlDialog::reject);
-
-    layout->addWidget(buttonBox);
-}
-
-
-bool InputUrlDialog::getStringByDialog(const QString& text, QString& dest)
-{
-    InputUrlDialog dialog(0, text);
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        dest = dialog.lineEdit->text();
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-}
-
-
-void InputUrlDialog::accept()
-{
-    resultAccepted = true;
-    QDialog::accept();
-}
-
-void InputUrlDialog::reject()
-{
-    resultAccepted = false;
-    QDialog::reject();
-}
 
 
 
@@ -153,7 +38,6 @@ TextBlockBrowser::TextBlockBrowser(TextBlockWidget* parent) :
     setOpenLinks(false);
     setTabStopDistance(20);
     setStyleSheet("TextBlockBrowser:hover { background-color: #E0E0E0; border: none; }  TextBlockBrowser { background-color: #F3F3F3; border: none; }");
-    //setTextCursor()
 }
 
 void TextBlockBrowser::setStyleOnSelection(FormatItem x, bool value)
@@ -409,4 +293,108 @@ void TextBlockWidget::onAnchorClicked(const QUrl& url)
         qDebug() << "onAnchorClicked blocked because ctrl is not pressed";
     }
     
+}
+
+void TextBlockWidget::exportToQtXml(QDomElement& dest, QDomDocument& dom_doc)
+{
+
+
+    QTextDocument* doc = this->text_browser->document();
+    QTextBlock block = doc->begin();
+
+    dest.setTagName(QStringLiteral("text-block"));
+
+    while (block.isValid())
+    {
+        for (QTextBlock::Iterator iter = block.begin(); !iter.atEnd(); iter++)
+        {
+            QTextFragment fragment = iter.fragment();
+            QString text = fragment.text();
+            if (text == "\n")
+            {
+                dest.appendChild(dom_doc.createElement("br"));
+                continue;
+            }
+            QTextCharFormat format = fragment.charFormat();
+            bool bold = 0, italic = 0, underline = 0, strike = 0;
+            QDomElement new_node;
+
+            switch (getQTextCharFormatType(format))
+            {
+            case TextType::code:
+
+                new_node = dom_doc.createElement("code");
+                dest.appendChild(new_node);
+                break;
+            case TextType::link:
+                new_node = dom_doc.createElement("link");
+                dest.appendChild(new_node);
+                new_node.setAttribute("href", format.anchorHref());
+                break;
+
+            default:
+                bold = format.fontWeight() == QFont::Bold;
+                italic = format.fontItalic();
+                underline = format.fontUnderline();
+                strike = format.fontStrikeOut();
+                new_node = dom_doc.createElement("text");
+                new_node.setAttribute("format-code", createFormatCode(bold, italic, underline, strike));
+                break;
+
+            }
+            new_node.appendChild(dom_doc.createTextNode(text));
+            dest.appendChild(new_node);
+        }
+        block = block.next();
+        dest.appendChild(dom_doc.createElement("br"));
+    }
+    return;
+}
+
+
+void TextBlockWidget::importFromQtXml(QDomElement& src)
+{
+    text_browser->clear();
+    QTextCursor cursor = text_browser->textCursor();
+    for (QDomNode child = src.firstChild(); !child.isNull(); child = child.nextSibling())
+    {
+        QDomElement elem = child.toElement();
+        assert(!elem.isNull());
+
+        if (elem.tagName() == "br")
+        {
+            cursor.insertText("\n");
+        }
+        else
+        {
+            QDomText text_node = elem.firstChild().toText();
+            assert(!text_node.isNull());
+            QString text = text_node.data();
+            QString name = elem.tagName();
+
+            if (name == "text")
+            {
+                int format_code = elem.attribute("format-code").toInt();
+                bool bold, italic, underline, strike;
+                decodeFormatCode(format_code, bold, italic, underline, strike);
+                cursor.insertText(text,normalFormat(bold, italic, underline, strike)
+                );
+            }
+            else if (name == "code")
+            {
+                cursor.insertText(text,codeFormat());
+            }
+            else if (name == "link")
+            {
+                cursor.insertText(text,linkFormat(elem.attribute("href")));
+            }
+            else
+            {
+                qDebug() << "Unknown child.name() = " << name;
+
+            }
+        }
+
+        
+    }
 }

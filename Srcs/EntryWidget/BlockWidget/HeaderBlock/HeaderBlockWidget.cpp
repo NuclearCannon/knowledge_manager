@@ -108,3 +108,16 @@ void HeaderBlockWidget::keyPressEvent(QKeyEvent* e) {
 
 
 
+void HeaderBlockWidget::exportToQtXml(QDomElement& dest, QDomDocument& dom_doc)
+{
+    dest.setTagName(QStringLiteral("header-block"));
+    dest.setAttribute("level", level);
+    dest.appendChild(dom_doc.createTextNode(line->text()));
+}
+
+void HeaderBlockWidget::importFromQtXml(QDomElement& src)
+{
+    line->setText(src.firstChild().toText().data());
+    level = src.attribute("level").toInt();
+    line->setFont(*header_fonts[level]);
+}

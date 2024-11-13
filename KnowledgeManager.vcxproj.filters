@@ -142,6 +142,15 @@
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderLineEdit.cpp">
       <Filter>Srcs\EntryWidget\BlockWidget\HeaderBlock</Filter>
     </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextFormats.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\TextBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\InputUrlDialog.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\TextBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\EntryXml.cpp">
+      <Filter>Srcs\EntryWidget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Srcs\Compress\compression.h">

@@ -37,7 +37,7 @@
   </ImportGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
     <QtInstall>6.7.3_msvc2022_64</QtInstall>
-    <QtModules>core;gui;widgets</QtModules>
+    <QtModules>core;gui;widgets;xml</QtModules>
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
@@ -105,9 +105,12 @@
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderBlockWidget.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderLineEdit.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\ImageBlock\ImageBlockWidget.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\InputUrlDialog.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockWidget.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextFormats.cpp" />
     <ClCompile Include="Srcs\EntryWidget\EntryArea.cpp" />
     <ClCompile Include="Srcs\EntryWidget\EntryWidget.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\EntryXml.cpp" />
     <ClCompile Include="Srcs\EntryWidget\pugixml\pugixml.cpp" />
     <ClCompile Include="Srcs\main.cpp" />
     <ClCompile Include="Srcs\MainWindow\KMMainWindow.cpp" />

@@ -8,7 +8,6 @@
 #include <vector>
 #include <algorithm>
 #include <QFile>
-#include "../EntryWidget/pugixml/pugixml.hpp"
 
 class Tag
 {
@@ -54,15 +53,12 @@ private:
 	std::map<int,Tag*> tags;
 	std::map<int,EntryMeta*> entrys;  // 词条集合
 	std::set<int> anchors;  // 锚点
-	int loadFromPugiDoc(pugi::xml_document& doc);
-	void dumpToPugiDoc(pugi::xml_document& doc);
 public:
 	MetaData();
 	~MetaData();
-	// 加载方法，成功return 0
-	int load(QFile&);
-	// 保存方法
-	void dump(QFile&);
+
+	int loadQtXml(QFile&);
+	void dumpQtXml(QFile&);
 
 	void clear();
 

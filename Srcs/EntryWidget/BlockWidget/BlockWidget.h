@@ -2,6 +2,7 @@
 #include <QWidget>
 #include "../pugixml/pugixml.hpp"
 #include <QFocusEvent>
+#include <QtXml>
 
 class EntryArea;  // 对BlockArea进行声明，方便定义友元
 class FocusEventFilter;
@@ -33,6 +34,8 @@ public:
 	virtual BlockType type() const = 0;
 	virtual void exportToPugi(pugi::xml_node& dest) = 0;
 	virtual void importFromPugi(const pugi::xml_node& node) = 0;
+	virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc) = 0;
+	virtual void importFromQtXml(QDomElement& src) = 0;
 
 signals:
 	void contentChange();
