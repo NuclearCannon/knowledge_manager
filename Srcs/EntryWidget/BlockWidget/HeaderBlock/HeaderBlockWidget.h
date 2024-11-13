@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "BlockWidget.h"
+#include "../BlockWidget.h"
 #include <QLineEdit>
 #include <QBoxLayout>
 

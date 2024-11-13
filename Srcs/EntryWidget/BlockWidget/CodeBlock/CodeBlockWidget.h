@@ -4,8 +4,8 @@
 #include <QSyntaxHighlighter>
 #include <QRegularExpression>
 #include <QComboBox>
-#include "BlockWidget.h"
-#include "../pugixml/pugixml.hpp"
+#include "../BlockWidget.h"
+#include "../../pugixml/pugixml.hpp"
 #include <stack>
 
 

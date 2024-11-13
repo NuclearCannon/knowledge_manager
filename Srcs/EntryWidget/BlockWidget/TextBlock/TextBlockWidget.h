@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "BlockWidget.h"
+#include "../BlockWidget.h"
 #include <QTextBrowser>
 #include <QDialog>
 #include <QLineEdit>

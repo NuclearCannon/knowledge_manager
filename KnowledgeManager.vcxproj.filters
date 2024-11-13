@@ -39,6 +39,18 @@
     <Filter Include="Srcs\NewKLGuidance">
       <UniqueIdentifier>{2a04d5ab-d5e6-4890-b32b-f35a397a094b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Srcs\EntryWidget\BlockWidget\CodeBlock">
+      <UniqueIdentifier>{d6adc306-f628-4604-8c5a-005e46925365}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\EntryWidget\BlockWidget\TextBlock">
+      <UniqueIdentifier>{97fa0dc2-7c09-4819-a01b-0d5567225771}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\EntryWidget\BlockWidget\ImageBlock">
+      <UniqueIdentifier>{0be2b1b2-3c31-4c03-832b-4c0a6b069b48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Srcs\EntryWidget\BlockWidget\HeaderBlock">
+      <UniqueIdentifier>{87addb50-0b73-4cf6-986d-f50d79d1daf4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="KnowledgeManager.qrc">
@@ -53,18 +65,6 @@
       <Filter>Srcs\Compress</Filter>
     </ClCompile>
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\BlockWidget.cpp">
-      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
-    </ClCompile>
-    <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlockWidget.cpp">
-      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
-    </ClCompile>
-    <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlockWidget.cpp">
-      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
-    </ClCompile>
-    <ClCompile Include="Srcs\EntryWidget\BlockWidget\ImageBlockWidget.cpp">
-      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
-    </ClCompile>
-    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlockWidget.cpp">
       <Filter>Srcs\EntryWidget\BlockWidget</Filter>
     </ClCompile>
     <ClCompile Include="Srcs\EntryWidget\pugixml\pugixml.cpp">
@@ -118,6 +118,18 @@
     <ClCompile Include="Srcs\NewKLGuidance\new_kl_guidance.cpp">
       <Filter>Srcs\NewKLGuidance</Filter>
     </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlock\CodeBlockWidget.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\CodeBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderBlockWidget.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\HeaderBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\ImageBlock\ImageBlockWidget.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\ImageBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockWidget.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\TextBlock</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Srcs\Compress\compression.h">
@@ -146,18 +158,6 @@
     <QtMoc Include="Srcs\EntryWidget\BlockWidget\BlockWidget.h">
       <Filter>Srcs\EntryWidget\BlockWidget</Filter>
     </QtMoc>
-    <QtMoc Include="Srcs\EntryWidget\BlockWidget\CodeBlockWidget.h">
-      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
-    </QtMoc>
-    <QtMoc Include="Srcs\EntryWidget\BlockWidget\HeaderBlockWidget.h">
-      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
-    </QtMoc>
-    <QtMoc Include="Srcs\EntryWidget\BlockWidget\ImageBlockWidget.h">
-      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
-    </QtMoc>
-    <QtMoc Include="Srcs\EntryWidget\BlockWidget\TextBlockWidget.h">
-      <Filter>Srcs\EntryWidget\BlockWidget</Filter>
-    </QtMoc>
     <QtMoc Include="Srcs\EntryWidget\EntryArea.h">
       <Filter>Srcs\EntryWidget</Filter>
     </QtMoc>
@@ -181,6 +181,18 @@
     </QtMoc>
     <QtMoc Include="Srcs\NewKLGuidance\new_kl_guidance.h">
       <Filter>Srcs\NewKLGuidance</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\CodeBlock\CodeBlockWidget.h">
+      <Filter>Srcs\EntryWidget\BlockWidget\CodeBlock</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderBlockWidget.h">
+      <Filter>Srcs\EntryWidget\BlockWidget\HeaderBlock</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\ImageBlock\ImageBlockWidget.h">
+      <Filter>Srcs\EntryWidget\BlockWidget\ImageBlock</Filter>
+    </QtMoc>
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockWidget.h">
+      <Filter>Srcs\EntryWidget\BlockWidget\TextBlock</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>

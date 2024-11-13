@@ -1,5 +1,5 @@
 ﻿#include "CodeBlockWidget.h"
-#include "../EntryArea.h"
+#include "../../EntryArea.h"
 #include <QBoxLayout>
 #include <sstream>
 

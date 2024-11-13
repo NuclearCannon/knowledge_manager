@@ -98,10 +98,10 @@
     <ClCompile Include="Srcs\Compress\compression.cpp" />
     <ClCompile Include="Srcs\Compress\miniz.c" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\BlockWidget.cpp" />
-    <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlockWidget.cpp" />
-    <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlockWidget.cpp" />
-    <ClCompile Include="Srcs\EntryWidget\BlockWidget\ImageBlockWidget.cpp" />
-    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlockWidget.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlock\CodeBlockWidget.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderBlockWidget.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\ImageBlock\ImageBlockWidget.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockWidget.cpp" />
     <ClCompile Include="Srcs\EntryWidget\EntryArea.cpp" />
     <ClCompile Include="Srcs\EntryWidget\EntryWidget.cpp" />
     <ClCompile Include="Srcs\EntryWidget\pugixml\pugixml.cpp" />
@@ -124,6 +124,10 @@
     <ClInclude Include="Srcs\Compress\compression.h" />
     <ClInclude Include="Srcs\Compress\miniz.h" />
     <ClInclude Include="Srcs\EntryWidget\BlockWidget\BlockWidgets.h" />
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\CodeBlock\CodeBlockWidget.h" />
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderBlockWidget.h" />
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\ImageBlock\ImageBlockWidget.h" />
+    <QtMoc Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockWidget.h" />
     <ClInclude Include="Srcs\MainWindow\MetaData.h" />
     <QtMoc Include="Srcs\NewKLGuidance\new_kl_guidance.h" />
     <ClInclude Include="Srcs\public.h" />
@@ -136,10 +140,6 @@
     <QtMoc Include="Srcs\EntryWidget\EntryArea.h" />
     <ClInclude Include="Srcs\EntryWidget\pugixml\pugiconfig.hpp" />
     <ClInclude Include="Srcs\EntryWidget\pugixml\pugixml.hpp" />
-    <QtMoc Include="Srcs\EntryWidget\BlockWidget\TextBlockWidget.h" />
-    <QtMoc Include="Srcs\EntryWidget\BlockWidget\ImageBlockWidget.h" />
-    <QtMoc Include="Srcs\EntryWidget\BlockWidget\HeaderBlockWidget.h" />
-    <QtMoc Include="Srcs\EntryWidget\BlockWidget\CodeBlockWidget.h" />
     <QtMoc Include="Srcs\EntryWidget\BlockWidget\BlockWidget.h" />
   </ItemGroup>
   <ItemGroup>
