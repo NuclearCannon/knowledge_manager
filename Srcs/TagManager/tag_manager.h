@@ -26,7 +26,6 @@ public slots:
 	void actNewTag();  // 新建标签
 	void actDeleteTag();  // 删除标签
 	void actEditTag();  // 修改标签
-	void actSortTag();  // 标签字典序排序
 
 	void tagItemClicked(QListWidgetItem* item);  // 选中后再次点击取消选中
 

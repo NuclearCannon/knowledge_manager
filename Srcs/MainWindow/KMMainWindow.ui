@@ -288,7 +288,6 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <property name="title">
      <string>搜索</string>
     </property>
-    <addaction name="act_search_kl"/>
     <addaction name="act_search_entry"/>
    </widget>
    <addaction name="menu_file"/>

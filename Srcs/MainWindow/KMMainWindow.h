@@ -94,7 +94,7 @@ private slots:
 
 	// 搜索部分槽函数
 	void actSearchEntry();//搜索词条打开函数
-	void actSearchkl();//搜索库打开函数
+	//void actSearchkl();//搜索库打开函数
 
 	// 锚点、关联标签、标签、大纲 槽函数
 	void relatedEntriedButtonClicked();  // 关联词条

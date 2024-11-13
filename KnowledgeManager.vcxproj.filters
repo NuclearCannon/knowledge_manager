@@ -97,9 +97,6 @@
     <ClCompile Include="Srcs\Search\search_entry_widget.cpp">
       <Filter>Srcs\Search</Filter>
     </ClCompile>
-    <ClCompile Include="Srcs\Search\search_kl_widget.cpp">
-      <Filter>Srcs\Search</Filter>
-    </ClCompile>
     <ClCompile Include="Srcs\TagManager\tag_edit_dialog.cpp">
       <Filter>Srcs\TagManager</Filter>
     </ClCompile>
@@ -173,9 +170,6 @@
     <QtMoc Include="Srcs\Search\search_entry_widget.h">
       <Filter>Srcs\Search</Filter>
     </QtMoc>
-    <QtMoc Include="Srcs\Search\search_kl_widget.h">
-      <Filter>Srcs\Search</Filter>
-    </QtMoc>
     <QtMoc Include="Srcs\TagManager\tag_edit_dialog.h">
       <Filter>Srcs\TagManager</Filter>
     </QtMoc>
@@ -194,9 +188,6 @@
       <Filter>Srcs\MainWindow</Filter>
     </QtUic>
     <QtUic Include="Srcs\Search\search_entry_widget.ui">
-      <Filter>Srcs\Search</Filter>
-    </QtUic>
-    <QtUic Include="Srcs\Search\search_kl_widget.ui">
       <Filter>Srcs\Search</Filter>
     </QtUic>
     <QtUic Include="Srcs\TagManager\tag_edit_dialog.ui">

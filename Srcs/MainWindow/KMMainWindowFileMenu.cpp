@@ -155,21 +155,6 @@ void KMMainWindow::actDeleteEntry()
 // 槽：点击保存库时，保存当前库
 void KMMainWindow::actSaveKL()
 {
-	// 如果是临时库，则询问是否保存
-	if (is_temp_kl)
-	{
-		QMessageBox msg_box(QMessageBox::Warning, "警告", "是否保存当前知识库？", QMessageBox::Yes | QMessageBox::No, this);
-		msg_box.button(QMessageBox::Yes)->setText("是");
-		msg_box.button(QMessageBox::No)->setText("否");
-		int reply = msg_box.exec();
-
-		if (reply == QMessageBox::No)
-		{
-			return;
-		}
-	}
-
-
 	QFile meta_data_file(getTempKLPath() + "/meta_data.xml");
 
 	// 先打印tags和entries

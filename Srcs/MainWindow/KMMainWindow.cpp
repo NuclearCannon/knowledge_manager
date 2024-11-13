@@ -356,9 +356,9 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path)
 	// 标签部分
 	connect(ui.act_manage_tag, &QAction::triggered, this, &KMMainWindow::actManageTag);  // 管理标签
 
-
+	// 搜索部分
 	connect(ui.act_search_entry, &QAction::triggered, this, &KMMainWindow::actSearchEntry);//点击搜素词条时，打开搜索框
-	connect(ui.act_search_kl, &QAction::triggered, this, &KMMainWindow::actSearchkl);//点击搜素库时，打开搜索框
+	//connect(ui.act_search_kl, &QAction::triggered, this, &KMMainWindow::actSearchkl);//点击搜素库时，打开搜索框
 	//connect(ui.act_search_multi_kl, &QAction::triggered, this, &KMMainWindow::actSearchMultikl);//点击多库搜素时，打开搜索框
 	//connect(ui.act_merge_kl, &QAction::triggered, this, &KMMainWindow::actopenmergekl);//点击合库时，打开搜索框
 	//connect(ui.act_separate_kl, &QAction::triggered, this, &KMMainWindow::actopenseparatekl);//点击分库时，打开搜索框

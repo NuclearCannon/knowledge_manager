@@ -5,7 +5,7 @@
 #include <QFile>
 
 #include "KMMainWindow.h"
-#include "../Search/search_kl_widget.h"
+//#include "../Search/search_kl_widget.h"
 #include "../Search/search_entry_widget.h"
 
 //搜索词条打开函数
@@ -53,9 +53,9 @@ void KMMainWindow::onUpdateTabWidget(const QString& klName, const QString& klPat
 	//	main_window->show();
 	//}
 }
-//搜索库打开函数
-void KMMainWindow::actSearchkl() {
-	search_kl_widget* search_kl = new search_kl_widget(this, this, kl_name);
-	search_kl->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
-	search_kl->show();
-};
+////搜索库打开函数
+//void KMMainWindow::actSearchkl() {
+//	search_kl_widget* search_kl = new search_kl_widget(this, this, kl_name);
+//	search_kl->setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
+//	search_kl->show();
+//};

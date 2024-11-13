@@ -19,7 +19,6 @@ TagManager::TagManager(KMMainWindow* _main_window, QWidget* parent)
 	connect(ui->new_tag_button, &QPushButton::clicked, this, &TagManager::actNewTag);
 	connect(ui->delete_tag_button, &QPushButton::clicked, this, &TagManager::actDeleteTag);
 	connect(ui->edit_tag_button, &QPushButton::clicked, this, &TagManager::actEditTag);
-	connect(ui->sort_tag_button, &QPushButton::clicked, this, &TagManager::actSortTag);
 
 	connect(ui->tag_list_widget, &QListWidget::itemClicked, this, &TagManager::tagItemClicked);
 }
@@ -36,8 +35,12 @@ void TagManager::refreshTagList()
 
 	const MetaData& meta_data = main_window->getMetaData();
 
+	auto tags = meta_data.getTags();
+	std::sort(tags.begin(), tags.end(), [](const Tag* a, const Tag* b) {
+		return a->name() < b->name();
+	});
 
-	for (auto& tag : meta_data.getTags())
+	for (const auto& tag : tags)
 	{
 		QListWidgetItem* item = new QListWidgetItem();
 		item->setSizeHint(QSize(0, 40));
@@ -204,30 +207,12 @@ void TagManager::actEditTag()
 			QMessageBox::warning(this, "错误", "标签名重复");
 			return;
 		}
+		rnt = meta_data.modifyTagColor(tag_id, new_color);
 
 		// 刷新标签列表
 		TagManager::refreshTagList();
 
 		emit tagChanged();
-	}
-}
-
-// 槽：标签字典序排序
-void TagManager::actSortTag()
-{
-	// 将list_widget按字典序排序
-	QList<QListWidgetItem*> items;
-	while (ui->tag_list_widget->count() > 0)
-	{
-		// takeItem()函数会从listWidget中移除item，但不会删除item（不释放item的空间）
-		items.append(ui->tag_list_widget->takeItem(0));  // 一直移除第一个item
-	}
-	std::sort(items.begin(), items.end(), [](QListWidgetItem* a, QListWidgetItem* b) {return a->text() < b->text(); });
-
-	// 重新添加item
-	for (QListWidgetItem* item : items)
-	{
-		ui->tag_list_widget->addItem(item);
 	}
 }
 
