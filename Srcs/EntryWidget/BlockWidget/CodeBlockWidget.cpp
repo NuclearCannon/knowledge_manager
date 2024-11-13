@@ -197,17 +197,98 @@ CodeBlockWidget* CodeEdit::toBlockParent() const
     return parent_ptr;
 }
 
+void CodeEdit::undo()
+{
+    this->QTextEdit::undo();
+}
+void CodeEdit::redo()
+{
+    this->QTextEdit::redo();
+}
+void CodeEdit::clearUndoStack()
+{
+    this->document()->clearUndoRedoStacks();
+}
 
 // LanguageComboBox
 
 LanguageComboBox::LanguageComboBox(CodeBlockWidget* parent) :
     QComboBox(parent) 
 {
+    blockSignals(true);
+    addItem("Plain Text");
     addItem("C++");
     addItem("Python");
     addItem("HTML");
-    setEditable(true);
+    current_index = 0;
+    setCurrentIndex(0);
+    // 修改后，删除redo栈，并且压入undo栈
+    connect(this, &LanguageComboBox::currentIndexChanged, this, &LanguageComboBox::clearRedoStackOnly);
+    connect(this, &LanguageComboBox::currentIndexChanged, this, &LanguageComboBox::undoRecord);
+    blockSignals(false);
 };
+
+
+void LanguageComboBox::undo()
+{
+    if (undo_stack.empty())
+    {
+        // 撤销栈为空，什么都不做
+        qDebug() << "LanguageComboBox: undo stack is empty!";
+    }
+    else
+    {
+        redo_stack.push(current_index);
+        blockSignals(true);
+        current_index = undo_stack.top();
+        setCurrentIndex(current_index);
+        blockSignals(false);
+        undo_stack.pop();
+
+        emit languageBoxUndoRedo();
+    }
+}
+void LanguageComboBox::redo()
+{
+    if (redo_stack.empty())
+    {
+        // 重做栈为空，什么都不做
+        qDebug() << "LanguageComboBox: redo stack is empty!";
+    }
+    else
+    {
+        undo_stack.push(currentIndex());
+        blockSignals(true);
+        current_index = redo_stack.top();
+        setCurrentIndex(current_index);
+        blockSignals(false);
+        redo_stack.pop();
+
+        emit languageBoxUndoRedo();
+    }
+}
+void LanguageComboBox::clearUndoStack()
+{
+    clearUndoStackOnly();
+    clearRedoStackOnly();
+}
+
+void LanguageComboBox::clearUndoStackOnly()
+{
+    std::stack<int> empty;
+    undo_stack.swap(empty);
+}
+
+void LanguageComboBox::clearRedoStackOnly()
+{
+    std::stack<int> empty;
+    redo_stack.swap(empty);
+}
+void LanguageComboBox::undoRecord()
+{
+    undo_stack.push(current_index);
+    current_index = currentIndex();
+}
 
 
 //代码块
@@ -221,12 +302,13 @@ CodeBlockWidget::CodeBlockWidget(QWidget* parent) :BlockWidget(parent), code_edi
     // combo box
     languange_box = new LanguageComboBox(this);
     layout->addWidget(languange_box);
-    this->setLayout(layout);
-    // 把文本框的“文本变化”信号连接到槽“调整高度”上
+    setLayout(layout);
+
     connect(code_edit, &CodeEdit::textChanged, this, &CodeBlockWidget::justifyHeight);
     connect(code_edit, &CodeEdit::textChanged, this, &CodeBlockWidget::emitContentChange);
-    connect(languange_box, &LanguageComboBox::currentTextChanged, this, &CodeBlockWidget::emitContentChange);
-    connect(languange_box, &LanguageComboBox::currentTextChanged, this, &CodeBlockWidget::updateHighlighter);
+    connect(languange_box, &LanguageComboBox::currentIndexChanged, this, &CodeBlockWidget::emitContentChange);
+    connect(languange_box, &LanguageComboBox::currentIndexChanged, this, &CodeBlockWidget::updateHighlighter);
+    connect(languange_box, &LanguageComboBox::currentIndexChanged, this, &CodeBlockWidget::languageBoxUndoRedo);
     
     // 安装事件过滤器
 
@@ -262,13 +344,13 @@ CodeBlockWidget::~CodeBlockWidget()
 void CodeBlockWidget::exportToPugi(pugi::xml_node& dest)
 {
     dest.set_name("code-block");
-    dest.append_attribute("language").set_value(languange_box->currentText().toStdString().c_str());
+    dest.append_attribute("language").set_value(languange_box->currentIndex());
     dest.text().set(code_edit->toPlainText().toStdString().c_str());
 }
 
 void CodeBlockWidget::importFromPugi(const pugi::xml_node& node)
 {
-    languange_box->setCurrentText(node.attribute("languange").as_string());
+    languange_box->setCurrentIndex(node.attribute("languange").as_int());
     code_edit->setPlainText(QString::fromStdString(node.text().as_string()));
 }
 
@@ -280,29 +362,26 @@ BlockType CodeBlockWidget::type() const
 void CodeBlockWidget::updateHighlighter()  // 根据当前languange_box的选择更新highlighter
 {
 
-    QString current = languange_box->currentText();
+    qDebug() << "CodeBlockWidget::updateHighlighter: text=" << languange_box->currentText();
 
-    qDebug() << "updateHighlighter: text=" << current;
-
-    if (current == "C++")
+    switch (languange_box->currentIndex())
     {
+    case 1:
         qDebug() << "C++";
         code_edit->setHighlighter(HighlightingRules::getCppRules());
-    }
-    else if (current == "Python")
-    {
+        break;
+    case 2:
         qDebug() << "Python";
         code_edit->setHighlighter(HighlightingRules::getPythonRules());
-    }
-    else if (current == "HTML")
-    {
+        break;
+    case 3:
         qDebug() << "HTML";
         code_edit->setHighlighter(HighlightingRules::getHtmlRules());
-    }
-    else
-    {
-        qDebug() << "Default";
+        break;
+    default:
+        qDebug() << "Default Or PlainText";
         code_edit->removeHighlighter();
+        break;
     }
-
 }
+

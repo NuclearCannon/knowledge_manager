@@ -45,7 +45,7 @@ protected slots:
 
 };
 
-
+// 焦点移动事件过滤器
 class FocusEventFilter : public QObject
 {
 	Q_OBJECT
@@ -59,3 +59,11 @@ protected:
 	bool eventFilter(QObject* watched, QEvent* event);
 };
 
+class BlockControl
+{
+public:
+	virtual void undo() = 0;
+	virtual void redo() = 0;
+	virtual void clearUndoStack() = 0;
+
+};

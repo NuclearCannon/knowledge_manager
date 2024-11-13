@@ -243,6 +243,19 @@ void TextBlockBrowser::setTypeOnSelection(TextType type)
 }
 
 
+void TextBlockBrowser::undo()
+{
+    this->QTextBrowser::undo();
+}
+void TextBlockBrowser::redo()
+{
+    this->QTextBrowser::redo();
+}
+void TextBlockBrowser::clearUndoStack()
+{
+    this->document()->clearUndoRedoStacks();
+}
+
 TextBlockWidget::TextBlockWidget(QWidget* parent) :
     BlockWidget(parent), text_browser(0)
 {

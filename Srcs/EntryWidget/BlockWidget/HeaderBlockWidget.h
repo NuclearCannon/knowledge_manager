@@ -2,12 +2,22 @@
 #include "BlockWidget.h"
 #include <QLineEdit>
 #include <QBoxLayout>
+
+class HeaderLineEdit : public QLineEdit, public BlockControl
+{
+public:
+    HeaderLineEdit(QWidget* parent);
+    void undo();
+    void redo();
+    void clearUndoStack();
+};
+
 class HeaderBlockWidget : public BlockWidget
 {
 	Q_OBJECT
 private:
     static QFont h1Font, h2Font, h3Font, h4Font, h5Font, h6Font;
-    QLineEdit *line;
+    HeaderLineEdit *line;
     QVBoxLayout* layout;
     int level;
     

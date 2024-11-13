@@ -36,13 +36,16 @@ private:
     bool resultAccepted = false;
 };
 
-class TextBlockBrowser : public QTextBrowser
+class TextBlockBrowser : public QTextBrowser, public BlockControl
 {
     Q_OBJECT
 public:
     TextBlockBrowser(TextBlockWidget* parent);
     void setStyleOnSelection(FormatItem x, bool value = true);
     void setTypeOnSelection(TextType type);
+    void undo();
+    void redo();
+    void clearUndoStack();
 };
 
 

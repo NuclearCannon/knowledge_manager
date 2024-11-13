@@ -12,14 +12,13 @@ HeaderBlockWidget::HeaderBlockWidget(QWidget* parent) :
     BlockWidget(parent), line(0), level(1), layout(0)
 {
     layout = new QVBoxLayout(this);
-    line = new QLineEdit(this);
+    line = new HeaderLineEdit(this);
     line->setMinimumHeight(32);
     line->setFont(h1Font);
     line->installEventFilter(filter);
     layout->addWidget(line);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    connect(line, &QLineEdit::textChanged, this, &HeaderBlockWidget::emitContentChange);
-
+    connect(line, &HeaderLineEdit::textChanged, this, &HeaderBlockWidget::emitContentChange);
 }
 
 HeaderBlockWidget::~HeaderBlockWidget()
@@ -102,4 +101,30 @@ void HeaderBlockWidget::keyPressEvent(QKeyEvent* e) {
 
 
     BlockWidget::keyPressEvent(e);
+}
+
+
+HeaderLineEdit::HeaderLineEdit(QWidget* parent) :
+    QLineEdit(parent)
+{
+
+}
+void HeaderLineEdit::undo()
+{
+    this->QLineEdit::undo();
+}
+
+void HeaderLineEdit::redo()
+{
+    this->QLineEdit::redo();
+}
+
+void HeaderLineEdit::clearUndoStack()
+{
+    // QLineEdit没有直接访问undo stack的接口，我们要通过一点间接手段
+    blockSignals(true);
+    QString copy = text();
+    clear();
+    setText(copy);
+    blockSignals(false);
 }

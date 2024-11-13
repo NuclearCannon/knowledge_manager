@@ -6,6 +6,8 @@
 #include <QComboBox>
 #include "BlockWidget.h"
 #include "../pugixml/pugixml.hpp"
+#include <stack>
+
 
 class CodeBlockWidget;
 
@@ -43,7 +45,7 @@ public:
     void highlightBlock(const QString& text);
 };
 
-class CodeEdit : public QTextEdit
+class CodeEdit : public QTextEdit, public BlockControl
 {
     Q_OBJECT
 public:
@@ -52,6 +54,10 @@ public:
     CodeBlockWidget* toBlockParent() const;
     void setHighlighter(const QVector<HighlightingRule>& rules);
     void removeHighlighter();
+    void undo();
+    void redo();
+    void clearUndoStack();
+
 protected:
     void keyPressEvent(QKeyEvent* event) override;
 private:
@@ -61,13 +67,25 @@ private:
 
 
 
-class LanguageComboBox : public QComboBox
+class LanguageComboBox : public QComboBox, public BlockControl
 {
     Q_OBJECT
+
+private:
+    std::stack<int> undo_stack, redo_stack;
+    int current_index;
 public:
     LanguageComboBox(CodeBlockWidget* parent);
-
-    
+    void undo();  // 不会触发currendIndexChanged, 而会触发languageBoxUndoRedo
+    void redo();  // 不会触发currendIndexChanged, 而会触发languageBoxUndoRedo
+    void clearUndoStack();
+private:
+    void clearUndoStackOnly();
+private slots:
+    void clearRedoStackOnly();
+    void undoRecord();
+signals:
+    void languageBoxUndoRedo();
 };
 
 
@@ -86,6 +104,15 @@ private:
     LanguageComboBox* languange_box;
 private slots:
     void updateHighlighter();  // 根据当前languange_box的选择更新highlighter
+    void languageBoxChanged()
+    {
+        emitContentChange();
+    }
+    void languageBoxUndoRedo()
+    {
+        emitContentChange();
+    }
+
 public slots:
     void justifyHeight();
 };
