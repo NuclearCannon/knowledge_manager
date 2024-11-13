@@ -169,19 +169,28 @@ void TagManager::actEditTag()
 
 	// 获取当前标签的名字和颜色，并应用到tag_edit_dialog中
 	QString old_tag = item->data(NameRole).toString();
+	QString old_color = item->data(ColorRole).toString();
 	tag_edit_dialog.setName(old_tag);
-	tag_edit_dialog.setColor(item->data(ColorRole).toString());
+	tag_edit_dialog.setColor(old_color);
 
 	if (tag_edit_dialog.exec() == QDialog::Accepted)  // 用户点了确定
 	{
 		QString tag_name = tag_edit_dialog.getName();
 		QString color = tag_edit_dialog.getColor();
 
+		// 如果相等，不修改
+		if (tag_name == old_tag && color == old_color)
+		{
+			return;
+		}
+
 		// 提醒是否真的修改
-		QString hint = "将修改知识库 " + main_window->getKLName() + " 内所有 " + old_tag + " 标签为 " + tag_name + " ，是否继续？";
+		//QString hint = "将修改知识库 " + main_window->getKLName() + " 内所有 " + old_tag + " 标签为 " + tag_name + " ，是否继续？";
+		QString hint = "是否将库中所有的标签“" + old_tag + "（" + old_color + "）”修改为“" + tag_name + "（" + color + "）”？";
 		QMessageBox* hint_box = new QMessageBox(QMessageBox::Warning, "警告", hint, QMessageBox::Yes | QMessageBox::No, this);
 		hint_box->button(QMessageBox::Yes)->setText("是");
 		hint_box->button(QMessageBox::No)->setText("否");
+
 		if (hint_box->exec() == QMessageBox::No)
 		{
 			return;

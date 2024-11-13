@@ -409,7 +409,7 @@ bool KMMainWindow::openEntry(int entry_id)
 	return true;
 }
 
-// 关闭时，询问未保存的词条，从 current_kl_list 中删除当前库
+// 关闭时，询问未保存的词条，从 current_kl_list、临时文件区 中删除当前库
 void KMMainWindow::closeEvent(QCloseEvent* event)
 {
 	// 询问是否保存
@@ -432,7 +432,7 @@ void KMMainWindow::closeEvent(QCloseEvent* event)
 	}
 	
 	// 从 current_kl_list 中删除当前库
-	if (removeKLFromCurrentKLList(getKLName(), getOriginalKLPath()) == Status::Error)
+	if (removeKLFromCurrentKLList(kl_name, original_kl_path) == Status::Error)
 	{
 		QMessageBox::warning(this, "错误", "无法从 current_kl_list 中删除当前库：" + KMMainWindow::kl_name);
 		// 询问是否继续关闭
@@ -448,6 +448,21 @@ void KMMainWindow::closeEvent(QCloseEvent* event)
 		{
 
 			event->accept();
+			return;
+		}
+	}
+
+	// 从 临时文件区 中删除当前库
+	QDir temp_kl_dir(temp_kl_path);
+	if (!temp_kl_dir.removeRecursively()) {
+		QMessageBox::warning(this, "错误", "无法删除临时知识库：" + temp_kl_path);
+		// 询问是否继续关闭
+		QMessageBox box(QMessageBox::Warning, "警告", "是否关闭程序？", QMessageBox::Yes | QMessageBox::No, this);
+		box.button(QMessageBox::Yes)->setText("是");
+		box.button(QMessageBox::No)->setText("否");
+		if (box.exec() == QMessageBox::No)
+		{
+			event->ignore();
 			return;
 		}
 	}
