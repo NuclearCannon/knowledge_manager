@@ -104,14 +104,7 @@ private:
     LanguageComboBox* languange_box;
 private slots:
     void updateHighlighter();  // 根据当前languange_box的选择更新highlighter
-    void languageBoxChanged()
-    {
-        emitContentChange();
-    }
-    void languageBoxUndoRedo()
-    {
-        emitContentChange();
-    }
+    void handleLanguageChanged();
 
 public slots:
     void justifyHeight();

@@ -99,6 +99,9 @@
     <ClCompile Include="Srcs\Compress\miniz.c" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\BlockWidget.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlock\CodeBlockWidget.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlock\CodeEdit.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlock\Highlight.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlock\LanguageBox.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderBlockWidget.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\ImageBlock\ImageBlockWidget.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockWidget.cpp" />
