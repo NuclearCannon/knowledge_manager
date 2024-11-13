@@ -139,6 +139,9 @@
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlock\LanguageBox.cpp">
       <Filter>Srcs\EntryWidget\BlockWidget\CodeBlock</Filter>
     </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderLineEdit.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\HeaderBlock</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Srcs\Compress\compression.h">

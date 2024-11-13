@@ -17,6 +17,8 @@ class HeaderBlockWidget : public BlockWidget
 	Q_OBJECT
 private:
     static QFont h1Font, h2Font, h3Font, h4Font, h5Font, h6Font;
+    static const QFont* const header_fonts[];
+
     HeaderLineEdit *line;
     QVBoxLayout* layout;
     int level;
