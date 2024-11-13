@@ -33,18 +33,7 @@ BlockType HeaderBlockWidget::type() const
 
 }
 
-void HeaderBlockWidget::exportToPugi(pugi::xml_node& dest)
-{
-    dest.set_name("header-block");
-    dest.append_attribute("level").set_value(level);
-    dest.text().set(line->text().toStdString().c_str());
-}
-void HeaderBlockWidget::importFromPugi(const pugi::xml_node& node)
-{
-    line->setText(node.child_value());
-    level = node.attribute("level").as_int();
-    line->setFont(*header_fonts[level]);
-}
+
 
 int HeaderBlockWidget::getLevel() const
 {

@@ -29,8 +29,7 @@ public:
     HeaderBlockWidget(QWidget* parent);
     ~HeaderBlockWidget();
     virtual BlockType type() const;
-    virtual void exportToPugi(pugi::xml_node& dest);
-    virtual void importFromPugi(const pugi::xml_node& node);
+
 
     virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc);
     virtual void importFromQtXml(QDomElement& src);

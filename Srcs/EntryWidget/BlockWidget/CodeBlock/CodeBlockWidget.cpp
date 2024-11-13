@@ -1,5 +1,5 @@
 ﻿#include "CodeBlockWidget.h"
-#include "../../EntryArea.h"
+//#include "../../EntryArea.h"
 #include <QBoxLayout>
 
 
@@ -50,21 +50,6 @@ CodeBlockWidget::~CodeBlockWidget()
 
 
 
-
-void CodeBlockWidget::exportToPugi(pugi::xml_node& dest)
-{
-    dest.set_name("code-block");
-    dest.append_attribute("language").set_value(languange_box->currentIndex());
-    dest.text().set(code_edit->toPlainText().toStdString().c_str());
-}
-
-void CodeBlockWidget::importFromPugi(const pugi::xml_node& node)
-{
-    qDebug() << "CodeBlockWidget::importFromPugi(" << node.attribute("language").as_int() << ")";
-
-    languange_box->setCurrentIndex(node.attribute("language").as_int());
-    code_edit->setPlainText(QString::fromStdString(node.text().as_string()));
-}
 
 BlockType CodeBlockWidget::type() const
 {
