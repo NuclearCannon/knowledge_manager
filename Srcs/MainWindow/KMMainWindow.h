@@ -62,6 +62,9 @@ public:
 	// 新建知识库的帮助函数，参数是知识库的路径，返回是否成功新建，路径是带.km后缀的
 	bool createNewKnowledgeLibraryHelper(QString file_path);
 
+	// 焦点过滤器
+	bool eventFilter(QObject* obj, QEvent* event) override;
+
 private slots:
 	// 文件菜单相关的槽函数
 	void actCreateEntry();  // 点击新建词条时，创建一个新的词条并加载到tab
@@ -118,6 +121,7 @@ private slots:
 
 	// 词条tab相关的槽函数
 	void tabWidgetChanged(int index);  // tab改变时，更新锚点、关联词条、大纲、标签
+	void showTabContextMenu(const QPoint& pos);  // 右键tab，弹出菜单，包括 关闭，关闭其他，删除，修改名称
 
 	// 知识库发生变化时，更新MainWindow的标题（在知识库名称后面加" *"）
 	void handleKLChanged();  
