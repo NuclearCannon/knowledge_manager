@@ -550,12 +550,6 @@ bool KMMainWindow::createNewKnowledgeLibraryHelper(QString file_path)
 		QMessageBox::warning(this, "错误", "知识库路径不存在");
 		return false;
 	}
-	else if (target_kl_dir.exists(target_kl_name + ".km"))
-	{
-		QMessageBox::warning(this, "错误", "目标文件夹存在同名知识库");
-		return false;
-	}
-
 
 	// 创建知识库文件夹
 
@@ -738,7 +732,7 @@ bool KMMainWindow::openKnowledgeLibrary(const QString& open_kl_path)
 		KMMainWindow* main_window = KMMainWindow::construct(open_kl_path);
 		if (main_window == nullptr)
 		{
-			QMessageBox::warning(this, "错误", "打开知识库失败！");
+			//QMessageBox::warning(this, "错误", "打开知识库失败！");
 			return false;
 		}
 		main_window->show();

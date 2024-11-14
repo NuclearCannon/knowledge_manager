@@ -122,7 +122,6 @@
     <ClCompile Include="Srcs\MainWindow\KMMainWindowTagMenu.cpp" />
     <ClCompile Include="Srcs\MainWindow\kmui_search_memu.cpp" />
     <ClCompile Include="Srcs\MainWindow\MetaData.cpp" />
-    <ClCompile Include="Srcs\NewKLGuidance\new_kl_guidance.cpp" />
     <ClCompile Include="Srcs\public.cpp" />
     <ClCompile Include="Srcs\RecentKLWindow\RecentKLWindow.cpp" />
     <ClCompile Include="Srcs\Search\search_entry_widget.cpp" />
@@ -138,7 +137,6 @@
     <QtMoc Include="Srcs\EntryWidget\BlockWidget\ImageBlock\ImageBlockWidget.h" />
     <QtMoc Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockWidget.h" />
     <ClInclude Include="Srcs\MainWindow\MetaData.h" />
-    <QtMoc Include="Srcs\NewKLGuidance\new_kl_guidance.h" />
     <ClInclude Include="Srcs\public.h" />
     <QtMoc Include="Srcs\RecentKLWindow\RecentKLWindow.h" />
     <QtMoc Include="Srcs\TagManager\tag_manager.h" />
@@ -151,7 +149,6 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="Srcs\MainWindow\KMMainWindow.ui" />
-    <QtUic Include="Srcs\NewKLGuidance\newklguidance.ui" />
     <QtUic Include="Srcs\RecentKLWindow\RecentKLWindow.ui" />
     <QtUic Include="Srcs\Search\search_entry_widget.ui" />
     <QtUic Include="Srcs\TagManager\tag_edit_dialog.ui" />

@@ -1,14 +1,14 @@
 #include <QTextEdit>
 #include <QMessageBox>
 #include <QString>
-#include <QInputDialog>
 #include <QFile>
 #include <QDialog>
+#include <QPushButton>
+#include <QFileDialog>
 
 #include "KMMainWindow.h"
 #include "../EntryWidget/EntryWidget.h"
 #include "../Compress/compression.h"
-#include "../NewKLGuidance/new_kl_guidance.h"
 #include "../RecentKLWindow/RecentKLWindow.h"
 #include "../public.h"
 
@@ -200,6 +200,9 @@ void KMMainWindow::actSaveKL()
 			"Knowledge Manager Files (*.km))"
 		);
 
+		// 点了x或者取消
+		if (file_path == "") return;
+
 		// 要保存的话，不调用创建知识库的函数，自己压缩temp_kl_path到用户指定的路径
 
 		// 首先检查一下临时文件夹是否存在
@@ -337,8 +340,10 @@ void KMMainWindow::actCreateNewKnowledgeLibrary()
 		"Knowledge Manager Files (*.km))"
 	);
 
-	//创建知识库的函数，在用户指定的路径构建文件夹并压缩，然后打开
-	createNewKnowledgeLibraryHelper(file_path);
+	if (file_path != "") {
+		//创建知识库的函数，在用户指定的路径构建文件夹并压缩，然后打开
+		createNewKnowledgeLibraryHelper(file_path);
+	}
 }
 
 // 槽：点击新建空白知识库时，新建一个空白知识库
