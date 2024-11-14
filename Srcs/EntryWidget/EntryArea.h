@@ -34,6 +34,7 @@ private:
     BlockWidget* newBlockWidgetByType(BlockType type);
 
     void deleteBlockWidget(BlockWidget*);
+    void contextMenuEvent(QContextMenuEvent* event);
 
 public:
     
@@ -68,7 +69,6 @@ public:
     static EntryArea* open(QWidget* parent, const QDir& dir);
     static EntryArea* initialize(QWidget* parent, const QDir& dir);
     QDir getRootDir() const;  
-    // 响应文本块要求
 signals:
     void contentChange();
 signals:
@@ -80,6 +80,11 @@ public slots:
     void handleInsertAboveFromBlock(BlockWidget*, BlockType);
     void handleInsertBelowFromBlock(BlockWidget*, BlockType);
     void handleDeleteFromBlock(BlockWidget*);
+private slots:
+    void handleAppendTextBlock();
+    void handleAppendCodeBlock();
+    void handleAppendImageBlock();
+    void handleAppendHeaderBlock();
 
     
 };

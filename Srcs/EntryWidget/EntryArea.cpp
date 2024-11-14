@@ -2,7 +2,7 @@
 #include "BlockWidget/BlockWidgets.h"
 #include <QApplication>
 #include <sstream>
-
+#include <QMenu>
 
 
 // EntryArea::OutlineItem
@@ -142,4 +142,31 @@ void EntryArea::handleDeleteFromBlock(BlockWidget* block)
         qWarning() << "EntryArea::handleDeleteFromBlock(BlockWidget* block) ERROR";
         return;
     }
+}
+
+void EntryArea::contextMenuEvent(QContextMenuEvent* event)
+{
+    QMenu menu(nullptr);
+    connect(menu.addAction("在末尾添加文本块"), &QAction::triggered, this, &EntryArea::handleAppendTextBlock);
+    connect(menu.addAction("在末尾添加代码块"), &QAction::triggered, this, &EntryArea::handleAppendCodeBlock);
+    connect(menu.addAction("在末尾添加图片块"), &QAction::triggered, this, &EntryArea::handleAppendImageBlock);
+    connect(menu.addAction("在末尾添加文本块"), &QAction::triggered, this, &EntryArea::handleAppendHeaderBlock);
+    menu.exec(event->globalPos());
+}
+
+void EntryArea::handleAppendTextBlock()
+{
+    appendBlock(BlockType::Text);
+}
+void EntryArea::handleAppendCodeBlock()
+{
+    appendBlock(BlockType::Code);
+}
+void EntryArea::handleAppendImageBlock()
+{
+    appendBlock(BlockType::Image);
+}
+void EntryArea::handleAppendHeaderBlock()
+{
+    appendBlock(BlockType::Header);
 }
