@@ -26,6 +26,7 @@ TextBlockWidget::TextBlockWidget(QWidget* parent) :
     // 连接更改信号
     connect(text_browser, &TextBlockBrowser::textChanged, this, &TextBlockWidget::emitContentChange);
     connect(text_browser, &TextBlockBrowser::textChanged, this, &TextBlockWidget::justifyHeight);
+    connect(text_browser, &TextBlockBrowser::contextMenuQuery, this, &TextBlockWidget::handleContextMenuQueryFromControls);
 
     justifyHeight();// 调整一次高度
 
@@ -155,3 +156,4 @@ void TextBlockWidget::importFromQtXml(QDomElement& src)
         
     }
 }
+

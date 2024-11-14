@@ -15,7 +15,8 @@ private:
     QVBoxLayout* layout;
     BlockWidget* head, * tail;
     QDir root_dir, attachment_dir;
-    QSet<BlockWidget*> blocks;
+    QList<BlockWidget*> blocks;
+
     BlockWidget* focus;
     bool saved;
     // 构造函数私有：不允许手动构造，必须使用open或者initialize构造
@@ -24,6 +25,13 @@ private:
     int find(BlockWidget* block_widget);  // 定位一个块，返回其下标
     
     QFile entry_file;
+
+    TextBlockWidget* createTextBlock();
+    CodeBlockWidget* createCodeBlock();
+    ImageBlockWidget* createImageBlock();
+    HeaderBlockWidget* createHeaderBlock();
+
+    BlockWidget* newBlockWidgetByType(BlockType type);
 
 public:
     
@@ -45,7 +53,7 @@ public:
     int rollTo(int position);// 滚动到指定位置，如果滚动失败返回0，滚动成功返回1
     int length() const;  // 返回块列表的长度
     BlockWidget* getWidgetByIndex(int index);// 根据下标取一个块指针，如果越界返回nullptr
-    BlockWidget* newBlockWidgetByType(BlockType type);
+    
     void insertBlockAbove(BlockWidget* block_widget, BlockType type);
     void insertBlockAbove(BlockWidget* block_widget, BlockWidget* new_block);
     int insertBlockAbove(BlockType type);
@@ -71,6 +79,9 @@ signals:
 public slots:
     void contentChangeSlot();
     void titleChangeSlot();
+    void handleInsertAboveFromBlock(BlockWidget*, BlockType);
+    void handleInsertBelowFromBlock(BlockWidget*, BlockType);
+    void handleDeleteFromBlock(BlockWidget*);
 
     
 };

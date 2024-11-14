@@ -19,16 +19,16 @@ class BlockWidget : public QWidget
 	Q_OBJECT
 private:
 	friend class EntryArea;
-	void setLast(BlockWidget* p);
-	void setNext(BlockWidget* p);
+	//void setLast(BlockWidget* p);
+	//void setNext(BlockWidget* p);
 protected:
-	BlockWidget* last, * next;
+	//BlockWidget* last, * next;
 	FocusEventFilter* filter;
 public:
 	BlockWidget(QWidget* parent);
 	virtual ~BlockWidget();
-	BlockWidget* getLast() const;
-	BlockWidget* getNext() const;
+	//BlockWidget* getLast() const;
+	//BlockWidget* getNext() const;
 	// 下面这些纯虚函数的存在使得该类本身不能实例化，只有实现了这些函数子类才能实例化
 	virtual BlockType type() const = 0;
 	virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc) = 0;
@@ -36,12 +36,29 @@ public:
 
 signals:
 	void contentChange();
-
 signals:
-	void linkClicked(QUrl);
+	void insertAbove(BlockWidget*, BlockType);  // 当用户通过右键菜单在上方插入时发送
+signals:
+	void insertBelow(BlockWidget*, BlockType);  // 当用户通过右键菜单在下方插入时发送
+signals:
+	void deletThisBlock(BlockWidget*);  // 当用户通过右键菜单删除此块时发送
+
 protected slots:
 	void emitContentChange();
-	void emitLinkClicked(QUrl url);
+
+	void handleContextMenuInsertAboveText();
+	void handleContextMenuInsertAboveCode();
+	void handleContextMenuInsertAboveImage();
+	void handleContextMenuInsertAboveHeader();
+
+	void handleContextMenuInsertBelowText();
+	void handleContextMenuInsertBelowCode();
+	void handleContextMenuInsertBelowImage();
+	void handleContextMenuInsertBelowHeader();
+
+	void handleContextMenuDelete();
+
+	virtual void handleContextMenuQueryFromControls(QContextMenuEvent* event);
 
 };
 

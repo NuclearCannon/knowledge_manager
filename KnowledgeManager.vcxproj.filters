@@ -148,6 +148,12 @@
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockBrowser.cpp">
       <Filter>Srcs\EntryWidget\BlockWidget\TextBlock</Filter>
     </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockMenu.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\TextBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\EntryAreaBlockOperations.cpp">
+      <Filter>Srcs\EntryWidget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Srcs\Compress\compression.h">

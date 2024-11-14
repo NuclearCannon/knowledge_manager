@@ -63,6 +63,11 @@ public:
     void clearUndoStack();
 protected:
     void mousePressEvent(QMouseEvent* event);
+    void contextMenuEvent(QContextMenuEvent* event);
+
+signals:
+    void contextMenuQuery(QContextMenuEvent*);
+
 };
 
 
@@ -82,5 +87,11 @@ public:
 
 private slots:
     void justifyHeight();
+    void handleContextMenuUndo();
+    void handleContextMenuRedo();
+
+protected:
+    void contextMenuEvent(QContextMenuEvent* event);
+    //void handleContextMenuQueryFromControls(QContextMenuEvent* event);
 };
 

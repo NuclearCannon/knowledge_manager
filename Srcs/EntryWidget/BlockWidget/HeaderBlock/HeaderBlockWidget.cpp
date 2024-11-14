@@ -1,4 +1,5 @@
 ﻿#include "HeaderBlockWidget.h"
+#include <QMenu>
 
 QFont HeaderBlockWidget::h1Font("Arial", 32, QFont::Bold);
 QFont HeaderBlockWidget::h2Font("Arial", 28, QFont::Bold);
@@ -19,6 +20,7 @@ HeaderBlockWidget::HeaderBlockWidget(QWidget* parent) :
     layout->addWidget(line);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     connect(line, &HeaderLineEdit::textChanged, this, &HeaderBlockWidget::emitContentChange);
+    connect(line, &HeaderLineEdit::contextMenuQuery, this, &HeaderBlockWidget::handleContextMenuQueryFromControls);
 }
 
 HeaderBlockWidget::~HeaderBlockWidget()
@@ -109,4 +111,64 @@ void HeaderBlockWidget::importFromQtXml(QDomElement& src)
     line->setText(src.firstChild().toText().data());
     level = src.attribute("level").toInt();
     line->setFont(*header_fonts[level]);
+}
+
+
+//void HeaderBlockWidget::handleContextMenuQueryFromControls(QContextMenuEvent* event)
+//{
+//    contextMenuEvent(event);
+//}
+
+void HeaderBlockWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+    // 创建一个菜单
+    QMenu contextMenu(this);
+
+    // 添加菜单项
+    QAction* action_undo = contextMenu.addAction("撤销");
+    connect(action_undo, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuUndo);
+
+    QAction* action_redo = contextMenu.addAction("重做");
+    connect(action_redo, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuRedo);
+
+    QAction* action_delete = contextMenu.addAction("删除");
+    connect(action_delete, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuDelete);
+
+    QMenu* menu_insert_above = contextMenu.addMenu("在上方插入");
+    QAction* action_insert_above_text = menu_insert_above->addAction("文本块");
+    connect(action_insert_above_text, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuInsertAboveText);
+
+    QAction* action_insert_above_code = menu_insert_above->addAction("代码块");
+    connect(action_insert_above_code, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuInsertAboveCode);
+
+    QAction* action_insert_above_image = menu_insert_above->addAction("图片块");
+    connect(action_insert_above_image, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuInsertAboveImage);
+
+    QAction* action_insert_above_header = menu_insert_above->addAction("标题块");
+    connect(action_insert_above_header, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuInsertAboveHeader);
+
+    QMenu* menu_insert_below = contextMenu.addMenu("在下方插入");
+    QAction* action_insert_below_text = menu_insert_below->addAction("文本块");
+    connect(action_insert_below_text, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuInsertBelowText);
+
+    QAction* action_insert_below_code = menu_insert_below->addAction("代码块");
+    connect(action_insert_below_code, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuInsertBelowCode);
+
+    QAction* action_insert_below_image = menu_insert_below->addAction("图片块");
+    connect(action_insert_below_image, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuInsertBelowImage);
+
+    QAction* action_insert_below_header = menu_insert_below->addAction("标题块");
+    connect(action_insert_below_header, &QAction::triggered, this, &HeaderBlockWidget::handleContextMenuInsertBelowHeader);
+
+    // 在事件发生的位置显示菜单
+    contextMenu.exec(event->globalPos());
+}
+
+void HeaderBlockWidget::handleContextMenuUndo()
+{
+    line->undo();
+}
+void HeaderBlockWidget::handleContextMenuRedo()
+{
+    line->redo();
 }

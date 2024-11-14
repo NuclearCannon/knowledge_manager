@@ -36,6 +36,7 @@ TextBlockBrowser::TextBlockBrowser(TextBlockWidget* parent) :
     setOpenExternalLinks(true);
     setTabStopDistance(20);
     setStyleSheet("TextBlockBrowser:hover { background-color: #E0E0E0; border: none; }  TextBlockBrowser { background-color: #F3F3F3; border: none; }");
+    setUndoRedoEnabled(true);
 }
 
 void TextBlockBrowser::setStyleOnSelection(FormatItem x, bool value)
