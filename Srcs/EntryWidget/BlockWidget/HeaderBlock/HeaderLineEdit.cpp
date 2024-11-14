@@ -3,7 +3,7 @@
 HeaderLineEdit::HeaderLineEdit(QWidget* parent) :
     QLineEdit(parent)
 {
-
+    setStyleSheet("HeaderLineEdit:hover { background-color: rgba(0, 0, 0, 20); border: none; }  HeaderLineEdit { background-color: rgba(0, 0, 0, 0); border: none; }");
 }
 void HeaderLineEdit::undo()
 {
