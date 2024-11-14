@@ -145,6 +145,9 @@
     <ClCompile Include="Srcs\EntryWidget\EntryXml.cpp">
       <Filter>Srcs\EntryWidget</Filter>
     </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockBrowser.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\TextBlock</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Srcs\Compress\compression.h">

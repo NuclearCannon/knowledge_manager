@@ -106,6 +106,7 @@
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderLineEdit.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\ImageBlock\ImageBlockWidget.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\InputUrlDialog.cpp" />
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockBrowser.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextBlockWidget.cpp" />
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextFormats.cpp" />
     <ClCompile Include="Srcs\EntryWidget\EntryArea.cpp" />

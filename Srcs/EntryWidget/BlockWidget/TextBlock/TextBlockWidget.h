@@ -53,6 +53,7 @@ private:
 class TextBlockBrowser : public QTextBrowser, public BlockControl
 {
     Q_OBJECT
+private:
 public:
     TextBlockBrowser(TextBlockWidget* parent);
     void setStyleOnSelection(FormatItem x, bool value = true);
@@ -60,6 +61,8 @@ public:
     void undo();
     void redo();
     void clearUndoStack();
+protected:
+    void mousePressEvent(QMouseEvent* event);
 };
 
 
@@ -79,6 +82,5 @@ public:
 
 private slots:
     void justifyHeight();
-    void onAnchorClicked(const QUrl& url);
 };
 
