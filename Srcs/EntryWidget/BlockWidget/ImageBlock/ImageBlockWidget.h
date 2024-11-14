@@ -22,7 +22,7 @@ public:
     virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc);
     virtual void importFromQtXml(QDomElement& src);
     virtual void deleteFile();
-
+    void clearUndoStack();
 protected:
     void contextMenuEvent(QContextMenuEvent* event);
     void resizeEvent(QResizeEvent* e) override;

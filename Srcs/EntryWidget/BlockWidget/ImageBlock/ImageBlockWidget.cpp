@@ -239,3 +239,8 @@ void ImageBlockWidget::deleteFile()
 {
     attachment_dir.remove(filename);
 }
+
+void ImageBlockWidget::clearUndoStack()
+{
+    // do nothing
+}

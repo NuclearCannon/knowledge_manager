@@ -19,11 +19,10 @@ class BlockWidget : public QWidget
 	Q_OBJECT
 private:
 	friend class EntryArea;
-	//void setLast(BlockWidget* p);
-	//void setNext(BlockWidget* p);
+
 protected:
-	//BlockWidget* last, * next;
 	FocusEventFilter* filter;
+
 public:
 	BlockWidget(QWidget* parent);
 	virtual ~BlockWidget();
@@ -34,6 +33,7 @@ public:
 	virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc) = 0;
 	virtual void importFromQtXml(QDomElement& src) = 0;
 	virtual void deleteFile();  // 专为含有文件的块设计，默认行为是什么也不做
+	virtual void clearUndoStack() = 0;
 signals:
 	void contentChange();
 signals:

@@ -167,7 +167,9 @@ void CodeBlockWidget::handleRedoBox()
 {
     languange_box->redo();
 }
-//void CodeBlockWidget::handleContextMenuQueryFromControls(QContextMenuEvent* event)
-//{
-//    contextMenuEvent(event);
-//}
+
+void CodeBlockWidget::clearUndoStack()
+{
+    code_edit->clearUndoStack();
+    languange_box->clearUndoStack();
+}

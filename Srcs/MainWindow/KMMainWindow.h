@@ -78,6 +78,9 @@ private slots:
 	void actAddCodeBlock();  // 添加一个代码块
 	void actAddImageBlock();  // 添加一个图片块
 	void actAddHeaderBlock();  // 添加一个标题块
+	void actUndo();
+	void actRedo();
+
 
 	// 样式部分槽函数
 	void actBold();

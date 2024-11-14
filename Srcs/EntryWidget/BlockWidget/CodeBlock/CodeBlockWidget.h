@@ -104,6 +104,7 @@ public:
     virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc);
     virtual void importFromQtXml(QDomElement& src);
     virtual BlockType type() const;
+    void clearUndoStack();
 private:
     CodeEdit* code_edit;
     LanguageComboBox* languange_box;

@@ -100,7 +100,14 @@ int EntryArea::dumpQtXml()
     // 文件打开成功
     QTextStream stream(&entry_file);
     stream << doc.toString();
-    saved = true;
+    
     entry_file.close();
+    saved = true;
+    // 清空undo栈
+    for (BlockWidget* p : blocks)
+    {
+        p->clearUndoStack();
+    }
+
     return 1;
 }

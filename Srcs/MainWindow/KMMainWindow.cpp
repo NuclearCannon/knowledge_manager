@@ -332,6 +332,8 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _original_kl_
 	connect(ui.act_add_code_block, &QAction::triggered, this, &KMMainWindow::actAddCodeBlock);  // 添加一个代码块
 	connect(ui.act_add_image_block, &QAction::triggered, this, &KMMainWindow::actAddImageBlock);  // 添加一个图片块
 	connect(ui.act_add_header_block, &QAction::triggered, this, &KMMainWindow::actAddHeaderBlock);  // 添加一个标题块
+	connect(ui.act_undo, &QAction::triggered, this, &KMMainWindow::actUndo);
+	connect(ui.act_redo, &QAction::triggered, this, &KMMainWindow::actRedo);
 	// 样式菜单
 	connect(ui.act_set_type_code, &QAction::triggered, this, &KMMainWindow::actSetTypeCode);
 	connect(ui.act_set_type_link, &QAction::triggered, this, &KMMainWindow::actSetTypeLink);

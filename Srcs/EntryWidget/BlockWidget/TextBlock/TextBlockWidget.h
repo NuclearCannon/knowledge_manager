@@ -81,7 +81,7 @@ public:
     virtual ~TextBlockWidget();
     virtual BlockType type() const;
 
-
+    void clearUndoStack();
     virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc);
     virtual void importFromQtXml(QDomElement& src);
 
@@ -92,6 +92,5 @@ private slots:
 
 protected:
     void contextMenuEvent(QContextMenuEvent* event);
-    //void handleContextMenuQueryFromControls(QContextMenuEvent* event);
 };
 

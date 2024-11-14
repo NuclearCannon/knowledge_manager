@@ -157,3 +157,7 @@ void TextBlockWidget::importFromQtXml(QDomElement& src)
     }
 }
 
+void TextBlockWidget::clearUndoStack()
+{
+    text_browser->clearUndoStack();
+}

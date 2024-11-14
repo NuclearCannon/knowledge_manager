@@ -42,8 +42,9 @@ public:
     int getLevel() const;
     std::string toStdString() const;
     QString toQString() const;
+
+    void clearUndoStack();
 private slots:
-    //void handleContextMenuQueryFromControls(QContextMenuEvent* event);
     void handleContextMenuUndo();
     void handleContextMenuRedo();
 protected:

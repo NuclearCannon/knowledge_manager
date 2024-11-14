@@ -172,3 +172,8 @@ void HeaderBlockWidget::handleContextMenuRedo()
 {
     line->redo();
 }
+
+void HeaderBlockWidget::clearUndoStack()
+{
+    line->clearUndoStack();
+}

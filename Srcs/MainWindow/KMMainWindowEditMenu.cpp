@@ -131,3 +131,14 @@ void KMMainWindow::addPointOut()
 
 	handleKLChanged();
 }
+
+void KMMainWindow::actUndo()
+{
+	BlockControl* control = dynamic_cast<BlockControl*>(focusWidget());
+	control->undo();
+}
+void KMMainWindow::actRedo()
+{
+	BlockControl* control = dynamic_cast<BlockControl*>(focusWidget());
+	control->redo();
+}
