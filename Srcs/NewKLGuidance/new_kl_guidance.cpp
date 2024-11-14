@@ -130,7 +130,7 @@ void NewKLGuidance::createButtonClicked()
 		meta_data_file.close();
 
 		//压缩文件夹
-		if (!compress_folder(target_kl_path.toStdString(), new_kl_path.toStdString()))
+		if (!compress_folder_2(target_kl_path.toStdString(), new_kl_path.toStdString()))
 		{
 			// 删除刚刚创建的文件夹
 			if (!kl_dir.removeRecursively())
@@ -176,7 +176,7 @@ void NewKLGuidance::createButtonClicked()
 		}
 
 		// 压缩文件夹
-		if (!compress_folder(temp_kl_path.toStdString(), target_kl_path.toStdString() + ".km"))
+		if (!compress_folder_2(temp_kl_path.toStdString(), target_kl_path.toStdString() + ".km"))
 		{
 			QMessageBox::warning(this, "错误", "压缩知识库失败！");
 			valid = false;

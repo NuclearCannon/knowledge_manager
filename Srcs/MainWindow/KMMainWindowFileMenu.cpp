@@ -264,7 +264,7 @@ void KMMainWindow::actSaveKL()
 	else 
 	{
 		// 压缩知识库
-		if (!compress_folder(getTempKLPath().toStdString(), getOriginalKLPath().toStdString()))
+		if (!compress_folder_2(getTempKLPath().toStdString(), getOriginalKLPath().toStdString()))
 		{
 			QMessageBox::warning(this, "错误", "压缩知识库失败！");
 			return;

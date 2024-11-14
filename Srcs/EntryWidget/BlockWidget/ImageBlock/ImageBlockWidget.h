@@ -18,12 +18,9 @@ protected:
     void resizeEvent(QResizeEvent* e) override;
 public:
     virtual BlockType type() const;
-
     virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc);
     virtual void importFromQtXml(QDomElement& src);
 
-//public slots:
-//    void handleContextMenuQueryFromControls(QContextMenuEvent* event);
 protected:
     void contextMenuEvent(QContextMenuEvent* event);
 
@@ -34,6 +31,9 @@ private:
     QPixmap* pixmap;
     QString filename;
     QDir attachment_dir;
+
+    //void getImageFile();
+
 };
 
 
