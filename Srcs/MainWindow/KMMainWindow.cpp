@@ -323,7 +323,6 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _original_kl_
 	connect(ui.act_set_current_entry_as_anchor, &QAction::triggered, this, &KMMainWindow::actSetCurrentEntryAsAnchor);  // 设置当前词条为锚点
 	connect(ui.act_save_kl, &QAction::triggered, this, &KMMainWindow::actSaveKL);  // 点击保存库时，保存当前库
 	connect(ui.act_create_new_knowledge_library, &QAction::triggered, this, &KMMainWindow::actCreateNewKnowledgeLibrary);  // 点击新建知识库时，新建一个知识库
-	connect(ui.act_create_blank_knowledge_library, &QAction::triggered, this, &KMMainWindow::actCreateBlankKnowledgeLibrary);  // 点击新建空白知识库时，新建一个空白知识库
 	connect(ui.act_open_knowledge_library, &QAction::triggered, this, &KMMainWindow::actOpenKnowledgeLibrary);  // 点击打开知识库时，打开一个知识库
 	connect(ui.act_recent_knowledge_library, &QAction::triggered, this, &KMMainWindow::actRecentKnowledgeLibrary);  // 点击最近打开的知识库时，弹出最近打开的知识库列表
 	

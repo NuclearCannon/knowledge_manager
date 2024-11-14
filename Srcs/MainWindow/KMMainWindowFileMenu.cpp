@@ -330,25 +330,21 @@ void KMMainWindow::actSetCurrentEntryAsAnchor()
 
 }
 
-// 槽：点击新建知识库时，新建一个知识库
+// 槽：点击新建知识库时，新建一个空白知识库
 void KMMainWindow::actCreateNewKnowledgeLibrary()
 {
-	QString file_path = QFileDialog::getSaveFileName(
-		this,
-		"保存知识库",
-		default_path_for_all_kls,
-		"Knowledge Manager Files (*.km))"
-	);
+	//QString file_path = QFileDialog::getSaveFileName(
+	//	this,
+	//	"保存知识库",
+	//	default_path_for_all_kls,
+	//	"Knowledge Manager Files (*.km))"
+	//);
 
-	if (file_path != "") {
-		//创建知识库的函数，在用户指定的路径构建文件夹并压缩，然后打开
-		createNewKnowledgeLibraryHelper(file_path);
-	}
-}
+	//if (file_path != "") {
+	//	//创建知识库的函数，在用户指定的路径构建文件夹并压缩，然后打开
+	//	createNewKnowledgeLibraryHelper(file_path);
+	//}
 
-// 槽：点击新建空白知识库时，新建一个空白知识库
-void KMMainWindow::actCreateBlankKnowledgeLibrary()
-{
 	KMMainWindow* main_window = KMMainWindow::construct();
 	if (main_window == nullptr)
 	{

@@ -218,7 +218,6 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <addaction name="act_set_current_entry_as_anchor"/>
     <addaction name="separator"/>
     <addaction name="act_create_new_knowledge_library"/>
-    <addaction name="act_create_blank_knowledge_library"/>
     <addaction name="act_open_knowledge_library"/>
     <addaction name="act_save_kl"/>
     <addaction name="act_recent_knowledge_library"/>
@@ -319,29 +318,6 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="act_recent_entries">
-   <property name="text">
-    <string>打开最近词条</string>
-   </property>
-   <property name="toolTip">
-    <string>打开最近词条</string>
-   </property>
-  </action>
-  <action name="act_create_new_kl">
-   <property name="text">
-    <string>新建库</string>
-   </property>
-  </action>
-  <action name="act_open_kl">
-   <property name="text">
-    <string>打开库文件</string>
-   </property>
-  </action>
-  <action name="act_open_recent_kl">
-   <property name="text">
-    <string>打开最近库文件</string>
-   </property>
-  </action>
   <action name="act_cut_and_paste">
    <property name="text">
     <string>剪切</string>
@@ -410,54 +386,9 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <string>删除线</string>
    </property>
   </action>
-  <action name="act_inline_code">
-   <property name="text">
-    <string>内联代码</string>
-   </property>
-  </action>
-  <action name="act_insert_image">
-   <property name="text">
-    <string>插入图片</string>
-   </property>
-  </action>
-  <action name="act_new_label">
-   <property name="text">
-    <string>新建标签</string>
-   </property>
-  </action>
-  <action name="act_delete_label">
-   <property name="text">
-    <string>删除标签</string>
-   </property>
-  </action>
-  <action name="act_edit_label">
-   <property name="text">
-    <string>修改标签</string>
-   </property>
-  </action>
-  <action name="act_search_label">
-   <property name="text">
-    <string>搜索标签</string>
-   </property>
-  </action>
-  <action name="act_recent_label">
-   <property name="text">
-    <string>最近使用</string>
-   </property>
-  </action>
-  <action name="act_search_multi_kl">
-   <property name="text">
-    <string>多库搜索</string>
-   </property>
-  </action>
   <action name="act_search_entry">
    <property name="text">
     <string>搜索词条</string>
-   </property>
-  </action>
-  <action name="act_open_start_window">
-   <property name="text">
-    <string>打开启动窗口</string>
    </property>
   </action>
   <action name="act_manage_tag">
@@ -485,11 +416,6 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <string>标题块</string>
    </property>
   </action>
-  <action name="action1_6">
-   <property name="text">
-    <string>1</string>
-   </property>
-  </action>
   <action name="act_set_current_entry_as_anchor">
    <property name="text">
     <string>将当前词条设为锚点</string>
@@ -513,16 +439,6 @@ QTabBar::tab:selected, QTabBar::tab:hover {
   <action name="act_set_type_link">
    <property name="text">
     <string>链接</string>
-   </property>
-  </action>
-  <action name="actionli">
-   <property name="text">
-    <string>li</string>
-   </property>
-  </action>
-  <action name="actionst">
-   <property name="text">
-    <string>st</string>
    </property>
   </action>
   <action name="act_remove_bold">
@@ -558,11 +474,6 @@ QTabBar::tab:selected, QTabBar::tab:hover {
   <action name="act_recent_knowledge_library">
    <property name="text">
     <string>查看历史知识库</string>
-   </property>
-  </action>
-  <action name="act_create_blank_knowledge_library">
-   <property name="text">
-    <string>新建空白知识库</string>
    </property>
   </action>
   <action name="act_undo">

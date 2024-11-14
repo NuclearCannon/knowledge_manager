@@ -69,8 +69,7 @@ private slots:
 	void actDeleteEntry();  // 点击删除词条时，询问并删除当前词条，同时删除对应的tab
 	void actSetCurrentEntryAsAnchor();  // 设置当前词条为锚点
 	void actSaveKL();  // 点击保存库时，保存当前库
-	void actCreateNewKnowledgeLibrary();  // 点击新建知识库时，新建一个知识库
-	void actCreateBlankKnowledgeLibrary();  // 点击新建空白知识库时，新建一个空白知识库
+	void actCreateNewKnowledgeLibrary();  // 点击新建知识库时，新建一个空白知识库
 	void actOpenKnowledgeLibrary();  // 点击打开知识库
 	void actRecentKnowledgeLibrary();  // 点击最近打开的知识库时，弹出最近打开的知识库列表
 
