@@ -295,6 +295,9 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _original_kl_
 	in_entries_list->setContextMenuPolicy(Qt::CustomContextMenu);
 	out_entries_list->setContextMenuPolicy(Qt::CustomContextMenu);
 	tag_list->setContextMenuPolicy(Qt::CustomContextMenu);
+	
+	// tab_widget的tabBar右键菜单
+	ui.tab_widget->tabBar()->setContextMenuPolicy(Qt::CustomContextMenu);
 
 	// 左边的锚点、关联、标签、大纲的按钮
 	connect(ui.anchor_button, &QPushButton::clicked, this, &KMMainWindow::anchorButtonClicked);
@@ -316,6 +319,7 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _original_kl_
 	// tabwidget相关
 	connect(ui.tab_widget, &QTabWidget::tabCloseRequested, this, &KMMainWindow::actTabCloseRequested);  // 点击tab关闭按钮时，关闭特定的tab
 	connect(ui.tab_widget, &QTabWidget::currentChanged, this, &KMMainWindow::tabWidgetChanged);  // tab改变时，更新左边的锚点、关联、标签、大纲
+	connect(ui.tab_widget->tabBar(), &QTabBar::customContextMenuRequested, this, &KMMainWindow::showTabContextMenu);  // 右键tab，弹出菜单，包括 关闭，关闭其他，删除，修改名称
 
 	// 文件菜单
 	connect(ui.act_create_entry, &QAction::triggered, this, &KMMainWindow::actCreateEntry);  // 点击新建文件时，创建一个新的tab
@@ -635,6 +639,107 @@ void KMMainWindow::tabWidgetChanged(int index)
 			synopsisButtonClicked();
 			break;
 	}
+}
+
+// 点击tab关闭按钮时，关闭特定的tab
+void KMMainWindow::actTabCloseRequested(int index)
+{
+	ui.tab_widget->removeTab(index);
+}
+
+// 槽：右键tab，弹出菜单，包括 关闭，关闭其他，删除，修改名称
+void KMMainWindow::showTabContextMenu(const QPoint& pos)
+{
+	// 设置当前tab为右键的tab
+	ui.tab_widget->setCurrentIndex(ui.tab_widget->tabBar()->tabAt(pos));
+
+	EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->currentWidget());
+	if (entry_widget == nullptr) return;
+
+	QString delete_text = "删除词条 " + meta_data.getEntry(entry_widget->getEntryId())->title();
+
+	QMenu menu(this);
+	QAction* act_close = new QAction("关闭标签页", this);
+	QAction* act_close_other = new QAction("关闭其他标签页", this);
+	QAction* act_delete = new QAction(delete_text, this);
+	QAction* act_rename_entry = new QAction("重命名", this);
+
+	menu.addAction(act_close);
+	menu.addAction(act_close_other);
+	menu.addAction(act_delete);
+	menu.addAction(act_rename_entry);
+
+	connect(act_close, &QAction::triggered, this, &KMMainWindow::actTabCloseRequested);
+	connect(act_close_other, &QAction::triggered, this, [this]() {
+		QWidget* current_widget = ui.tab_widget->currentWidget();
+		// 先删除左边的tab直到遇到当前的tab
+		while (ui.tab_widget->widget(0) != current_widget)
+		{
+			ui.tab_widget->removeTab(0);
+		}
+		// 再删除右边的tab
+		while (ui.tab_widget->count() > 1)
+		{
+			ui.tab_widget->removeTab(1);
+		}
+	});
+	connect(act_delete, &QAction::triggered, this, &KMMainWindow::actDeleteEntry);
+	connect(act_rename_entry, &QAction::triggered, this, [this]() {
+		QTabBar* tabBar = ui.tab_widget->tabBar();
+		int tab_index = tabBar->currentIndex();
+
+		QString old_entry_name = tabBar->tabText(tab_index);
+
+		QLineEdit* line_edit = new QLineEdit(tabBar);
+		line_edit->setText(old_entry_name);
+		line_edit->setGeometry(tabBar->tabRect(tab_index));
+		line_edit->setFocus();
+		line_edit->selectAll();
+
+		tabBar->setTabText(tab_index, "");
+
+		connect(line_edit, &QLineEdit::editingFinished, this, [this, line_edit, tab_index, old_entry_name]() {
+			QString new_entry_name = line_edit->text();
+			if (!new_entry_name.isEmpty() && new_entry_name != old_entry_name) {
+				ui.tab_widget->setTabText(tab_index, new_entry_name);
+				EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->widget(tab_index));
+				if (entry_widget != nullptr) {
+					meta_data.modifyEntryTitle(entry_widget->getEntryId(), new_entry_name);
+				}
+				handleKLChanged();
+			}
+			else
+			{
+				ui.tab_widget->setTabText(tab_index, old_entry_name);
+			}
+			
+			// 如果左边是锚点，则刷新一下
+			if (ui.left_tab_widget->currentIndex() == 0)
+			{
+				anchorButtonClicked();
+			}
+
+			line_edit->deleteLater();
+		});
+
+		line_edit->installEventFilter(this);  // 这会使得line_edit在失去焦点时，设置tab标题
+		line_edit->show();
+	});
+
+	menu.exec(ui.tab_widget->tabBar()->mapToGlobal(pos));
+}
+
+// 焦点离开时，设置tab标题
+bool KMMainWindow::eventFilter(QObject* obj, QEvent* event)
+{
+	if (event->type() == QEvent::FocusOut) {
+		QLineEdit* line_edit = qobject_cast<QLineEdit*>(obj);
+		if (line_edit) {
+			line_edit->editingFinished();
+			return true;
+		}
+	}
+	return QMainWindow::eventFilter(obj, event);
 }
 
 // 打开知识库函数，kl_path带.km后缀，该函数遇到错误会弹出错误对话框，返回是否成功打开

@@ -12,13 +12,6 @@
 #include "../RecentKLWindow/RecentKLWindow.h"
 #include "../public.h"
 
-// tab相关的槽函数
-// 点击tab关闭按钮时，关闭特定的tab
-void KMMainWindow::actTabCloseRequested(int index)
-{
-	ui.tab_widget->removeTab(index);
-}
-
 // 文件菜单相关的槽函数
 
 // 槽：点击新建词条时，创建一个新的词条并加载到tab
