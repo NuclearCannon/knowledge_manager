@@ -11,18 +11,21 @@ class ImageBlockWidget : public BlockWidget
 {
 	Q_OBJECT
 public:
-    ImageBlockWidget(QWidget* parent, const QDir& attachment_dir);
+
+    static ImageBlockWidget* initialize(QWidget* parent, const QDir& attachment_dir);  // 获取一个图片块，如果失败返回nullptr
+    static ImageBlockWidget* initializeFromQtXml(QWidget* parent, const QDir& attachment_dir, QDomElement& src);
+
+
+    
     ~ImageBlockWidget();
-protected:
-    void mouseDoubleClickEvent(QMouseEvent* event) override;
-    void resizeEvent(QResizeEvent* e) override;
-public:
     virtual BlockType type() const;
     virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc);
     virtual void importFromQtXml(QDomElement& src);
+    virtual void deleteFile();
 
 protected:
     void contextMenuEvent(QContextMenuEvent* event);
+    void resizeEvent(QResizeEvent* e) override;
 
 private:
 	QLabel* label;
@@ -32,8 +35,8 @@ private:
     QString filename;
     QDir attachment_dir;
 
-    //void getImageFile();
-
+    bool getImageFile();
+    ImageBlockWidget(QWidget* parent, const QDir& attachment_dir);
 };
 
 

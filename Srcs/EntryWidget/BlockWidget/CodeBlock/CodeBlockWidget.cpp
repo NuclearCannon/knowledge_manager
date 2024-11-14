@@ -102,7 +102,7 @@ void CodeBlockWidget::importFromQtXml(QDomElement& src)
 void CodeBlockWidget::contextMenuEvent(QContextMenuEvent* event)
 {
     // 创建一个菜单
-    QMenu contextMenu(this);
+    QMenu contextMenu(nullptr);
 
     // 添加菜单项
     QAction* action_undo_edit = contextMenu.addAction("撤销(编辑框)");

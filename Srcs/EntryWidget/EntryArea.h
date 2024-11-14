@@ -33,6 +33,8 @@ private:
 
     BlockWidget* newBlockWidgetByType(BlockType type);
 
+    void deleteBlockWidget(BlockWidget*);
+
 public:
     
     int loadQtXml();
@@ -67,14 +69,10 @@ public:
     static EntryArea* initialize(QWidget* parent, const QDir& dir);
     QDir getRootDir() const;  
     // 响应文本块要求
-    void emitLinkClicked(const QUrl& url);
 signals:
-
     void contentChange();
 signals:
     void titleChange();
-signals:
-    void linkClicked(QUrl url);
     
 public slots:
     void contentChangeSlot();

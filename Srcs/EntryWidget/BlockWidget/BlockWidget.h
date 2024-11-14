@@ -33,7 +33,7 @@ public:
 	virtual BlockType type() const = 0;
 	virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc) = 0;
 	virtual void importFromQtXml(QDomElement& src) = 0;
-
+	virtual void deleteFile();  // 专为含有文件的块设计，默认行为是什么也不做
 signals:
 	void contentChange();
 signals:

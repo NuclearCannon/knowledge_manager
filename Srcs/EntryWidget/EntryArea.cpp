@@ -48,18 +48,6 @@ EntryArea::~EntryArea()
         entry_file.close();
     }
 
-    //// 清空blocks
-    //BlockWidget* p = head, * q;
-    //while (p)
-    //{
-    //    q = p->next;
-    //    layout->removeWidget(p);
-    //    delete p;
-    //    p = q;
-
-    //}
-    //layout->
-    //head = tail = nullptr;
 }
 
 
@@ -136,10 +124,6 @@ void EntryArea::titleChangeSlot()
     emit titleChange();
 }
 
-void EntryArea::emitLinkClicked(const QUrl& url)
-{
-    emit linkClicked(url);
-}
 
 void EntryArea::handleInsertAboveFromBlock(BlockWidget* block, BlockType type)
 {
@@ -151,14 +135,8 @@ void EntryArea::handleInsertBelowFromBlock(BlockWidget* block, BlockType type)
 }
 void EntryArea::handleDeleteFromBlock(BlockWidget* block)
 {
-
-
     try {
-        blocks.removeAll(block);
-        layout->removeWidget(block);
-        block->hide();
-        delete block;
-
+        deleteBlockWidget(block);
     }
     catch (...) {
         qWarning() << "EntryArea::handleDeleteFromBlock(BlockWidget* block) ERROR";

@@ -20,6 +20,7 @@ BlockWidget::~BlockWidget()
 		delete filter;
 		filter = nullptr;
 	}
+	return;
 }
 
 //BlockWidget* BlockWidget::getLast() const { return last; }
@@ -104,4 +105,9 @@ bool FocusEventFilter::eventFilter(QObject* watched, QEvent* event)
 		// 对于其他事件类型，继续传递事件  
 		return QObject::eventFilter(watched, event);
 	}
+}
+
+void BlockWidget::deleteFile()
+{
+	// do nothing
 }

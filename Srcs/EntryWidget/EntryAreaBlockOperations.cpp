@@ -5,6 +5,7 @@ TextBlockWidget* EntryArea::createTextBlock()
     connect(widget, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
     connect(widget, &BlockWidget::insertAbove, this, &EntryArea::handleInsertAboveFromBlock);
     connect(widget, &BlockWidget::insertBelow, this, &EntryArea::handleInsertBelowFromBlock);
+    connect(widget, &BlockWidget::deletThisBlock, this, &EntryArea::handleDeleteFromBlock);
     return widget;
 }
 CodeBlockWidget* EntryArea::createCodeBlock()
@@ -13,14 +14,18 @@ CodeBlockWidget* EntryArea::createCodeBlock()
     connect(widget, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
     connect(widget, &BlockWidget::insertAbove, this, &EntryArea::handleInsertAboveFromBlock);
     connect(widget, &BlockWidget::insertBelow, this, &EntryArea::handleInsertBelowFromBlock);
+    connect(widget, &BlockWidget::deletThisBlock, this, &EntryArea::handleDeleteFromBlock);
     return widget;
 }
 ImageBlockWidget* EntryArea::createImageBlock()
 {
-    ImageBlockWidget* widget = new ImageBlockWidget(this->widget(), attachment_dir);
+    
+    ImageBlockWidget* widget = ImageBlockWidget::initialize(this->widget(), attachment_dir);
+    if (!widget)return nullptr;
     connect(widget, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
     connect(widget, &BlockWidget::insertAbove, this, &EntryArea::handleInsertAboveFromBlock);
     connect(widget, &BlockWidget::insertBelow, this, &EntryArea::handleInsertBelowFromBlock);
+    connect(widget, &BlockWidget::deletThisBlock, this, &EntryArea::handleDeleteFromBlock);
     return widget;
 }
 HeaderBlockWidget* EntryArea::createHeaderBlock()
@@ -30,6 +35,7 @@ HeaderBlockWidget* EntryArea::createHeaderBlock()
     connect(widget, &BlockWidget::insertAbove, this, &EntryArea::handleInsertAboveFromBlock);
     connect(widget, &BlockWidget::insertBelow, this, &EntryArea::handleInsertBelowFromBlock);
     connect(widget, &BlockWidget::contentChange, this, &EntryArea::titleChangeSlot);
+    connect(widget, &BlockWidget::deletThisBlock, this, &EntryArea::handleDeleteFromBlock);
     
     return widget;
 }
@@ -74,37 +80,29 @@ BlockWidget* EntryArea::newBlockWidgetByType(BlockType type)
     {
 
     case BlockType::Text:
-        new_block = new TextBlockWidget(this->widget());
+        new_block = createTextBlock();
         break;
     case BlockType::Code:
-        new_block = new CodeBlockWidget(this->widget());
+        new_block = createCodeBlock();
         break;
     case BlockType::Image:
-        new_block = new ImageBlockWidget(this->widget(), attachment_dir);
+        new_block = createImageBlock();
         break;
     case BlockType::Header:
-        new_block = new HeaderBlockWidget(this->widget());
-        // 对于标题块来说，内容的变动就意味着标题的EntryArea标题的变动！
-        connect(new_block, &BlockWidget::contentChange, this, &EntryArea::titleChangeSlot);
-        // 手动调用titleChangeSlot
-        titleChangeSlot();
+        new_block = createHeaderBlock();
         break;
     default:
         throw "unknown type of block insert";
         break;
     }
-    connect(new_block, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
-    connect(new_block, &BlockWidget::insertAbove, this, &EntryArea::handleInsertAboveFromBlock);
-    connect(new_block, &BlockWidget::insertBelow, this, &EntryArea::handleInsertBelowFromBlock);
-    // 新块意味着内容变动，手动调用contentChangeSlot
-    contentChangeSlot();
     return new_block;
 }
 
 void EntryArea::insertBlockAbove(BlockWidget* block_widget, BlockType type)
 {
+    
     BlockWidget* new_block = newBlockWidgetByType(type);
-    insertBlockAbove(block_widget, new_block);
+    if(new_block)insertBlockAbove(block_widget, new_block);
 }
 
 void EntryArea::insertBlockAbove(BlockWidget* block, BlockWidget* new_block)
@@ -112,6 +110,11 @@ void EntryArea::insertBlockAbove(BlockWidget* block, BlockWidget* new_block)
     int index = blocks.indexOf(block);
     blocks.insert(index, new_block);
     layout->insertWidget(index, new_block);
+    contentChangeSlot();
+    if (block->type() == BlockType::Header)
+    {
+        titleChangeSlot();
+    }
 }
 
 int EntryArea::insertBlockAbove(BlockType type)
@@ -135,7 +138,7 @@ int EntryArea::insertBlockAbove(BlockType type)
 void EntryArea::insertBlockBelow(BlockWidget* block_widget, BlockType type)
 {
     BlockWidget* new_block = newBlockWidgetByType(type);
-    insertBlockBelow(block_widget, new_block);
+    if (new_block)insertBlockBelow(block_widget, new_block);
 
 }
 
@@ -144,6 +147,11 @@ void EntryArea::insertBlockBelow(BlockWidget* block, BlockWidget* new_block)
     int index = blocks.indexOf(block)+1;
     blocks.insert(index, new_block);
     layout->insertWidget(index, new_block);
+    contentChangeSlot();
+    if (block->type() == BlockType::Header)
+    {
+        titleChangeSlot();
+    }
 }
 
 int EntryArea::insertBlockBelow(BlockType type)
@@ -163,25 +171,41 @@ int EntryArea::insertBlockBelow(BlockType type)
 
 void EntryArea::appendBlock(BlockType type)
 {
-    appendBlock(newBlockWidgetByType(type));
+    BlockWidget* new_block = newBlockWidgetByType(type);
+    if (new_block)appendBlock(new_block);
 }
 
 void EntryArea::appendBlock(BlockWidget* block)
 {
     layout->insertWidget(blocks.size(), block);
     blocks.append(block);
+    contentChangeSlot();
+    if (block->type() == BlockType::Header)
+    {
+        titleChangeSlot();
+    }
+}
+void EntryArea::deleteBlockWidget(BlockWidget* block)
+{
+    BlockType type = block->type();
+    block->setParent(nullptr);
+    block->deleteFile();// 清空附件，如果有的话
+    blocks.removeAll(block);
+    layout->removeWidget(block);
+    block->hide();
+    delete block;
+    contentChangeSlot();
+    if (type == BlockType::Header)titleChangeSlot();
 }
 
 int EntryArea::deleteCurrentBlock()
 {
+    
     BlockWidget* current = FocusEventFilter::getFocus();
     if (current == nullptr)return 1;
     if (!has(current))return 2;
     try {
-        blocks.removeAll(current);
-        layout->removeWidget(current);
-        current->hide();
-        delete current;
+        deleteBlockWidget(current);
     }
     catch (...) {
         return 3;
