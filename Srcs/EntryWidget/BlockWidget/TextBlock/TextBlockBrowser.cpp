@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <QDesktopServices>
 #include <QThread>
-
+#include <QMessageBox>
 
 //void openUrlInDefaultBrowser(const QUrl& url) {
 //    // 将QUrl转换为QString
@@ -47,41 +47,52 @@ void TextBlockBrowser::setStyleOnSelection(FormatItem x, bool value)
     // 检查是否有选中的文本，如果没有选中的文本，则不执行任何操作  
     if (!cursor.hasSelection())return;
 
-    int start = cursor.selectionStart(), end = cursor.selectionEnd();
-    cursor.clearSelection();
-    cursor.setPosition(start);
-    cursor.clearSelection();
-    while (cursor.position() != end)
+    int start = cursor.selectionStart();
+    int end = cursor.selectionEnd();
+    bool legal = true;
+    QTextCursor temp_cursor = cursor;
+    temp_cursor.clearSelection();
+    temp_cursor.setPosition(start);
+
+    while (temp_cursor.position() < end)
     {
-
-        cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-        QTextCharFormat currentFormat = cursor.charFormat();
-        // 代码、链接和库内链接不可以被设置格式
-        if (getQTextCharFormatType(currentFormat) == TextType::normal)
+        QTextCharFormat charFormat = temp_cursor.charFormat();
+        TextType type = getQTextCharFormatType(charFormat);
+        if (type == TextType::code)
         {
-            QTextCharFormat newFormat = currentFormat;
-            switch (x)
-            {
-            case FormatItem::bold:
-                newFormat.setFontWeight(value ? QFont::Bold : QFont::Normal);
-                break;
-            case FormatItem::italic:
-                newFormat.setFontItalic(value);
-                break;
-            case FormatItem::underline:
-                newFormat.setFontUnderline(value);
-                break;
-            case FormatItem::strike:
-                newFormat.setFontStrikeOut(value);
-                break;
-            default:
-                throw "Unknown FormatItem in setStyleOnSelection";
-                break;
-
-            }
-            cursor.mergeCharFormat(newFormat);
+            QMessageBox::warning(nullptr, "Warning", QStringLiteral("不可以对内联代码修改样式！"), QMessageBox::Ok);
+            legal = false;
+            break;
 
         }
+        if (type == TextType::link)
+        {
+            QMessageBox::warning(nullptr, "Warning", QStringLiteral("不可以对链接修改样式！"), QMessageBox::Ok);
+            legal = false;
+            break;
+        }
+        temp_cursor.movePosition(QTextCursor::NextCharacter, QTextCursor::MoveAnchor, 1);
+    }
+
+    if (legal)
+    {
+        QTextCharFormat newFormat;
+        switch (x)
+        {
+        case FormatItem::bold:
+            newFormat.setFontWeight(value ? QFont::Bold : QFont::Normal);
+            break;
+        case FormatItem::italic:
+            newFormat.setFontItalic(value);
+            break;
+        case FormatItem::underline:
+            newFormat.setFontUnderline(value);
+            break;
+        case FormatItem::strike:
+            newFormat.setFontStrikeOut(value);
+            break;
+        }
+        cursor.mergeCharFormat(newFormat);
         cursor.clearSelection();
     }
 }
