@@ -67,10 +67,10 @@ bool is_utf8_code_page() {
     return GetACP() == CP_UTF8;
 }
 
-//// 检查系统的当前代码页是否是 GBK
-//bool is_gbk_code_page() {
-//    return GetACP() == 936;  // 936 是 GBK 的代码页
-//}
+// 检查系统的当前代码页是否是 GBK
+bool is_gbk_code_page() {
+    return GetACP() == 936;  // 936 是 GBK 的代码页
+}
 
 // 将文件添加到zip
 bool add_file_to_zip(mz_zip_archive& zip, const std::string& file_path, const std::string& zip_path) {//utf-8
@@ -100,119 +100,6 @@ bool add_file_to_zip(mz_zip_archive& zip, const std::string& file_path, const st
 
 // 压缩文件夹
 bool compress_folder(const std::string& _folder_path, const std::string& _zip_file_path)
-{
-    //传入路径为utf-8编码；如果为GBK编码，就不需要utf8_zip_file_path，直接使用zip_file_path
-    mz_zip_archive zip;
-    memset(&zip, 0, sizeof(zip));
-
-    std::string zip_file_path = _zip_file_path;
-
-    // 去掉 zip_file_path 末尾的 ".km"
-    if (zip_file_path.size() >= 3 && zip_file_path.substr(zip_file_path.size() - 3) == ".km") {
-        zip_file_path = zip_file_path.substr(0, zip_file_path.size() - 3);
-    }
-
-    // 检查 zip_file_path 是否以 ".zip" 结尾，如果不是则添加 ".zip"
-    if (zip_file_path.size() < 4 || zip_file_path.substr(zip_file_path.size() - 4) != ".zip") {
-        zip_file_path += ".zip";
-    }
-
-    bool utf8_env = is_utf8_code_page();  // 检查是否为UTF-8环境
-
-    std::string utf8_zip_file_path = (utf8_env ? zip_file_path : gbk_to_utf8(zip_file_path));
-    //由于miniz库是utf-8编码方式的,如果在GBK编码方式的系统上运行,需要将GBK的路径转为utf-8路径方能使用miniz库
-    utf8_zip_file_path = zip_file_path;
-
-    if (!mz_zip_writer_init_file(&zip, utf8_zip_file_path.c_str(), 0)) {
-        std::cerr << "无法创建ZIP文件: " << zip_file_path << std::endl;
-        return false;
-    }
-    std::cout << "成功创建ZIP文件: " << zip_file_path << std::endl;
-
-    // 添加空文件夹
-    fs::path folder_path = utf8_to_gbk(_folder_path);
-    //递归遍历文件以实现子文件夹的添加
-    for (const auto& entry : fs::recursive_directory_iterator(folder_path)) {
-        //遍历到常规文件则添加文件至zip
-        if (fs::is_regular_file(entry)) {
-            std::string file_path = entry.path().string();//gbk
-            std::string relative_path = fs::relative(file_path, folder_path).string();//gbk
-            std::string zip_relative_path = utf8_env ? relative_path : gbk_to_utf8(relative_path);//utf-8
-            std::cout << "正在压缩文件: " << relative_path << std::endl;
-            if (!add_file_to_zip(zip, file_path, zip_relative_path)) {
-                std::cerr << "添加文件失败: " << file_path << std::endl;
-                mz_zip_writer_end(&zip);
-                return false;
-            }
-        }
-        //遍历到目录即子文件夹则添加空文件夹至zip
-        else if (fs::is_directory(entry)) {
-            // 获取相对路径
-            std::string relative_dir_path = fs::relative(entry.path(), folder_path).string() + "/";
-            std::string zip_relative_dir_path = utf8_env ? relative_dir_path : gbk_to_utf8(relative_dir_path);
-
-            // 添加空文件夹到zip
-            std::cout << "正在添加文件夹: " << relative_dir_path << std::endl;
-            if (!mz_zip_writer_add_mem(&zip, (zip_relative_dir_path).c_str(), nullptr, 0, MZ_DEFAULT_COMPRESSION)) {
-                std::cerr << "无法添加文件夹: " << relative_dir_path << std::endl;
-                mz_zip_writer_end(&zip);
-                return false;
-            }
-        }
-    }
-
-    //完成zip文件的写入过程
-    if (!mz_zip_writer_finalize_archive(&zip)) {
-        std::cerr << "无法完成ZIP文件写入" << std::endl;
-        mz_zip_writer_end(&zip);
-        return false;
-    }
-
-    //结束zip文件的写入过程
-    mz_zip_writer_end(&zip);
-
-    // 构建新的文件名，将 ".zip" 替换为 ".km"
-    std::string new_zip_file_path = utf8_to_gbk(zip_file_path);
-    std::string km_file_path = new_zip_file_path.substr(0, new_zip_file_path.size() - 4) + ".km";
-
-    // 检查并删除已存在的 .km 文件
-    if (std::remove(km_file_path.c_str()) != 0) {
-        if (errno != ENOENT) { // 如果文件存在且删除失败
-            std::cerr << "无法删除已存在的 .km 文件: " << km_file_path << std::endl;
-            return false;
-        }
-    }
-    else {
-        std::cout << "已删除已存在的 .km 文件: " << km_file_path << std::endl;
-    }
-
-    // 检查原始 ZIP 文件是否存在
-    std::ifstream zip_file(new_zip_file_path);
-    if (!zip_file.good()) {
-        std::cerr << "原始 ZIP 文件不存在: " << new_zip_file_path << std::endl;
-        return false;
-    }
-    zip_file.close();
-
-    // 重命名文件
-    if (std::rename(new_zip_file_path.c_str(), km_file_path.c_str()) != 0) {
-        std::cerr << "无法重命名文件: " << new_zip_file_path << " 到 " << km_file_path << std::endl;
-        return false;
-    }
-
-    // 验证重命名后的文件是否存在
-    std::ifstream km_file(km_file_path);
-    if (!km_file.good()) {
-        std::cerr << "重命名后的文件不存在: " << km_file_path << std::endl;
-        return false;
-    }
-    km_file.close();
-
-    return true;
-}
-
-
-bool compress_folder_2(const std::string& _folder_path, const std::string& _zip_file_path)
 {
     //传入路径为utf-8编码；如果为GBK编码，就不需要utf8_zip_file_path，直接使用zip_file_path
     mz_zip_archive zip;
@@ -289,27 +176,9 @@ bool decompress_zip(const std::string& _zip_file_path, const std::string& _extra
 
     std::string km_file_path = utf8_to_gbk(zip_file_path);
 
-    // 去掉 zip_file_path 末尾的 ".km"
-    if (zip_file_path.size() >= 3 && zip_file_path.substr(zip_file_path.size() - 3) == ".km") {
-        zip_file_path = zip_file_path.substr(0, zip_file_path.size() - 3);
-    }
-
-    // 检查 zip_file_path 是否以 ".zip" 结尾，如果不是则添加 ".zip"
-    if (zip_file_path.size() < 4 || zip_file_path.substr(zip_file_path.size() - 4) != ".zip") {
-        zip_file_path += ".zip";
-    }
-
     if (!fs::exists(extract_to)) {
         fs::create_directories(extract_to);
         std::cout << "成功创建目标文件夹: " << extract_to << std::endl;
-    }
-
-    //解压前将后缀改回zip
-    std::string new_zip_file_path = utf8_to_gbk(zip_file_path);
-    // 重命名文件
-    if (std::rename(km_file_path.c_str(), new_zip_file_path.c_str()) != 0) {
-        std::cerr << "无法重命名文件: " << km_file_path << " 到 " << new_zip_file_path << std::endl;
-        return false;
     }
 
     //由于miniz库是utf-8编码方式的,如果在GBK编码方式的系统上运行,需要将GBK的路径转为utf-8路径方能使用miniz库
@@ -351,7 +220,6 @@ bool decompress_zip(const std::string& _zip_file_path, const std::string& _extra
         //    processed_filename += "\\";
         //}
 
-
         //// 判断当前系统编码并进行转换
         //if (is_gbk_code_page()) {
         //    // 如果是 GBK，则将文件名从 UTF-8 转为 GBK
@@ -384,16 +252,8 @@ bool decompress_zip(const std::string& _zip_file_path, const std::string& _extra
         }
     }
 
-
     // 关闭 ZIP 文件
     mz_zip_reader_end(&zip);
-
-    //解压完将后缀改回km
-    // 重命名文件
-    if (std::rename(new_zip_file_path.c_str(), km_file_path.c_str()) != 0) {
-        std::cerr << "无法重命名文件: " << new_zip_file_path << " 到 " << km_file_path << std::endl;
-        return false;
-    }
 
     return true;
 }
