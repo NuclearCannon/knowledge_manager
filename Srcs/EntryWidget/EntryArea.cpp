@@ -150,7 +150,7 @@ void EntryArea::contextMenuEvent(QContextMenuEvent* event)
     connect(menu.addAction("在末尾添加文本块"), &QAction::triggered, this, &EntryArea::handleAppendTextBlock);
     connect(menu.addAction("在末尾添加代码块"), &QAction::triggered, this, &EntryArea::handleAppendCodeBlock);
     connect(menu.addAction("在末尾添加图片块"), &QAction::triggered, this, &EntryArea::handleAppendImageBlock);
-    connect(menu.addAction("在末尾添加文本块"), &QAction::triggered, this, &EntryArea::handleAppendHeaderBlock);
+    connect(menu.addAction("在末尾添加标题块"), &QAction::triggered, this, &EntryArea::handleAppendHeaderBlock);
     menu.exec(event->globalPos());
 }
 

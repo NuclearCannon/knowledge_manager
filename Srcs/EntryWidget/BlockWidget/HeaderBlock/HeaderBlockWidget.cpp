@@ -18,7 +18,9 @@ HeaderBlockWidget::HeaderBlockWidget(QWidget* parent) :
     line->setFont(h1Font);
     line->installEventFilter(filter);
     layout->addWidget(line);
+    layout->setContentsMargins(0, 0, 0, 0);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    setContentsMargins(0,0,0,0);
 
     connect(line, &HeaderLineEdit::textChanged, this, &HeaderBlockWidget::emitContentChange);
     connect(line, &HeaderLineEdit::contextMenuQuery, this, &HeaderBlockWidget::handleContextMenuQueryFromControls);
