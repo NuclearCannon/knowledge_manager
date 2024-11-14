@@ -1,4 +1,4 @@
-#include "HeaderBlockWidget.h"
+ï»¿#include "HeaderBlockWidget.h"
 
 HeaderLineEdit::HeaderLineEdit(QWidget* parent) :
     QLineEdit(parent)
@@ -17,7 +17,7 @@ void HeaderLineEdit::redo()
 
 void HeaderLineEdit::clearUndoStack()
 {
-    // QLineEditÃ»ÓĞÖ±½Ó·ÃÎÊundo stackµÄ½Ó¿Ú£¬ÎÒÃÇÒªÍ¨¹ıÒ»µã¼ä½ÓÊÖ¶Î
+    // QLineEditæ²¡æœ‰ç›´æ¥è®¿é—®undo stackçš„æ¥å£ï¼Œæˆ‘ä»¬è¦é€šè¿‡ä¸€ç‚¹é—´æ¥æ‰‹æ®µ
     blockSignals(true);
     QString copy = text();
     clear();

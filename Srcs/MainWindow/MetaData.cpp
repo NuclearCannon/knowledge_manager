@@ -4,6 +4,8 @@
 #include <QTextStream>
 #include <sstream>
 #include <set>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
 
 Tag::Tag(int id, const QColor& color, const QString& name) :
 	m_id(id),
@@ -53,135 +55,6 @@ MetaData::MetaData() = default;
 MetaData::~MetaData()
 {
 	clear();
-}
-// 加载方法
-int MetaData::loadFromPugiDoc(pugi::xml_document& doc)
-{
-	clear();
-	pugi::xml_node meta = doc.root().child("meta");
-	// 解析tag-set
-	pugi::xml_node tag_set_node = meta.child("tag-set");
-	for (pugi::xml_node tag = tag_set_node.first_child(); tag; tag = tag.next_sibling())
-	{
-		int id = tag.attribute("id").as_int();
-		QColor color(tag.attribute("color").as_string());
-		tags[id] = new Tag(id, color, tag.attribute("text").as_string());
-	}
-
-	// 解析entrys
-	std::queue<std::pair<int, int>> links_queue;
-	pugi::xml_node entrys_node = meta.child("entrys");
-	for (pugi::xml_node entry = entrys_node.first_child(); entry; entry = entry.next_sibling())
-	{
-
-		int id = entry.attribute("id").as_int();
-
-		EntryMeta* entry_meta = new EntryMeta(id, entry.attribute("title").as_string());
-		// 解析词条集合
-		pugi::xml_node tags = entry.child("tags");
-		for (pugi::xml_node tag = tags.first_child(); tag; tag = tag.next_sibling())
-		{
-			int tag_id = tag.attribute("id").as_int();
-			entry_meta->tagIds.insert(tag_id);
-		}
-		entrys[id] = entry_meta;
-		// 解析link
-		pugi::xml_node links = entry.child("links");
-		for (pugi::xml_node link = links.first_child(); link; link = link.next_sibling())
-		{
-			links_queue.push({ id, link.attribute("dest").as_int() });
-		}
-	}
-
-	// 解析anchors
-	pugi::xml_node anchors_node = meta.child("anchors");
-	for (pugi::xml_node anchor = anchors_node.first_child(); anchor; anchor = anchor.next_sibling())
-	{
-		anchors.insert(anchor.attribute("id").as_int());
-	}
-
-	// 将队列中的链接关系反映到对象
-	while (!links_queue.empty())
-	{
-		auto link = links_queue.front();
-		links_queue.pop();
-		int from = link.first, to = link.second;
-		entrys[from]->out.insert(to);
-		entrys[to]->in.insert(from);
-	}
-	return 0;
-}
-
-
-int MetaData::load(QFile& file)
-{
-	pugi::xml_document doc;
-	QTextStream stream(&file);
-	QString text = stream.readAll();
-	doc.load_string(text.toStdString().c_str());
-	return loadFromPugiDoc(doc);
-}
-
-
-
-// 保存方法
-
-void MetaData::dumpToPugiDoc(pugi::xml_document& doc)
-{
-	pugi::xml_node meta = doc.append_child("meta");
-	pugi::xml_node tag_set_node = meta.append_child("tag-set");
-	pugi::xml_node entrys_node = meta.append_child("entrys");
-	pugi::xml_node anchors_node = meta.append_child("anchors");
-
-	for (const auto& tag_pair : tags)
-	{
-		Tag* tag_ptr = tag_pair.second;
-		pugi::xml_node tag = tag_set_node.append_child("tag");
-		tag.append_attribute("id").set_value(tag_ptr->id());
-		tag.append_attribute("color").set_value(tag_ptr->color().name().toStdString().c_str());
-		tag.append_attribute("text").set_value(tag_ptr->name().toStdString().c_str());
-	}
-
-
-
-	for (const auto& entry_pair : entrys)
-	{
-		EntryMeta* entry_ptr = entry_pair.second;
-		pugi::xml_node entry = entrys_node.append_child("entry");
-		entry.append_attribute("id").set_value(entry_ptr->id());
-		entry.append_attribute("title").set_value(entry_ptr->title().toStdString().c_str());
-
-		pugi::xml_node tags = entry.append_child("tags");
-		pugi::xml_node links = entry.append_child("links");
-
-		for (int tag_id : entry_ptr->tagIds)
-		{
-			tags.append_child("tag-usage").append_attribute("id").set_value(tag_id);
-		}
-
-		for (int dest : entry_ptr->out)
-		{
-			links.append_child("link").append_attribute("dest").set_value(dest);
-		}
-	}
-	for (int anchor : anchors)
-	{
-		anchors_node.append_child("anchor").append_attribute("id").set_value(anchor);
-	}
-
-	
-}
-
-
-
-void MetaData::dump(QFile& file)
-{
-	pugi::xml_document doc;
-	dumpToPugiDoc(doc);
-	std::ostringstream oss;
-	doc.save(oss);
-	QTextStream stream(&file);
-	stream << oss.str().c_str();
 }
 
 
@@ -482,4 +355,140 @@ int MetaData::hasAnchor(int entry_id)
 const std::set<int>& MetaData::getAnchors() const
 {
 	return anchors;
+}
+
+
+
+int MetaData::loadQtXml(QFile& file)
+{
+	QDomDocument doc;
+	doc.setContent(file.readAll());
+
+	QDomElement meta = doc.documentElement();
+
+
+	clear();
+
+	// 解析tag-set
+
+	QDomElement tag_set_node = meta.firstChildElement("tag-set");
+	
+	for (auto tag = tag_set_node.firstChildElement("tag"); !tag.isNull(); tag = tag.nextSiblingElement("tag"))
+	{
+		int id = tag.attribute("id").toInt();
+		QColor color(tag.attribute("color"));
+		tags[id] = new Tag(id, color, tag.attribute("text"));
+	}
+
+
+	// 解析entrys
+	std::queue<std::pair<int, int>> links_queue;
+
+
+	QDomElement entrys_node = meta.firstChildElement("entrys");
+	for (QDomElement entry = entrys_node.firstChildElement("entry"); !entry.isNull(); entry = entry.nextSiblingElement("entry"))
+	{
+
+		int id = entry.attribute("id").toInt();
+
+		EntryMeta* entry_meta = new EntryMeta(id, entry.attribute("title"));
+		// 解析词条集合
+		QDomElement tags = entry.firstChildElement("tags");
+		for (QDomElement tag = tags.firstChildElement("tag-usage"); !tag.isNull(); tag = tag.nextSiblingElement("tag-usage"))
+		{
+			int tag_id = tag.attribute("id").toInt();
+			entry_meta->tagIds.insert(tag_id);
+		}
+		entrys[id] = entry_meta;
+		// 解析link
+		QDomElement links = entry.firstChildElement("links");
+		for (QDomElement link = links.firstChildElement("link"); !link.isNull(); link = link.nextSiblingElement("link"))
+		{
+			links_queue.push({ id, link.attribute("dest").toInt() });
+		}
+	}
+
+	// 解析anchors
+	QDomElement anchors_node = meta.firstChildElement("anchors");
+	for (QDomElement anchor = anchors_node.firstChildElement("anchor"); !anchor.isNull(); anchor = anchor.nextSiblingElement("anchor"))
+	{
+		anchors.insert(anchor.attribute("id").toInt());
+	}
+
+	// 将队列中的链接关系反映到对象
+	while (!links_queue.empty())
+	{
+		auto link = links_queue.front();
+		links_queue.pop();
+		int from = link.first, to = link.second;
+		entrys[from]->out.insert(to);
+		entrys[to]->in.insert(from);
+	}
+	return 0;
+}
+void MetaData::dumpQtXml(QFile& file)
+{
+	QDomDocument doc;
+
+	QDomElement meta = doc.createElement("meta");
+	doc.appendChild(meta);
+
+
+	QDomElement tag_set_node = doc.createElement("tag-set");
+	meta.appendChild(tag_set_node);
+	QDomElement entrys_node = doc.createElement("entrys");
+	meta.appendChild(entrys_node);
+	QDomElement anchors_node = doc.createElement("anchors");
+	meta.appendChild(anchors_node);
+
+
+
+	for (const auto& tag_pair : tags)
+	{
+		Tag* tag_ptr = tag_pair.second;
+		QDomElement tag = doc.createElement("tag");
+		tag_set_node.appendChild(tag);
+		tag.setAttribute("id", tag_ptr->id());
+		tag.setAttribute("color", tag_ptr->color().name());
+		tag.setAttribute("text", tag_ptr->name());
+	}
+
+
+
+	for (const auto& entry_pair : entrys)
+	{
+		EntryMeta* entry_ptr = entry_pair.second;
+		QDomElement entry = doc.createElement("entry");
+		entrys_node.appendChild(entry);
+		entry.setAttribute("id", entry_ptr->id());
+		entry.setAttribute("title", entry_ptr->title());
+
+		QDomElement tags = doc.createElement("tags"); 
+		entry.appendChild(tags);
+		QDomElement links = doc.createElement("links"); 
+		entry.appendChild(links);
+
+		for (int tag_id : entry_ptr->tagIds)
+		{
+			QDomElement usage = doc.createElement("tag-usage");
+			tags.appendChild(usage);
+			usage.setAttribute("id", tag_id);
+		}
+
+		for (int dest : entry_ptr->out)
+		{
+			QDomElement link = doc.createElement("link");
+			links.appendChild(link);
+			link.setAttribute("dest", dest);
+		}
+	}
+	for (int anchor_id : anchors)
+	{
+		QDomElement anchor = doc.createElement("anchor");
+		anchors_node.appendChild(anchor);
+		anchor.setAttribute("id", anchor_id);
+
+	}
+	QTextStream stream(&file);
+	stream << doc.toString();
 }

@@ -168,13 +168,16 @@ BlockType ImageBlockWidget::type() const
 
 }
 
-void ImageBlockWidget::exportToPugi(pugi::xml_node& dest)
+
+
+void ImageBlockWidget::exportToQtXml(QDomElement& dest, QDomDocument& dom_doc)
 {
-    dest.set_name("image-block");
-    dest.append_attribute("src").set_value(filename.toStdString().c_str());
+    dest.setTagName("image-block");
+    dest.setAttribute("src", filename);
 }
-void ImageBlockWidget::importFromPugi(const pugi::xml_node& node)
+
+void ImageBlockWidget::importFromQtXml(QDomElement& src)
 {
-    filename = node.attribute("src").as_string();
+    filename = src.attribute("src");
     pixmap = new QPixmap(attachment_dir.absoluteFilePath(filename));
 }

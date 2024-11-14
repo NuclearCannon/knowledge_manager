@@ -174,7 +174,7 @@ void KMMainWindow::actSaveKL()
 		return;
 	}
 
-	meta_data.dump(meta_data_file);
+	meta_data.dumpQtXml(meta_data_file);
 
 	meta_data_file.close();
 

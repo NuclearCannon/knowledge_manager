@@ -91,7 +91,8 @@ bool EntryWidget::saveEntry()
 	}
 
 	try {
-		entry_area->dump();
+		//entry_area->dump();
+		entry_area->dumpQtXml();
 	}
 	catch (...)
 	{

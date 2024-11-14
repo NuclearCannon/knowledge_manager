@@ -24,9 +24,12 @@ private:
     int find(BlockWidget* block_widget);  // 定位一个块，返回其下标
     
     QFile entry_file;
+
 public:
-    int load();
-    int dump();  // 将当前内容同步到文件
+    
+    int loadQtXml();
+    int dumpQtXml();
+
     ~EntryArea();
     struct OutlineItem
     {

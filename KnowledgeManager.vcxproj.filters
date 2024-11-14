@@ -21,9 +21,6 @@
     <Filter Include="Srcs\EntryWidget\BlockWidget">
       <UniqueIdentifier>{5d55bc29-5997-4286-914c-16d9f021e223}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Srcs\EntryWidget\pugixml">
-      <UniqueIdentifier>{28420789-e15e-43cd-a48b-a07181fe0b9e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Srcs\MainWindow">
       <UniqueIdentifier>{973e0c86-d065-4ed7-8f80-10cc16447ba8}</UniqueIdentifier>
     </Filter>
@@ -66,9 +63,6 @@
     </ClCompile>
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\BlockWidget.cpp">
       <Filter>Srcs\EntryWidget\BlockWidget</Filter>
-    </ClCompile>
-    <ClCompile Include="Srcs\EntryWidget\pugixml\pugixml.cpp">
-      <Filter>Srcs\EntryWidget\pugixml</Filter>
     </ClCompile>
     <ClCompile Include="Srcs\EntryWidget\EntryArea.cpp">
       <Filter>Srcs\EntryWidget</Filter>
@@ -142,6 +136,15 @@
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\HeaderBlock\HeaderLineEdit.cpp">
       <Filter>Srcs\EntryWidget\BlockWidget\HeaderBlock</Filter>
     </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\TextFormats.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\TextBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\BlockWidget\TextBlock\InputUrlDialog.cpp">
+      <Filter>Srcs\EntryWidget\BlockWidget\TextBlock</Filter>
+    </ClCompile>
+    <ClCompile Include="Srcs\EntryWidget\EntryXml.cpp">
+      <Filter>Srcs\EntryWidget</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Srcs\Compress\compression.h">
@@ -152,12 +155,6 @@
     </ClInclude>
     <ClInclude Include="Srcs\EntryWidget\BlockWidget\BlockWidgets.h">
       <Filter>Srcs\EntryWidget\BlockWidget</Filter>
-    </ClInclude>
-    <ClInclude Include="Srcs\EntryWidget\pugixml\pugiconfig.hpp">
-      <Filter>Srcs\EntryWidget\pugixml</Filter>
-    </ClInclude>
-    <ClInclude Include="Srcs\EntryWidget\pugixml\pugixml.hpp">
-      <Filter>Srcs\EntryWidget\pugixml</Filter>
     </ClInclude>
     <ClInclude Include="Srcs\MainWindow\MetaData.h">
       <Filter>Srcs\MainWindow</Filter>

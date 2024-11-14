@@ -4,6 +4,15 @@
 #include <QTextBrowser>
 #include <QDialog>
 #include <QLineEdit>
+#include <QtXml/QDomDocument>
+#include <QtXml/QDomElement>
+
+
+#include "TextBlockWidget.h"
+
+extern const int FORMAT_IS_CODE;  // 只要是个比较大的数字就行
+extern const int FORMAT_IS_LINK;
+
 
 class TextBlockWidget;
 
@@ -18,7 +27,12 @@ enum TextType
     normal, code, link
 };
 
-
+int createFormatCode(bool bold, bool italic, bool underline, bool strike);
+void decodeFormatCode(int format_code, bool& bold, bool& italic, bool& underline, bool& strike);
+TextType getQTextCharFormatType(const QTextCharFormat& format);
+QTextCharFormat normalFormat(bool bold, bool italic, bool underline, bool strike);
+QTextCharFormat codeFormat();
+QTextCharFormat linkFormat(const QString& href);
 
 
 // 自定义对话框类  
@@ -58,8 +72,11 @@ public:
     TextBlockWidget(QWidget* parent);
     virtual ~TextBlockWidget();
     virtual BlockType type() const;
-    virtual void exportToPugi(pugi::xml_node& dest);
-    virtual void importFromPugi(const pugi::xml_node& node);
+
+
+    virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc);
+    virtual void importFromQtXml(QDomElement& src);
+
 private slots:
     void justifyHeight();
     void onAnchorClicked(const QUrl& url);

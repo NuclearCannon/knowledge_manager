@@ -1,4 +1,4 @@
-#include "CodeBlockWidget.h"
+ï»¿#include "CodeBlockWidget.h"
 // LanguageComboBox
 
 LanguageComboBox::LanguageComboBox(CodeBlockWidget* parent) :
@@ -11,7 +11,7 @@ LanguageComboBox::LanguageComboBox(CodeBlockWidget* parent) :
     addItem("HTML");
     current_index = 0;
     setCurrentIndex(0);
-    // ĞŞ¸Äºó£¬É¾³ıredoÕ»£¬²¢ÇÒÑ¹ÈëundoÕ»
+    // ä¿®æ”¹åï¼Œåˆ é™¤redoæ ˆï¼Œå¹¶ä¸”å‹å…¥undoæ ˆ
     connect(this, &LanguageComboBox::currentIndexChanged, this, &LanguageComboBox::clearRedoStackOnly);
     connect(this, &LanguageComboBox::currentIndexChanged, this, &LanguageComboBox::undoRecord);
     blockSignals(false);
@@ -22,7 +22,7 @@ void LanguageComboBox::undo()
 {
     if (undo_stack.empty())
     {
-        // ³·ÏúÕ»Îª¿Õ£¬Ê²Ã´¶¼²»×ö
+        // æ’¤é”€æ ˆä¸ºç©ºï¼Œä»€ä¹ˆéƒ½ä¸åš
         qDebug() << "LanguageComboBox: undo stack is empty!";
     }
     else
@@ -41,7 +41,7 @@ void LanguageComboBox::redo()
 {
     if (redo_stack.empty())
     {
-        // ÖØ×öÕ»Îª¿Õ£¬Ê²Ã´¶¼²»×ö
+        // é‡åšæ ˆä¸ºç©ºï¼Œä»€ä¹ˆéƒ½ä¸åš
         qDebug() << "LanguageComboBox: redo stack is empty!";
     }
     else

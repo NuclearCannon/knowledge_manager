@@ -1,7 +1,7 @@
 #pragma once
 #include <QWidget>
-#include "../pugixml/pugixml.hpp"
 #include <QFocusEvent>
+#include <QtXml>
 
 class EntryArea;  // 对BlockArea进行声明，方便定义友元
 class FocusEventFilter;
@@ -31,8 +31,8 @@ public:
 	BlockWidget* getNext() const;
 	// 下面这些纯虚函数的存在使得该类本身不能实例化，只有实现了这些函数子类才能实例化
 	virtual BlockType type() const = 0;
-	virtual void exportToPugi(pugi::xml_node& dest) = 0;
-	virtual void importFromPugi(const pugi::xml_node& node) = 0;
+	virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc) = 0;
+	virtual void importFromQtXml(QDomElement& src) = 0;
 
 signals:
 	void contentChange();

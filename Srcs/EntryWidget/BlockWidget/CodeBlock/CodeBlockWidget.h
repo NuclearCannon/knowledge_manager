@@ -5,7 +5,6 @@
 #include <QRegularExpression>
 #include <QComboBox>
 #include "../BlockWidget.h"
-#include "../../pugixml/pugixml.hpp"
 #include <stack>
 
 
@@ -96,8 +95,8 @@ public:
     // 构造函数
     CodeBlockWidget(QWidget* parent);
     virtual ~CodeBlockWidget();
-    virtual void exportToPugi(pugi::xml_node& dest);
-    virtual void importFromPugi(const pugi::xml_node& node);
+    virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc);
+    virtual void importFromQtXml(QDomElement& src);
     virtual BlockType type() const;
 private:
     CodeEdit* code_edit;
