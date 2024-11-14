@@ -4,6 +4,7 @@
 
 int EntryArea::loadQtXml()
 {
+    blockSignals(true);
     // 读取文件内容
     if (!(entry_file.open(QFile::ReadOnly | QFile::Text)))
     {
@@ -17,52 +18,49 @@ int EntryArea::loadQtXml()
     entry_file.close();
     QDomElement root = doc.documentElement();
 
-    for (auto child = root.firstChild(); !child.isNull(); child = child.nextSibling())
+    for (auto child = root.firstChildElement(); !child.isNull(); child = child.nextSiblingElement())
     {
-        auto elem = child.toElement();
-        if (elem.isNull())
-        {
-            qDebug() << child.nodeType();  // 3, text
-            if (child.isText())
-            {
-                qDebug() << "Text:" << child.toText().data();
-            }
-            qDebug();
-
-        }
-        QString name = elem.tagName();
-
+        
+        QString name = child.tagName();
         if (name == "text-block")
         {
-
             TextBlockWidget* widget = new TextBlockWidget(this->widget());
-            widget->importFromQtXml(elem);
+            widget->importFromQtXml(child);
             appendBlock(widget);
             connect(widget, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
             connect(widget, &BlockWidget::insertAbove, this, &EntryArea::handleInsertAboveFromBlock);
             connect(widget, &BlockWidget::insertBelow, this, &EntryArea::handleInsertBelowFromBlock);
+            connect(widget, &BlockWidget::deletThisBlock, this, &EntryArea::handleDeleteFromBlock);
         }
         else if (name == "code-block")
         {
             CodeBlockWidget* widget = new CodeBlockWidget(this->widget());
-            widget->importFromQtXml(elem);
+            widget->importFromQtXml(child);
             appendBlock(widget);
             connect(widget, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
+            connect(widget, &BlockWidget::insertAbove, this, &EntryArea::handleInsertAboveFromBlock);
+            connect(widget, &BlockWidget::insertBelow, this, &EntryArea::handleInsertBelowFromBlock);
+            connect(widget, &BlockWidget::deletThisBlock, this, &EntryArea::handleDeleteFromBlock);
         }
 
         else if (name == "image-block")
         {
-            ImageBlockWidget* widget = new ImageBlockWidget(this->widget(), attachment_dir);
-            widget->importFromQtXml(elem);
+            ImageBlockWidget* widget = ImageBlockWidget::initializeFromQtXml(this->widget(), attachment_dir, child);
             appendBlock(widget);
             connect(widget, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
+            connect(widget, &BlockWidget::insertAbove, this, &EntryArea::handleInsertAboveFromBlock);
+            connect(widget, &BlockWidget::insertBelow, this, &EntryArea::handleInsertBelowFromBlock);
+            connect(widget, &BlockWidget::deletThisBlock, this, &EntryArea::handleDeleteFromBlock);
         }
         else if (name == "header-block")
         {
             HeaderBlockWidget* widget = new HeaderBlockWidget(this->widget());
-            widget->importFromQtXml(elem);
+            widget->importFromQtXml(child);
             appendBlock(widget);
             connect(widget, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
+            connect(widget, &BlockWidget::insertAbove, this, &EntryArea::handleInsertAboveFromBlock);
+            connect(widget, &BlockWidget::insertBelow, this, &EntryArea::handleInsertBelowFromBlock);
+            connect(widget, &BlockWidget::deletThisBlock, this, &EntryArea::handleDeleteFromBlock);
             connect(widget, &BlockWidget::contentChange, this, &EntryArea::titleChangeSlot);
         }
         else
@@ -70,6 +68,9 @@ int EntryArea::loadQtXml()
             qDebug() << "Unknown type of xml child:" << name;
         }
     }
+    
+    blockSignals(false);
+    saved = true;  // 加载完的是保存好的
     return 1;
 
 }
@@ -99,7 +100,7 @@ int EntryArea::dumpQtXml()
     // 文件打开成功
     QTextStream stream(&entry_file);
     stream << doc.toString();
-    this->saved = true;
+    saved = true;
     entry_file.close();
     return 1;
 }

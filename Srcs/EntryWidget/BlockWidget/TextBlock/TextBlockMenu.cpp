@@ -11,7 +11,7 @@ void TextBlockBrowser::contextMenuEvent(QContextMenuEvent* event)
 void TextBlockWidget::contextMenuEvent(QContextMenuEvent* event)
 {
     // 创建一个菜单
-    QMenu contextMenu(this);
+    QMenu contextMenu(nullptr);
 
     // 添加菜单项
     QAction* action_undo = contextMenu.addAction("撤销");
