@@ -14,6 +14,8 @@ LanguageComboBox::LanguageComboBox(CodeBlockWidget* parent) :
     // 修改后，删除redo栈，并且压入undo栈
     connect(this, &LanguageComboBox::currentIndexChanged, this, &LanguageComboBox::clearRedoStackOnly);
     connect(this, &LanguageComboBox::currentIndexChanged, this, &LanguageComboBox::undoRecord);
+    
+    setFixedHeight(21);  // 锁定高度
     blockSignals(false);
 };
 

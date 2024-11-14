@@ -4,7 +4,8 @@
 
 CodeBlockWidget::CodeBlockWidget(QWidget* parent) :
     BlockWidget(parent), 
-    code_edit(0)
+    code_edit(0),
+    languange_box(0)
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -39,6 +40,7 @@ void CodeBlockWidget::justifyHeight()
     int code_edit_height = code_edit->document()->size().rheight() + 5;
     code_edit->setFixedHeight(code_edit_height);
     setFixedHeight(code_edit_height + languange_box->height());
+    qDebug() << languange_box->height();
 }
 
 
