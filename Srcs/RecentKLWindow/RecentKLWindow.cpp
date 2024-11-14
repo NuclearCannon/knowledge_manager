@@ -118,7 +118,7 @@ void RecentKLWindow::listWidgetItemClicked(QListWidgetItem* item)
 
 		if (reply == QMessageBox::Yes) {
 			// 删除历史库记录
-			status = removeKLFromRecentKLList(kl_name, kl_path);
+			status = removeKLFromRecentKLList(kl_path);
 			if (status == Status::Error)
 			{
 				QMessageBox::warning(this, "错误", "无法打开或操作文件：" + kl_path);

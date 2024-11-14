@@ -218,6 +218,7 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <addaction name="act_set_current_entry_as_anchor"/>
     <addaction name="separator"/>
     <addaction name="act_create_new_knowledge_library"/>
+    <addaction name="act_create_blank_knowledge_library"/>
     <addaction name="act_open_knowledge_library"/>
     <addaction name="act_save_kl"/>
     <addaction name="act_recent_knowledge_library"/>
@@ -627,6 +628,11 @@ QTabBar::tab:selected, QTabBar::tab:hover {
   <action name="act_recent_knowledge_library">
    <property name="text">
     <string>查看历史知识库</string>
+   </property>
+  </action>
+  <action name="act_create_blank_knowledge_library">
+   <property name="text">
+    <string>新建空白知识库</string>
    </property>
   </action>
  </widget>

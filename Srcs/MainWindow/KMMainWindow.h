@@ -67,6 +67,7 @@ private slots:
 	void actSetCurrentEntryAsAnchor();  // 设置当前词条为锚点
 	void actSaveKL();  // 点击保存库时，保存当前库
 	void actCreateNewKnowledgeLibrary();  // 点击新建知识库时，新建一个知识库
+	void actCreateBlankKnowledgeLibrary();  // 点击新建空白知识库时，新建一个空白知识库
 	void actOpenKnowledgeLibrary();  // 点击打开知识库
 	void actRecentKnowledgeLibrary();  // 点击最近打开的知识库时，弹出最近打开的知识库列表
 
@@ -127,7 +128,7 @@ protected:
 	void closeEvent(QCloseEvent* event) override;  // 关闭时，询问未保存的词条，从 current_kl_list 中删除当前库
 
 private:
-	explicit KMMainWindow(bool temp_kl, QString _kl_name, QString _kl_path);
+	explicit KMMainWindow(bool temp_kl, QString _kl_name, QString _original_kl_path, QString _temp_kl_path);
 
 	// 构造KMMainWindow的辅助函数，用于加载库：解压original_kl_path到temp_kl_path，加载meta_data
 	bool initialize();
