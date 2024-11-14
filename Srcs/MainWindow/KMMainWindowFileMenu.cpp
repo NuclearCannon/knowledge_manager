@@ -1,14 +1,14 @@
 #include <QTextEdit>
 #include <QMessageBox>
 #include <QString>
-#include <QInputDialog>
 #include <QFile>
 #include <QDialog>
+#include <QPushButton>
+#include <QFileDialog>
 
 #include "KMMainWindow.h"
 #include "../EntryWidget/EntryWidget.h"
 #include "../Compress/compression.h"
-#include "../NewKLGuidance/new_kl_guidance.h"
 #include "../RecentKLWindow/RecentKLWindow.h"
 #include "../public.h"
 
@@ -190,76 +190,96 @@ void KMMainWindow::actSaveKL()
 		}
 	}
 
+	// 如果是临时知识库，需要保存到用户指定的路径，否则正常压缩知识库
 	if (is_temp_kl) 
 	{
-		// 要保存的话，需要调用new_kl_guidance中的创建知识库的函数，压缩temp_kl_path到用户指定的路径
-		NewKLGuidance new_kl_guidance(this, true, temp_kl_path);
-		
-		if (new_kl_guidance.exec() == QDialog::Accepted)
-		{
-			// 修改kl_name, original_kl_path，temp_kl_path
-			QString old_kl_name = kl_name;
-			QString old_original_kl_path = original_kl_path;
-			QString old_temp_kl_path = temp_kl_path;
+		QString file_path = QFileDialog::getSaveFileName(
+			this,
+			"保存知识库",
+			default_path_for_all_kls,
+			"Knowledge Manager Files (*.km))"
+		);
 
-			kl_name = new_kl_guidance.getKLName();
-			original_kl_path = new_kl_guidance.getKLPath();
+		// 点了x或者取消
+		if (file_path == "") return;
 
-			// 修改current_kl_list
-			Status status = removeKLFromCurrentKLList(old_original_kl_path);
-			if (status == Status::Error)
-			{
-				removeKLFromRecentKLList(original_kl_path);
-				QMessageBox::warning(this, "错误", "修改current_kl_list失败！");
-				return;
-			}
-			else if (status == Status::Failure)
-			{
-				removeKLFromRecentKLList(original_kl_path);
-				QMessageBox::warning(this, "错误", "修改current_kl_list失败！未找到原知识库！");
-				return;
-			}
-			int rnt = addKLToCurrentKLList(false, kl_name, original_kl_path);
-			if (rnt == -1) {
-				removeKLFromRecentKLList(original_kl_path);
-				QMessageBox::warning(this, "错误", "知识库已经打开\n知识库位置：" + original_kl_path);
-				return;
-			}
-			else if (rnt == -2)
-			{
-				removeKLFromRecentKLList(original_kl_path);
-				QMessageBox::warning(this, "错误", "无法打开或操作文件：" + original_kl_path);
-				return;
-			}
+		// 要保存的话，不调用创建知识库的函数，自己压缩temp_kl_path到用户指定的路径
 
-			temp_kl_path = default_path_for_temp_kls + "/" + QString::number(rnt) + "_" + kl_name;
-
-			// 修改临时知识库文件夹的名称为输入的名称
-			QDir temp_kl_dir(old_temp_kl_path);
-			if (!temp_kl_dir.rename(old_temp_kl_path, temp_kl_path))
-			{
-				// 回滚current_kl_list
-				removeKLFromCurrentKLList(original_kl_path);
-				addKLToCurrentKLList(true, old_kl_name, old_original_kl_path);
-				QMessageBox::warning(this, "错误", "重命名临时知识库文件夹失败！");
-				return;
-			}
-
-			// 添加到 recnet_kl_list
-			if (addKLToRecentKLList(kl_name, original_kl_path) == Status::Error)
-			{
-				removeKLFromCurrentKLList(original_kl_path);
-				addKLToCurrentKLList(true, old_kl_name, old_original_kl_path);
-				QMessageBox::warning(this, "错误", "添加到最近打开的知识库列表失败！");
-				return;
-			}
-
-			is_temp_kl = false;
-		}
-		else
-		{
+		// 首先检查一下临时文件夹是否存在
+		QDir temp_dir(temp_kl_path);
+		if (!temp_dir.exists()) {
+			QMessageBox::warning(this, QStringLiteral("错误"), "临时文件夹不存在：" + temp_kl_path);
 			return;
 		}
+
+		// 压缩文件夹
+		if (!compress_folder(temp_kl_path.toStdString(), file_path.toStdString()))
+		{
+			QMessageBox::warning(this, "错误", "压缩临时知识库失败！");
+			return;
+		}
+		
+		// 压缩完了，进行临时知识库文件夹的重命名，以及current_kl_list、recent_kl_list的修改
+		
+		// 修改kl_name, original_kl_path，temp_kl_path
+		QString old_kl_name = kl_name;
+		QString old_original_kl_path = original_kl_path;
+		QString old_temp_kl_path = temp_kl_path;
+
+		kl_name = (file_path.right(file_path.size() - file_path.lastIndexOf('/') - 1));
+		kl_name = kl_name.left(kl_name.size() - 3);
+		original_kl_path = file_path;
+
+		// 修改current_kl_list
+		Status status = removeKLFromCurrentKLList(old_original_kl_path);
+		if (status == Status::Error)
+		{
+			removeKLFromRecentKLList(original_kl_path);
+			QMessageBox::warning(this, "错误", "修改current_kl_list失败！");
+			return;
+		}
+		else if (status == Status::Failure)
+		{
+			removeKLFromRecentKLList(original_kl_path);
+			QMessageBox::warning(this, "错误", "修改current_kl_list失败！未找到原知识库！");
+			return;
+		}
+		int rnt = addKLToCurrentKLList(false, kl_name, original_kl_path);
+		if (rnt == -1) {
+			removeKLFromRecentKLList(original_kl_path);
+			QMessageBox::warning(this, "错误", "知识库已经打开\n知识库位置：" + original_kl_path);
+			return;
+		}
+		else if (rnt == -2)
+		{
+			removeKLFromRecentKLList(original_kl_path);
+			QMessageBox::warning(this, "错误", "无法打开或操作文件：" + original_kl_path);
+			return;
+		}
+
+		temp_kl_path = default_path_for_temp_kls + "/" + QString::number(rnt) + "_" + kl_name;
+
+		// 修改临时知识库文件夹的名称为输入的名称
+		QDir temp_kl_dir(old_temp_kl_path);
+		if (!temp_kl_dir.rename(old_temp_kl_path, temp_kl_path))
+		{
+			// 回滚current_kl_list
+			removeKLFromCurrentKLList(original_kl_path);
+			addKLToCurrentKLList(true, old_kl_name, old_original_kl_path);
+			QMessageBox::warning(this, "错误", "重命名临时知识库文件夹失败！");
+			return;
+		}
+
+		// 添加到 recnet_kl_list
+		if (addKLToRecentKLList(kl_name, original_kl_path) == Status::Error)
+		{
+			removeKLFromCurrentKLList(original_kl_path);
+			addKLToCurrentKLList(true, old_kl_name, old_original_kl_path);
+			QMessageBox::warning(this, "错误", "添加到最近打开的知识库列表失败！");
+			return;
+		}
+
+		is_temp_kl = false;
 	}
 	else 
 	{
@@ -310,17 +330,21 @@ void KMMainWindow::actSetCurrentEntryAsAnchor()
 
 }
 
-// 槽：点击新建知识库时，新建一个知识库
+// 槽：点击新建知识库时，新建一个空白知识库
 void KMMainWindow::actCreateNewKnowledgeLibrary()
 {
-	NewKLGuidance new_kl_guidance(this);
-	new_kl_guidance.setWindowFlags(Qt::Window); // 确保它作为一个独立的窗口显示
-	new_kl_guidance.exec();
-}
+	//QString file_path = QFileDialog::getSaveFileName(
+	//	this,
+	//	"保存知识库",
+	//	default_path_for_all_kls,
+	//	"Knowledge Manager Files (*.km))"
+	//);
 
-// 槽：点击新建空白知识库时，新建一个空白知识库
-void KMMainWindow::actCreateBlankKnowledgeLibrary()
-{
+	//if (file_path != "") {
+	//	//创建知识库的函数，在用户指定的路径构建文件夹并压缩，然后打开
+	//	createNewKnowledgeLibraryHelper(file_path);
+	//}
+
 	KMMainWindow* main_window = KMMainWindow::construct();
 	if (main_window == nullptr)
 	{

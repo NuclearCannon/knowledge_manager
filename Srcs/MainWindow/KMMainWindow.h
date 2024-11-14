@@ -22,8 +22,8 @@ private:
 	int is_temp_kl;  // 记录当前库是否是临时库，用于关闭时询问以及保存时的判断
 
 public:
-	// 静态函数，用来构造一个新的KMMainWindow窗口，禁止直接构造
-	static KMMainWindow* construct(QString kl_name, QString kl_path);
+	// 静态函数，用来构造一个新的KMMainWindow窗口，禁止直接构造，参数kl_path是知识库的路径，带.km后缀
+	static KMMainWindow* construct(QString kl_path);
 	// 静态函数，用来构造一个新的KMMainWindow窗口，禁止直接构造，此函数用于建立临时知识库（即刚打开软件时的知识库）
 	static KMMainWindow* construct();
 
@@ -59,6 +59,9 @@ public:
 	// 添加标签，这是给TagManager调用的
 	void addTagToCurrentEntry(int tag_id);
 
+	// 新建知识库的帮助函数，参数是知识库的路径，返回是否成功新建，路径是带.km后缀的
+	bool createNewKnowledgeLibraryHelper(QString file_path);
+
 private slots:
 	// 文件菜单相关的槽函数
 	void actCreateEntry();  // 点击新建词条时，创建一个新的词条并加载到tab
@@ -66,8 +69,7 @@ private slots:
 	void actDeleteEntry();  // 点击删除词条时，询问并删除当前词条，同时删除对应的tab
 	void actSetCurrentEntryAsAnchor();  // 设置当前词条为锚点
 	void actSaveKL();  // 点击保存库时，保存当前库
-	void actCreateNewKnowledgeLibrary();  // 点击新建知识库时，新建一个知识库
-	void actCreateBlankKnowledgeLibrary();  // 点击新建空白知识库时，新建一个空白知识库
+	void actCreateNewKnowledgeLibrary();  // 点击新建知识库时，新建一个空白知识库
 	void actOpenKnowledgeLibrary();  // 点击打开知识库
 	void actRecentKnowledgeLibrary();  // 点击最近打开的知识库时，弹出最近打开的知识库列表
 
