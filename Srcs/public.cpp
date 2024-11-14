@@ -19,6 +19,11 @@ int recent_kl_list_limit = 10;  // 最近打开的知识库列表的最大长度
 int recent_entry_list_limit = 10;  // 最近打开的词条列表最大长度
 
 // 注意：存入文件的路径是绝对路径，且一定是带.km的路径
+// 
+// current_kl_list 的每一项是 id_{kl_name}  \n  kl_original_path  \n，其中 id的最后一位只能是1或0，0表示永久库，1表示临时库，这个id是临时文件区的id
+// recent_kl_list 的每一项是 kl_name  \n  kl_original_path  \n
+//
+// current_kl_list 对于临时库列表和永久库列表，id都是有序的，因为每次写入都是在文件开头写入，所以最新的库的id是最大的
 
 // 将打开的库文件名称加到最近打开的库文件列表中，作为列表第一项（就是放在txt文件开头）
 Status addKLToRecentKLList(const QString kl_name, const QString kl_path)
@@ -70,7 +75,7 @@ Status addKLToRecentKLList(const QString kl_name, const QString kl_path)
 }
 
 // 将某个库文件名称从最近打开的库文件列表中删除
-Status removeKLFromRecentKLList(const QString kl_name, const QString kl_path)
+Status removeKLFromRecentKLList(const QString kl_path)
 {
 	QString recent_kl_list_path = data_path + '/' + "recent_kl_list.txt";
 	QFile recent_kl_list(recent_kl_list_path);
@@ -87,7 +92,7 @@ Status removeKLFromRecentKLList(const QString kl_name, const QString kl_path)
 	{
 		QString _kl_name = in.readLine();
 		QString _kl_path = in.readLine();
-		if (kl_name == _kl_name && kl_path == _kl_path)
+		if (kl_path == _kl_path)
 		{
 			continue;
 		}
@@ -107,25 +112,38 @@ Status removeKLFromRecentKLList(const QString kl_name, const QString kl_path)
 	return Status::Success;
 }
 
-// 将打开的库文件加入到当前打开的库文件列表中
-Status addKLToCurrentKLList(const QString kl_name, const QString kl_path)
+// 将打开的库文件加入到当前打开的库文件列表中，成功返回添加的id，重名失败返回-1，文件操作失败返回-2
+int addKLToCurrentKLList(bool is_temp_kl, const QString kl_name, const QString kl_path)
 {
+	int my_id = 0;
 	QString current_kl_list_path = data_path + '/' + "current_kl_list.txt";
 	QFile current_kl_list(current_kl_list_path);
 	if (!current_kl_list.open(QIODevice::ReadOnly))
 	{
 		// 创建一个新的current_kl_list.txt
 		if (!current_kl_list.open(QIODevice::WriteOnly)) {
-			return Status::Error;
+			return -2;
 		}
 
 		// 空的文件可以不检查了
 		// 写入新的库名
 		QTextStream out(&current_kl_list);
-		out << kl_name << '\n' << kl_path << '\n';
+		QString w_kl_name;
+		if (is_temp_kl) {
+			w_kl_name = "01_" + kl_name;
+			my_id = 1;
+		}
+		else {
+			w_kl_name = "00_" + kl_name;
+			my_id = 0;
+		}
+
+		out << w_kl_name << '\n' << kl_path << '\n';
 		current_kl_list.close();
 	}
 	else {
+		int max_id = 0;
+
 		// 检查要打开的库文件是否已经在当前打开的库文件列表中，如果在则不添加
 		QTextStream in(&current_kl_list);
 		QString existing_content;
@@ -133,11 +151,27 @@ Status addKLToCurrentKLList(const QString kl_name, const QString kl_path)
 		{
 			QString _kl_name = in.readLine();
 			QString _kl_path = in.readLine();
-			if (kl_name == _kl_name && kl_path == _kl_path)
+			if (kl_path == _kl_path)
 			{
 				current_kl_list.close();
-				return Status::Failure;  // 已经在当前打开的库文件列表中
+				return -1;  // 已经在当前打开的库文件列表中
 			}
+
+			// 以第一个'_'为分割，取出id和kl_name
+			int index = _kl_name.indexOf('_');
+			if (index == -1) continue;  // 非法的库名，跳过了
+			int id = _kl_name.left(index).toInt();
+			if (is_temp_kl) {
+				if (id % 10 == 1) {
+					if (id > max_id) max_id = id;
+				}
+			}
+			else {
+				if (id % 10 == 0) {
+					if (id > max_id) max_id = id;
+				}
+			}
+
 			existing_content += _kl_name + '\n' + _kl_path + '\n';
 		}
 
@@ -145,20 +179,24 @@ Status addKLToCurrentKLList(const QString kl_name, const QString kl_path)
 
 		// 关闭后只写打开（会清空文件），写入新的库名和路径和筛选后的内容
 		if (!current_kl_list.open(QIODevice::WriteOnly)) {
-			return Status::Error;
+			return -2;
 		}
 
 		QTextStream out(&current_kl_list);
-		out << kl_name << '\n' << kl_path << '\n';
+
+		my_id = (max_id / 10 + 1) * 10 + int(is_temp_kl);  // 获得了一个临时文件区id
+
+		QString w_kl_name = QString::number(my_id) + "_" + kl_name;
+		out << w_kl_name << '\n' << kl_path << '\n';
 		out << existing_content;
 
 		current_kl_list.close();
 	}
-	return Status::Success;
+	return my_id;
 }
 
 // 将某个库文件名称从当前打开的库文件列表中删除
-Status removeKLFromCurrentKLList(const QString kl_name, const QString kl_path)
+Status removeKLFromCurrentKLList(const QString kl_path)
 {
 	QString current_kl_list_path = data_path + '/' + "current_kl_list.txt";
 	QFile current_kl_list(current_kl_list_path);
@@ -175,7 +213,7 @@ Status removeKLFromCurrentKLList(const QString kl_name, const QString kl_path)
 	{
 		QString _kl_name = in.readLine();
 		QString _kl_path = in.readLine();
-		if (kl_name == _kl_name && kl_path == _kl_path)
+		if (kl_path == _kl_path)
 		{
 			continue;
 		}
@@ -192,76 +230,87 @@ Status removeKLFromCurrentKLList(const QString kl_name, const QString kl_path)
 	return Status::Success;
 }
 
-// 获取当前打开的库文件列表中最新的以"未命名的知识库"开头的知识库名称
-QString getLatestTempKLName()
+// 获取当前打开的库文件列表中最新的临时文件区id（临时库和永久库分别计数），如果is_temp_kl为true则找临时库的；文件错误则返回-1
+int getLatestCurrentKLID(bool is_temp_kl)
 {
+	int max_id = 0;
+
 	QString current_kl_list_path = data_path + '/' + "current_kl_list.txt";
 	QFile current_kl_list(current_kl_list_path);
 	if (!current_kl_list.open(QIODevice::ReadOnly))
 	{
 		if (!current_kl_list.open(QIODevice::WriteOnly))
 		{
-			return "Error";
+			return -1;
 		}
-
-		return "";
+		return int(is_temp_kl);  // 如果是临时库，返回1，否则返回0
 	}
 
-	QString latest_temp_kl_name = "";
 	QTextStream in(&current_kl_list);
 	while (!in.atEnd())
 	{
 		QString kl_name = in.readLine();
 		QString kl_path = in.readLine();
-		if (kl_name.startsWith("未命名的知识库"))
-		{
-			latest_temp_kl_name = kl_name;
-			break;  // 第一个以"未命名的知识库"开头的就是最新的
+
+		// 以第一个'_'为分割，取出id和kl_name
+		int index = kl_name.indexOf('_');
+		if (index == -1) continue;  // 非法的库名，跳过了
+		int id = kl_name.left(index).toInt();
+
+		if (is_temp_kl) {
+			if (id % 10 == 1) {
+				if (id > max_id) max_id = id;
+			}
+		}
+		else {
+			if (id % 10 == 0) {
+				if (id > max_id) max_id = id;
+			}
 		}
 	}
 	current_kl_list.close();
-	return latest_temp_kl_name;
+	return max_id;
 }
 
-// 根据旧的库名和路径，新的库名和路径，修改当前打开的库文件列表中的库名和路径，如果找不到旧的库名和路径，则返回Failure，如果修改失败，则返回Error
-Status modifyKLInCurrentKLList(const QString& old_kl_name, const QString& old_kl_path, const QString& new_kl_name, const QString& new_kl_path)
-{
-	QString current_kl_list_path = data_path + '/' + "current_kl_list.txt";
-	QFile current_kl_list(current_kl_list_path);
-	if (!current_kl_list.open(QIODevice::ReadOnly))
-	{
-		return Status::Error;
-	}
-
-	bool found = false;
-
-	QString existing_content = "";
-	QTextStream in(&current_kl_list);
-	while (!in.atEnd())
-	{
-		QString _kl_name = in.readLine();
-		QString _kl_path = in.readLine();
-		if (old_kl_name == _kl_name && old_kl_path == _kl_path)
-		{
-			existing_content += new_kl_name + '\n' + new_kl_path + '\n';
-			found = true;
-		}
-		else
-		{
-			existing_content += _kl_name + '\n' + _kl_path + '\n';
-		}
-	}
-	current_kl_list.close();
-
-	if (!found) return Status::Failure;
-
-	if (!current_kl_list.open(QIODevice::WriteOnly)) return Status::Error;
-
-	QTextStream out(&current_kl_list);
-	out << existing_content;
-
-	current_kl_list.close();
-	return Status::Success;
-}
+//// 根据旧的库名和路径，新的库名和路径，修改当前打开的库文件列表中的库名和路径，如果找不到旧的库名和路径，则返回Failure，如果修改失败，则返回Error
+//Status modifyKLInCurrentKLList(const QString& old_kl_name, const QString& old_kl_path, const QString& new_kl_name, const QString& new_kl_path)
+//{
+//	QString current_kl_list_path = data_path + '/' + "current_kl_list.txt";
+//	QFile current_kl_list(current_kl_list_path);
+//	if (!current_kl_list.open(QIODevice::ReadOnly))
+//	{
+//		return Status::Error;
+//	}
+//
+//	bool found = false;
+//
+//	QString existing_content = "";
+//	QTextStream in(&current_kl_list);
+//	while (!in.atEnd())
+//	{
+//		QString _kl_name = in.readLine();
+//		QString _kl_path = in.readLine();
+//		if (old_kl_name == _kl_name && old_kl_path == _kl_path)
+//		{
+//			existing_content += new_kl_name + '\n' + new_kl_path + '\n';
+//			found = true;
+//		}
+//		else
+//		{
+//			existing_content += _kl_name + '\n' + _kl_path + '\n';
+//		}
+//	}
+//	current_kl_list.close();
+//
+//	if (!found) return Status::Failure;
+//
+//	if (!current_kl_list.open(QIODevice::WriteOnly)) return Status::Error;
+//
+//	QTextStream out(&current_kl_list);
+//	out << existing_content;
+//
+//	current_kl_list.close();
+//	return Status::Success;
+//}
 
 

@@ -23,19 +23,19 @@ enum class Status
 Status addKLToRecentKLList(const QString kl_name, const QString kl_path);
 
 // 将某个库文件名称从最近打开的库文件列表中删除
-Status removeKLFromRecentKLList(const QString kl_name, const QString kl_path);
+Status removeKLFromRecentKLList(const QString kl_path);
 
-// 将打开的库文件加入到当前打开的库文件列表中
-Status addKLToCurrentKLList(const QString kl_name, const QString kl_path);
+// 将打开的库文件加入到当前打开的库文件列表中，成功返回添加的id，重名失败返回-1，文件操作失败返回-2
+int addKLToCurrentKLList(bool is_temp_kl, const QString kl_name, const QString kl_path);
 
 // 将某个库文件名称从当前打开的库文件列表中删除
-Status removeKLFromCurrentKLList(const QString kl_name, const QString kl_path);
+Status removeKLFromCurrentKLList(const QString kl_path);
 
-// 获取当前打开的库文件列表中最新的以temp开头的知识库名称
-QString getLatestTempKLName();
+// 获取当前打开的库文件列表中最新的id（临时库和永久库分别计数），如果is_temp_kl为true则找临时库的；文件错误则返回-1
+int getLatestCurrentKLID(bool is_temp_kl);
 
-// 根据旧的库名和路径，新的库名和路径，修改当前打开的库文件列表中的库名和路径
-Status modifyKLInCurrentKLList(const QString& old_kl_name, const QString& old_kl_path, const QString& new_kl_name, const QString& new_kl_path);
+//// 根据旧的库名和路径，新的库名和路径，修改当前打开的库文件列表中的库名和路径
+//Status modifyKLInCurrentKLList(const QString& old_kl_name, const QString& old_kl_path, const QString& new_kl_name, const QString& new_kl_path);
 
 
 #endif // !PUBLIC_H

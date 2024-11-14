@@ -21,12 +21,13 @@ public:
 	// 获得输入的库路径，用户输入的路径/库名.km
 	QString getKLPath() const;
 
-
 //signals:
 //    void mergekl(QString kl_name,QString kl_path);//新加
 public slots:
 	void createButtonClicked();  // 点击创建新的库文件按钮
 	void selectPathButtonClicked();  // 点击选择路径按钮
+	
+	void accept() override;  // 是否有效，如果无效则accept事件被忽略
 
     //void emit_merge_kl_signal();//新加
 private:
@@ -35,6 +36,7 @@ private:
 	QString temp_kl_path;  // 临时库的位置（不带.km）
 	QString new_kl_name;  // 库名
 	QString new_kl_path;  // 库路径，用户输入的路径/库名.km
+	bool valid;  // 是否有效，如果无效则accept事件被忽略
 };
 
 #endif // NEWKLGUIDANCE_H

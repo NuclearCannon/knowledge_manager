@@ -15,6 +15,7 @@ NewKLGuidance::NewKLGuidance(QWidget* parent, bool _is_temp_kl, QString _temp_kl
 	, temp_kl_path(_temp_kl_path)
 	, new_kl_name("")
 	, new_kl_path("")
+	, valid(true)
 {
     ui.setupUi(this);
 	
@@ -26,9 +27,8 @@ NewKLGuidance::NewKLGuidance(QWidget* parent, bool _is_temp_kl, QString _temp_kl
 	// 点击创建新的库文件按钮
 	connect(ui.create_button, &QPushButton::clicked, this, &NewKLGuidance::createButtonClicked);
 	// 点击选择路径按钮
-	connect(ui.select_path_button, &QPushButton::clicked, this, &NewKLGuidance::selectPathButtonClicked);
-
-	connect(ui.create_button, &QPushButton::clicked, this, &QDialog::accept);
+	connect(ui.select_path_button, &QPushButton::clicked, this, &NewKLGuidance::selectPathButtonClicked); 
+	connect(ui.create_button, &QPushButton::clicked, this, &NewKLGuidance::accept);
 
 	//connect(ui.create_button, &QPushButton::clicked, this, &NewKLGuidance::emit_merge_kl_signal);
 }
@@ -52,6 +52,8 @@ QString NewKLGuidance::getKLPath() const
 // 槽：点击创建新的库文件按钮
 void NewKLGuidance::createButtonClicked()
 {
+	valid = true;
+
 	// 获取用户输入的库名，如果输入的库名为空，则在创建按钮上面显示一个提示：知识库名不能为空
 	QString kl_name = ui.kl_name_lineEdit->text();
 	QString target_kl_path = ui.kl_path_lineEdit->text();
@@ -59,21 +61,25 @@ void NewKLGuidance::createButtonClicked()
 	if (kl_name.isEmpty())
 	{
 		QMessageBox::warning(this, "错误", "知识库名不能为空");
+		valid = false;
 		return;
 	}
 	else if (target_kl_path.isEmpty())
 	{
 		QMessageBox::warning(this, "错误", "知识库路径不能为空");
+		valid = false;
 		return;
 	}
 	else if (!target_kl_dir.exists())
 	{
 		QMessageBox::warning(this, "错误", "知识库路径不存在");
+		valid = false;
 		return;
 	}
 	else if (target_kl_dir.exists(kl_name + ".km"))
 	{
 		QMessageBox::warning(this, "错误", "目标文件夹存在同名知识库");
+		valid = false;
 		return;
 	}
 
@@ -97,6 +103,7 @@ void NewKLGuidance::createButtonClicked()
 		if (!kl_dir.mkpath(target_kl_path))
 		{
 			QMessageBox::warning(this, "错误", "创建知识库文件夹失败！");
+			valid = false;
 			return;
 		}
 
@@ -105,6 +112,7 @@ void NewKLGuidance::createButtonClicked()
 		if (!meta_data_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
 			//qDebug() << "无法打开文件用于写入:" << file.errorString();
 			QMessageBox::warning(this, "错误", "无法打开文件用于写入：" + meta_data_file.errorString());
+			valid = false;
 			return;
 		}
 
@@ -115,6 +123,7 @@ void NewKLGuidance::createButtonClicked()
 		}
 		catch (...) {
 			QMessageBox::warning(this, "错误", "创建知识库元数据失败！");
+			valid = false;
 			return;
 		}
 
@@ -127,10 +136,12 @@ void NewKLGuidance::createButtonClicked()
 			if (!kl_dir.removeRecursively())
 			{
 				QMessageBox::warning(this, "错误", "删除知识库文件夹失败！");
+				valid = false;
 				return;
 			}
 
 			QMessageBox::warning(this, "错误", "压缩知识库失败！");
+			valid = false;
 			return;
 		}
 
@@ -138,6 +149,7 @@ void NewKLGuidance::createButtonClicked()
 		if (!kl_dir.removeRecursively())
 		{
 			QMessageBox::warning(this, "错误", "删除知识库文件夹失败！");
+			valid = false;
 			return;
 		}
 
@@ -145,6 +157,7 @@ void NewKLGuidance::createButtonClicked()
 		if (km == nullptr)
 		{
 			QMessageBox::warning(this, "错误", "打开知识库失败！");
+			valid = false;
 			return;
 		}
 		km->show();
@@ -158,6 +171,7 @@ void NewKLGuidance::createButtonClicked()
 		QDir temp_dir(temp_kl_path);
 		if (!temp_dir.exists()) {
 			QMessageBox::warning(this, QStringLiteral("错误"), "临时文件夹不存在：" + temp_kl_path);
+			valid = false;
 			return;
 		}
 
@@ -165,6 +179,7 @@ void NewKLGuidance::createButtonClicked()
 		if (!compress_folder(temp_kl_path.toStdString(), target_kl_path.toStdString() + ".km"))
 		{
 			QMessageBox::warning(this, "错误", "压缩知识库失败！");
+			valid = false;
 			return;
 		}
 	}
@@ -188,6 +203,14 @@ void NewKLGuidance::selectPathButtonClicked()
 	{
 		// 将选择的路径显示在输入框中
 		ui.kl_path_lineEdit->setText(kl_path);
+	}
+}
+
+void NewKLGuidance::accept()
+{
+	if (valid)
+	{
+		QDialog::accept();
 	}
 }
 
