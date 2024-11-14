@@ -54,6 +54,7 @@ class TextBlockBrowser : public QTextBrowser, public BlockControl
 {
     Q_OBJECT
 private:
+
 public:
     TextBlockBrowser(TextBlockWidget* parent);
     void setStyleOnSelection(FormatItem x, bool value = true);
@@ -64,7 +65,7 @@ public:
 protected:
     void mousePressEvent(QMouseEvent* event);
     void contextMenuEvent(QContextMenuEvent* event);
-
+    void focusOutEvent(QFocusEvent* event);
 signals:
     void contextMenuQuery(QContextMenuEvent*);
 

@@ -8,7 +8,7 @@ CodeEdit::CodeEdit(CodeBlockWidget* parent) :
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setTabStopDistance(20);
     setStyleSheet("border-bottom: 0px;");
-
+    setFocus();
 }
 
 CodeEdit::~CodeEdit()
@@ -78,4 +78,16 @@ void CodeEdit::clearUndoStack()
 void CodeEdit::contextMenuEvent(QContextMenuEvent* event)
 {
     emit contextMenuQuery(event);
+}
+
+void CodeEdit::focusOutEvent(QFocusEvent* event)
+{
+    QTextCursor cursor = textCursor();
+    if (cursor.hasSelection())
+    {
+        cursor.clearSelection();
+    }
+    cursor.setPosition(0);
+    setTextCursor(cursor);
+    QTextEdit::focusOutEvent(event);
 }

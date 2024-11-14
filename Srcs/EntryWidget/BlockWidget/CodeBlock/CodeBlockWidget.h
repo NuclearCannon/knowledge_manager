@@ -60,6 +60,7 @@ public:
 protected:
     void keyPressEvent(QKeyEvent* event) override;
     void contextMenuEvent(QContextMenuEvent* event);
+    void focusOutEvent(QFocusEvent* event);
 private:
     CodeBlockWidget* const parent_ptr;
     CodeBlockHighlighter* highlighter;

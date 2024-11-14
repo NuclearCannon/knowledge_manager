@@ -35,8 +35,13 @@ TextBlockBrowser::TextBlockBrowser(TextBlockWidget* parent) :
     setOpenLinks(false);
     setOpenExternalLinks(true);
     setTabStopDistance(20);
-    setStyleSheet("TextBlockBrowser:hover { background-color: rgba(0, 0, 0, 20); border: none; }  TextBlockBrowser { background-color: rgba(0, 0, 0, 0); border: none; }");
+    setStyleSheet(
+        "TextBlockBrowser:hover { background-color: rgba(0, 0, 0, 20); border: none; }  "
+        "TextBlockBrowser:focus { background-color: rgba(0, 0, 0, 20); border: none; }  "
+        "TextBlockBrowser { background-color: rgba(0, 0, 0, 0); border: none; }");
     setUndoRedoEnabled(true);
+    setFocus();
+    
 }
 
 void TextBlockBrowser::setStyleOnSelection(FormatItem x, bool value)
@@ -167,3 +172,14 @@ void TextBlockBrowser::mousePressEvent(QMouseEvent* event)
     }
 }
 
+void TextBlockBrowser::focusOutEvent(QFocusEvent* event)
+{
+    QTextCursor cursor = textCursor();
+    if (cursor.hasSelection())
+    {
+        cursor.clearSelection();
+    }
+    cursor.setPosition(0);
+    setTextCursor(cursor);
+    QTextBrowser::focusOutEvent(event);
+}

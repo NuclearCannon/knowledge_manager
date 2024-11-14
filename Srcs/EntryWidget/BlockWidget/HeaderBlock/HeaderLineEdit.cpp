@@ -5,9 +5,10 @@ HeaderLineEdit::HeaderLineEdit(QWidget* parent) :
 {
     setStyleSheet(
         "HeaderLineEdit:hover { background-color: rgba(0, 0, 0, 20); border: none;}  "
+        "HeaderLineEdit:focus { background-color: rgba(0, 0, 0, 20); border: none;}  "
         "HeaderLineEdit { background-color: rgba(0, 0, 0, 0); border: none;}  "
     );
-
+    setFocus();
     
 }
 void HeaderLineEdit::undo()
@@ -34,3 +35,4 @@ void HeaderLineEdit::contextMenuEvent(QContextMenuEvent* event)
 {
     emit contextMenuQuery(event);
 }
+
