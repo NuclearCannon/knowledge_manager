@@ -24,3 +24,8 @@ void HeaderLineEdit::clearUndoStack()
     setText(copy);
     blockSignals(false);
 }
+
+void HeaderLineEdit::contextMenuEvent(QContextMenuEvent* event)
+{
+    emit contextMenuQuery(event);
+}

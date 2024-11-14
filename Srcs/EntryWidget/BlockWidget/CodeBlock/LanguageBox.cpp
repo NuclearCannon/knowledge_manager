@@ -78,3 +78,8 @@ void LanguageComboBox::undoRecord()
     undo_stack.push(current_index);
     current_index = currentIndex();
 }
+
+void LanguageComboBox::contextMenuEvent(QContextMenuEvent* event)
+{
+    emit contextMenuQuery(event);
+}

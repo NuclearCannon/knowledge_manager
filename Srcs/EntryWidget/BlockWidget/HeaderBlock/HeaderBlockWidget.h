@@ -5,11 +5,16 @@
 
 class HeaderLineEdit : public QLineEdit, public BlockControl
 {
+    Q_OBJECT
 public:
     HeaderLineEdit(QWidget* parent);
     void undo();
     void redo();
     void clearUndoStack();
+signals:
+    void contextMenuQuery(QContextMenuEvent* event);
+protected:
+    void contextMenuEvent(QContextMenuEvent* event);
 };
 
 class HeaderBlockWidget : public BlockWidget
@@ -37,5 +42,11 @@ public:
     int getLevel() const;
     std::string toStdString() const;
     QString toQString() const;
+private slots:
+    //void handleContextMenuQueryFromControls(QContextMenuEvent* event);
+    void handleContextMenuUndo();
+    void handleContextMenuRedo();
+protected:
+    void contextMenuEvent(QContextMenuEvent* event);
 };
 

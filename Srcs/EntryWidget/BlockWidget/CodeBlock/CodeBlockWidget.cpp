@@ -1,7 +1,6 @@
 ﻿#include "CodeBlockWidget.h"
-//#include "../../EntryArea.h"
 #include <QBoxLayout>
-
+#include <QMenu>
 
 CodeBlockWidget::CodeBlockWidget(QWidget* parent) :
     BlockWidget(parent), 
@@ -21,7 +20,8 @@ CodeBlockWidget::CodeBlockWidget(QWidget* parent) :
     connect(code_edit, &CodeEdit::textChanged, this, &CodeBlockWidget::emitContentChange);
     connect(languange_box, &LanguageComboBox::languageBoxUndoRedo, this, &CodeBlockWidget::handleLanguageChanged);
     connect(languange_box, &LanguageComboBox::currentIndexChanged, this, &CodeBlockWidget::handleLanguageChanged);
-
+    connect(code_edit, &CodeEdit::contextMenuQuery, this, &CodeBlockWidget::handleContextMenuQueryFromControls);
+    connect(languange_box, &LanguageComboBox::contextMenuQuery, this, &CodeBlockWidget::handleContextMenuQueryFromControls);
     
     // 安装事件过滤器
     code_edit->installEventFilter(filter);
@@ -30,7 +30,6 @@ CodeBlockWidget::CodeBlockWidget(QWidget* parent) :
     updateHighlighter();
     justifyHeight();// 调整一次高度
 
-    qDebug() << "CodeBlockWidget 构造时尺寸" << size();
 }
 
 
@@ -99,3 +98,76 @@ void CodeBlockWidget::importFromQtXml(QDomElement& src)
     languange_box->setCurrentIndex(src.attribute("language").toInt());
     code_edit->setPlainText(src.firstChild().toText().data());
 }
+
+void CodeBlockWidget::contextMenuEvent(QContextMenuEvent* event)
+{
+    // 创建一个菜单
+    QMenu contextMenu(this);
+
+    // 添加菜单项
+    QAction* action_undo_edit = contextMenu.addAction("撤销(编辑框)");
+    connect(action_undo_edit, &QAction::triggered, this, &CodeBlockWidget::handleUndoEdit);
+
+    QAction* action_redo_edit = contextMenu.addAction("重做(编辑框)");
+    connect(action_redo_edit, &QAction::triggered, this, &CodeBlockWidget::handleRedoEdit);
+
+    QAction* action_undo_box = contextMenu.addAction("撤销(语言栏)");
+    connect(action_undo_box, &QAction::triggered, this, &CodeBlockWidget::handleUndoBox);
+
+    QAction* action_redo_box = contextMenu.addAction("重做(语言栏)");
+    connect(action_redo_box, &QAction::triggered, this, &CodeBlockWidget::handleRedoBox);
+
+
+    QAction* action_delete = contextMenu.addAction("删除");
+    connect(action_delete, &QAction::triggered, this, &CodeBlockWidget::handleContextMenuDelete);
+
+    QMenu* menu_insert_above = contextMenu.addMenu("在上方插入");
+    QAction* action_insert_above_text = menu_insert_above->addAction("文本块");
+    connect(action_insert_above_text, &QAction::triggered, this, &CodeBlockWidget::handleContextMenuInsertAboveText);
+
+    QAction* action_insert_above_code = menu_insert_above->addAction("代码块");
+    connect(action_insert_above_code, &QAction::triggered, this, &CodeBlockWidget::handleContextMenuInsertAboveCode);
+
+    QAction* action_insert_above_image = menu_insert_above->addAction("图片块");
+    connect(action_insert_above_image, &QAction::triggered, this, &CodeBlockWidget::handleContextMenuInsertAboveImage);
+
+    QAction* action_insert_above_header = menu_insert_above->addAction("标题块");
+    connect(action_insert_above_header, &QAction::triggered, this, &CodeBlockWidget::handleContextMenuInsertAboveHeader);
+
+    QMenu* menu_insert_below = contextMenu.addMenu("在下方插入");
+    QAction* action_insert_below_text = menu_insert_below->addAction("文本块");
+    connect(action_insert_below_text, &QAction::triggered, this, &CodeBlockWidget::handleContextMenuInsertBelowText);
+
+    QAction* action_insert_below_code = menu_insert_below->addAction("代码块");
+    connect(action_insert_below_code, &QAction::triggered, this, &CodeBlockWidget::handleContextMenuInsertBelowCode);
+
+    QAction* action_insert_below_image = menu_insert_below->addAction("图片块");
+    connect(action_insert_below_image, &QAction::triggered, this, &CodeBlockWidget::handleContextMenuInsertBelowImage);
+
+    QAction* action_insert_below_header = menu_insert_below->addAction("标题块");
+    connect(action_insert_below_header, &QAction::triggered, this, &CodeBlockWidget::handleContextMenuInsertBelowHeader);
+
+    // 在事件发生的位置显示菜单
+    contextMenu.exec(event->globalPos());
+}
+
+void CodeBlockWidget::handleUndoEdit()
+{
+    code_edit->undo();
+}
+void CodeBlockWidget::handleRedoEdit()
+{
+    code_edit->redo();
+}
+void CodeBlockWidget::handleUndoBox()
+{
+    languange_box->undo();
+}
+void CodeBlockWidget::handleRedoBox()
+{
+    languange_box->redo();
+}
+//void CodeBlockWidget::handleContextMenuQueryFromControls(QContextMenuEvent* event)
+//{
+//    contextMenuEvent(event);
+//}

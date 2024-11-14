@@ -34,10 +34,13 @@ int EntryArea::loadQtXml()
 
         if (name == "text-block")
         {
+
             TextBlockWidget* widget = new TextBlockWidget(this->widget());
             widget->importFromQtXml(elem);
             appendBlock(widget);
             connect(widget, &BlockWidget::contentChange, this, &EntryArea::contentChangeSlot);
+            connect(widget, &BlockWidget::insertAbove, this, &EntryArea::handleInsertAboveFromBlock);
+            connect(widget, &BlockWidget::insertBelow, this, &EntryArea::handleInsertBelowFromBlock);
         }
         else if (name == "code-block")
         {
@@ -78,7 +81,7 @@ int EntryArea::dumpQtXml()
     QDomElement root = doc.createElement("entry");
     doc.appendChild(root);
 
-    for (BlockWidget* iter = head; iter; iter = iter->next)
+    for (BlockWidget* iter : blocks)
     {
         QDomElement block_elem = doc.createElement("temp-block");
         iter->exportToQtXml(block_elem, doc);

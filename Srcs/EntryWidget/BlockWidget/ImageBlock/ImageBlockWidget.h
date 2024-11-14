@@ -5,6 +5,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDir>
+
+
 class ImageBlockWidget : public BlockWidget
 {
 	Q_OBJECT
@@ -19,6 +21,11 @@ public:
 
     virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc);
     virtual void importFromQtXml(QDomElement& src);
+
+//public slots:
+//    void handleContextMenuQueryFromControls(QContextMenuEvent* event);
+protected:
+    void contextMenuEvent(QContextMenuEvent* event);
 
 private:
 	QLabel* label;

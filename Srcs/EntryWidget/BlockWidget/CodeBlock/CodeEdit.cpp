@@ -74,3 +74,8 @@ void CodeEdit::clearUndoStack()
 {
     this->document()->clearUndoRedoStacks();
 }
+
+void CodeEdit::contextMenuEvent(QContextMenuEvent* event)
+{
+    emit contextMenuQuery(event);
+}

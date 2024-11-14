@@ -5,8 +5,8 @@
 
 BlockWidget::BlockWidget(QWidget* parent) :
 	QWidget(parent), 
-	last(0), 
-	next(0),
+	//last(0), 
+	//next(0),
 	filter(new FocusEventFilter(this))
 {
 
@@ -22,10 +22,10 @@ BlockWidget::~BlockWidget()
 	}
 }
 
-BlockWidget* BlockWidget::getLast() const { return last; }
-BlockWidget* BlockWidget::getNext() const { return next; }
-void BlockWidget::setLast(BlockWidget* p) { last = p; }
-void BlockWidget::setNext(BlockWidget* p) { next = p; }
+//BlockWidget* BlockWidget::getLast() const { return last; }
+//BlockWidget* BlockWidget::getNext() const { return next; }
+//void BlockWidget::setLast(BlockWidget* p) { last = p; }
+//void BlockWidget::setNext(BlockWidget* p) { next = p; }
 
 void BlockWidget::emitContentChange()
 {
@@ -33,10 +33,50 @@ void BlockWidget::emitContentChange()
 }
 
 
-void BlockWidget::emitLinkClicked(QUrl url)
+void BlockWidget::handleContextMenuInsertAboveText()
 {
-	emit linkClicked(url);
+	emit insertAbove(this, BlockType::Text);
 }
+void BlockWidget::handleContextMenuInsertAboveCode()
+{
+	emit insertAbove(this, BlockType::Code);
+}
+void BlockWidget::handleContextMenuInsertAboveImage()
+{
+	emit insertAbove(this, BlockType::Image);
+}
+void BlockWidget::handleContextMenuInsertAboveHeader()
+{
+	emit insertAbove(this, BlockType::Header);
+}
+
+void BlockWidget::handleContextMenuInsertBelowText()
+{
+	emit insertBelow(this, BlockType::Text);
+}
+void BlockWidget::handleContextMenuInsertBelowCode()
+{
+	emit insertBelow(this, BlockType::Code);
+}
+void BlockWidget::handleContextMenuInsertBelowImage()
+{
+	emit insertBelow(this, BlockType::Image);
+}
+void BlockWidget::handleContextMenuInsertBelowHeader()
+{
+	emit insertBelow(this, BlockType::Header);
+}
+
+void BlockWidget::handleContextMenuDelete()
+{
+	emit deletThisBlock(this);
+}
+void BlockWidget::handleContextMenuQueryFromControls(QContextMenuEvent* event)
+{
+	this->contextMenuEvent(event);
+}
+
+
 
 // FocusEventFilter相关内容
 // static BlockWidget* focus;
@@ -60,12 +100,6 @@ bool FocusEventFilter::eventFilter(QObject* watched, QEvent* event)
 	case QFocusEvent::FocusOut:
 		focus = 0;
 		return false;
-	//case QMouseEvent::Enter:
-	//	target->setStyleSheet("background-color: #EEEEEE;");
-	//	return true;
-	//case QMouseEvent::Leave:
-	//	target->setStyleSheet("");
-	//	return true;
 	default:
 		// 对于其他事件类型，继续传递事件  
 		return QObject::eventFilter(watched, event);

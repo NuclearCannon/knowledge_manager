@@ -59,9 +59,12 @@ public:
 
 protected:
     void keyPressEvent(QKeyEvent* event) override;
+    void contextMenuEvent(QContextMenuEvent* event);
 private:
     CodeBlockWidget* const parent_ptr;
     CodeBlockHighlighter* highlighter;
+signals:
+    void contextMenuQuery(QContextMenuEvent*);
 };
 
 
@@ -80,11 +83,14 @@ public:
     void clearUndoStack();
 private:
     void clearUndoStackOnly();
+    void contextMenuEvent(QContextMenuEvent* event);
 private slots:
     void clearRedoStackOnly();
     void undoRecord();
 signals:
     void languageBoxUndoRedo();
+signals:
+    void contextMenuQuery(QContextMenuEvent*);
 };
 
 
@@ -106,6 +112,13 @@ private slots:
     void handleLanguageChanged();
 
 public slots:
+    //void handleContextMenuQueryFromControls(QContextMenuEvent* event);
     void justifyHeight();
+    void handleUndoEdit();
+    void handleRedoEdit();
+    void handleUndoBox();
+    void handleRedoBox();
+protected:
+    void contextMenuEvent(QContextMenuEvent* event);
 };
 
