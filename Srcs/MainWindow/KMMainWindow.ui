@@ -226,24 +226,14 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <property name="title">
      <string>编辑</string>
     </property>
-    <widget class="QMenu" name="menu_append_block">
-     <property name="title">
-      <string>添加块</string>
-     </property>
-     <addaction name="act_add_text_block"/>
-     <addaction name="act_add_code_block"/>
-     <addaction name="act_add_image_block"/>
-     <addaction name="act_add_header_block"/>
-    </widget>
     <addaction name="act_undo"/>
     <addaction name="act_redo"/>
-    <addaction name="act_cut_and_paste"/>
-    <addaction name="act_copy"/>
-    <addaction name="act_paste"/>
-    <addaction name="act_find_replace_in_term"/>
-    <addaction name="act_insert_block_above"/>
-    <addaction name="act_insert_block_below"/>
-    <addaction name="menu_append_block"/>
+    <addaction name="separator"/>
+    <addaction name="act_add_text_block"/>
+    <addaction name="act_add_code_block"/>
+    <addaction name="act_add_image_block"/>
+    <addaction name="act_add_header_block"/>
+    <addaction name="separator"/>
     <addaction name="act_point_out"/>
    </widget>
    <widget class="QMenu" name="menu_format">
@@ -318,45 +308,6 @@ QTabBar::tab:selected, QTabBar::tab:hover {
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="act_cut_and_paste">
-   <property name="text">
-    <string>剪切</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
-  </action>
-  <action name="act_paste">
-   <property name="text">
-    <string>粘贴</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
-   </property>
-  </action>
-  <action name="act_find_replace_in_term">
-   <property name="text">
-    <string>词条内查找和替换</string>
-   </property>
-  </action>
-  <action name="act_insert_block_above">
-   <property name="text">
-    <string>在块上方插入新块</string>
-   </property>
-  </action>
-  <action name="act_insert_block_below">
-   <property name="text">
-    <string>在块下方插入新块</string>
-   </property>
-  </action>
-  <action name="act_copy">
-   <property name="text">
-    <string>复制</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
-  </action>
   <action name="act_bold">
    <property name="text">
     <string>加粗</string>
@@ -398,22 +349,22 @@ QTabBar::tab:selected, QTabBar::tab:hover {
   </action>
   <action name="act_add_text_block">
    <property name="text">
-    <string>文本块</string>
+    <string>添加文本块</string>
    </property>
   </action>
   <action name="act_add_code_block">
    <property name="text">
-    <string>代码块</string>
+    <string>添加代码块</string>
    </property>
   </action>
   <action name="act_add_image_block">
    <property name="text">
-    <string>图片块</string>
+    <string>添加图片块</string>
    </property>
   </action>
   <action name="act_add_header_block">
    <property name="text">
-    <string>标题块</string>
+    <string>添加标题块</string>
    </property>
   </action>
   <action name="act_set_current_entry_as_anchor">
