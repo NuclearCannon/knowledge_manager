@@ -61,16 +61,24 @@ void TextBlockWidget::exportToQtXml(QDomElement& dest, QDomDocument& dom_doc)
     QTextBlock block = doc->begin();
 
     dest.setTagName(QStringLiteral("text-block"));
-
+    bool first = true;
     while (block.isValid())
     {
+        if (first)
+        {
+            first = false;
+        }
+        else
+        {
+            dest.appendChild(dom_doc.createElement("br"));
+        }
         for (QTextBlock::Iterator iter = block.begin(); !iter.atEnd(); iter++)
         {
             QTextFragment fragment = iter.fragment();
             QString text = fragment.text();
             if (text == "\n")
             {
-                dest.appendChild(dom_doc.createElement("br"));
+                qWarning() << "pure newline appear";
                 continue;
             }
             QTextCharFormat format = fragment.charFormat();
@@ -104,7 +112,7 @@ void TextBlockWidget::exportToQtXml(QDomElement& dest, QDomDocument& dom_doc)
             dest.appendChild(new_node);
         }
         block = block.next();
-        dest.appendChild(dom_doc.createElement("br"));
+        
     }
     return;
 }
