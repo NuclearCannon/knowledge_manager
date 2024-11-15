@@ -646,7 +646,16 @@ void KMMainWindow::tabWidgetChanged(int index)
 // 点击tab关闭按钮时，关闭特定的tab
 void KMMainWindow::actTabCloseRequested(int index)
 {
-	ui.tab_widget->removeTab(index);
+	EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->widget(index));
+	if (entry_widget == nullptr) return;
+	if (entry_widget->saveEntry())
+	{
+		ui.tab_widget->removeTab(index);
+	}
+	else
+	{
+		QMessageBox::warning(this, "错误", "无法正确关闭词条：" + meta_data.getEntry(entry_widget->getEntryId())->title());
+	}
 }
 
 // 槽：右键tab，弹出菜单，包括 关闭，关闭其他，删除，修改名称
@@ -677,12 +686,12 @@ void KMMainWindow::showTabContextMenu(const QPoint& pos)
 		// 先删除左边的tab直到遇到当前的tab
 		while (ui.tab_widget->widget(0) != current_widget)
 		{
-			ui.tab_widget->removeTab(0);
+			actTabCloseRequested(0);
 		}
 		// 再删除右边的tab
 		while (ui.tab_widget->count() > 1)
 		{
-			ui.tab_widget->removeTab(1);
+			actTabCloseRequested(1);
 		}
 	});
 	connect(act_delete, &QAction::triggered, this, &KMMainWindow::actDeleteEntry);

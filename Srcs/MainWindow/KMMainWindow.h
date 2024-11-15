@@ -62,7 +62,7 @@ public:
 	// 新建知识库的帮助函数，参数是知识库的路径，返回是否成功新建，路径是带.km后缀的
 	bool createNewKnowledgeLibraryHelper(QString file_path);
 
-	// 焦点过滤器
+	// 焦点过滤器，用于更改entry名称
 	bool eventFilter(QObject* obj, QEvent* event) override;
 
 private slots:
