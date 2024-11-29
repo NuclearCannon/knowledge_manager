@@ -153,12 +153,17 @@ void TextBlockBrowser::mousePressEvent(QMouseEvent* event)
 
 void TextBlockBrowser::focusOutEvent(QFocusEvent* event)
 {
-    QTextCursor cursor = textCursor();
-    if (cursor.hasSelection())
+    TextBlockBrowser* focus = qobject_cast<TextBlockBrowser*>(QApplication::focusWidget());
+
+    if (focus && focus!=this)
     {
-        cursor.clearSelection();
+        QTextCursor cursor = textCursor();
+        if (cursor.hasSelection())
+        {
+            cursor.clearSelection();
+        }
+        cursor.setPosition(0);
+        setTextCursor(cursor);
     }
-    cursor.setPosition(0);
-    setTextCursor(cursor);
     QTextBrowser::focusOutEvent(event);
 }
