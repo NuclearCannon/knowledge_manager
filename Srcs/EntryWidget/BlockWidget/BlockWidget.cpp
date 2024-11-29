@@ -78,7 +78,11 @@ void BlockWidget::deleteFile()
 BlockWidget* BlockWidget::focusBlockWidget()
 {
 	QWidget* widget = QApplication::focusWidget();
-	return qobject_cast<BlockWidget*>(widget);
+	BlockWidget* block = qobject_cast<BlockWidget*>(widget);
+	if (block)return block;
+	BlockControl* control = dynamic_cast<BlockControl*>(widget);
+	if (control)return control->getParent();
+	return nullptr;
 }
 
 BlockControl::BlockControl(BlockWidget* parent) :parent(parent) {};

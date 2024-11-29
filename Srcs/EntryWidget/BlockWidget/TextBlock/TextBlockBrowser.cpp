@@ -153,7 +153,7 @@ void TextBlockBrowser::mousePressEvent(QMouseEvent* event)
 
 void TextBlockBrowser::focusOutEvent(QFocusEvent* event)
 {
-    TextBlockBrowser* focus = qobject_cast<TextBlockBrowser*>(QApplication::focusWidget());
+    BlockControl* focus = dynamic_cast<BlockControl*>(QApplication::focusWidget());
 
     if (focus && focus!=this)
     {
