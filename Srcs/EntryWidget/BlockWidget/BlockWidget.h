@@ -26,8 +26,6 @@ protected:
 public:
 	BlockWidget(QWidget* parent);
 	virtual ~BlockWidget();
-	//BlockWidget* getLast() const;
-	//BlockWidget* getNext() const;
 	// 下面这些纯虚函数的存在使得该类本身不能实例化，只有实现了这些函数子类才能实例化
 	virtual BlockType type() const = 0;
 	virtual void exportToQtXml(QDomElement& dest, QDomDocument& dom_doc) = 0;

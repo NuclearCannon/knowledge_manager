@@ -21,8 +21,6 @@ int EntryArea::insert(int index, BlockWidget* ptr)
 EntryArea::EntryArea(QWidget* parent, const QDir& root) :
     QScrollArea(parent),
     layout(0),
-    head(0),
-    tail(0),
     focus(nullptr),
     root_dir(root),
     attachment_dir(root_dir.absoluteFilePath("attachments")),

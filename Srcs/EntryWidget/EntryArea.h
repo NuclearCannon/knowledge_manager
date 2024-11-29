@@ -13,7 +13,6 @@ class EntryArea : public QScrollArea
     Q_OBJECT
 private:
     QVBoxLayout* layout;
-    BlockWidget* head, * tail;
     QDir root_dir, attachment_dir;
     QList<BlockWidget*> blocks;
 
