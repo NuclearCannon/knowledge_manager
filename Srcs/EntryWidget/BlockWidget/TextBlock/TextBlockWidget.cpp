@@ -16,12 +16,7 @@ TextBlockWidget::TextBlockWidget(QWidget* parent) :
     text_browser = new TextBlockBrowser(this);
     layout->addWidget(text_browser);
     setLayout(layout);
-
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    // 安装事件过滤器
-    text_browser->installEventFilter(filter);
-    this->installEventFilter(filter);
 
     // 连接更改信号
     connect(text_browser, &TextBlockBrowser::textChanged, this, &TextBlockWidget::emitContentChange);

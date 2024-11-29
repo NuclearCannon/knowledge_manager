@@ -1,13 +1,10 @@
 #include "BlockWidget.h"
 #include <QPropertyAnimation>
-
+#include <QApplication>
 
 
 BlockWidget::BlockWidget(QWidget* parent) :
-	QWidget(parent), 
-	//last(0), 
-	//next(0),
-	filter(new FocusEventFilter(this))
+	QWidget(parent)
 {
 
 }
@@ -15,18 +12,10 @@ BlockWidget::BlockWidget(QWidget* parent) :
 // 基类BlockWidget析构函数
 BlockWidget::~BlockWidget()
 {
-	if (filter)
-	{
-		delete filter;
-		filter = nullptr;
-	}
 	return;
 }
 
-//BlockWidget* BlockWidget::getLast() const { return last; }
-//BlockWidget* BlockWidget::getNext() const { return next; }
-//void BlockWidget::setLast(BlockWidget* p) { last = p; }
-//void BlockWidget::setNext(BlockWidget* p) { next = p; }
+
 
 void BlockWidget::emitContentChange()
 {
@@ -79,35 +68,23 @@ void BlockWidget::handleContextMenuQueryFromControls(QContextMenuEvent* event)
 
 
 
-// FocusEventFilter相关内容
-// static BlockWidget* focus;
-BlockWidget* FocusEventFilter::focus = nullptr;
 
-
-BlockWidget* FocusEventFilter::getFocus()
-{
-	return focus;
-}
-
-bool FocusEventFilter::eventFilter(QObject* watched, QEvent* event) 
-{
-
-	// 检查事件类型  
-	switch (event->type())
-	{
-	case QFocusEvent::FocusIn:
-		focus = target;
-		return false;
-	case QFocusEvent::FocusOut:
-		focus = 0;
-		return false;
-	default:
-		// 对于其他事件类型，继续传递事件  
-		return QObject::eventFilter(watched, event);
-	}
-}
 
 void BlockWidget::deleteFile()
 {
 	// do nothing
 }
+
+BlockWidget* BlockWidget::focusBlockWidget()
+{
+	QWidget* widget = QApplication::focusWidget();
+	return qobject_cast<BlockWidget*>(widget);
+}
+
+BlockControl::BlockControl(BlockWidget* parent) :parent(parent) {};
+
+BlockWidget* BlockControl::getParent() const
+{
+	return parent;
+}
+

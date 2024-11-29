@@ -4,7 +4,6 @@
 #include <QtXml>
 
 class EntryArea;  // 对BlockArea进行声明，方便定义友元
-class FocusEventFilter;
 
 
 enum class BlockType  // 块的四种类型
@@ -20,8 +19,7 @@ class BlockWidget : public QWidget
 private:
 	friend class EntryArea;
 
-protected:
-	FocusEventFilter* filter;
+
 
 public:
 	BlockWidget(QWidget* parent);
@@ -32,6 +30,7 @@ public:
 	virtual void importFromQtXml(QDomElement& src) = 0;
 	virtual void deleteFile();  // 专为含有文件的块设计，默认行为是什么也不做
 	virtual void clearUndoStack() = 0;
+	static BlockWidget* focusBlockWidget();
 signals:
 	void contentChange();
 signals:
@@ -60,25 +59,17 @@ protected slots:
 
 };
 
-// 焦点移动事件过滤器
-class FocusEventFilter : public QObject
-{
-	Q_OBJECT
-public:
-	FocusEventFilter(BlockWidget* target) :target(target) {};
-	static BlockWidget* getFocus();
-private:
-	BlockWidget* const target;
-	static BlockWidget* focus;
-protected:
-	bool eventFilter(QObject* watched, QEvent* event);
-};
 
 class BlockControl
 {
+private:
+	BlockWidget* parent;
 public:
+	BlockControl(BlockWidget* parent);
 	virtual void undo() = 0;
 	virtual void redo() = 0;
 	virtual void clearUndoStack() = 0;
+	BlockWidget* getParent() const;
 
 };
+

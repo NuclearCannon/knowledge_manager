@@ -119,7 +119,7 @@ void EntryArea::insertBlockAbove(BlockWidget* block, BlockWidget* new_block)
 
 int EntryArea::insertBlockAbove(BlockType type)
 {
-    BlockWidget* current = FocusEventFilter::getFocus();
+    BlockWidget* current = BlockWidget::focusBlockWidget();
     if (current == nullptr)return 1;
     if (!has(current))return 2;
     try {
@@ -156,7 +156,7 @@ void EntryArea::insertBlockBelow(BlockWidget* block, BlockWidget* new_block)
 
 int EntryArea::insertBlockBelow(BlockType type)
 {
-    BlockWidget* current = FocusEventFilter::getFocus();
+    BlockWidget* current = BlockWidget::focusBlockWidget();
     if (current == nullptr)return 1;
     if (!has(current))return 2;
     try {
@@ -201,7 +201,7 @@ void EntryArea::deleteBlockWidget(BlockWidget* block)
 int EntryArea::deleteCurrentBlock()
 {
     
-    BlockWidget* current = FocusEventFilter::getFocus();
+    BlockWidget* current = BlockWidget::focusBlockWidget();
     if (current == nullptr)return 1;
     if (!has(current))return 2;
     try {

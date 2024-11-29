@@ -16,7 +16,6 @@ HeaderBlockWidget::HeaderBlockWidget(QWidget* parent) :
     line = new HeaderLineEdit(this);
     line->setMinimumHeight(32);
     line->setFont(h1Font);
-    line->installEventFilter(filter);
     layout->addWidget(line);
     layout->setContentsMargins(0, 0, 0, 0);
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
@@ -116,11 +115,6 @@ void HeaderBlockWidget::importFromQtXml(QDomElement& src)
     line->setFont(*header_fonts[level]);
 }
 
-
-//void HeaderBlockWidget::handleContextMenuQueryFromControls(QContextMenuEvent* event)
-//{
-//    contextMenuEvent(event);
-//}
 
 void HeaderBlockWidget::contextMenuEvent(QContextMenuEvent* event)
 {

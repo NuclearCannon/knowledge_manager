@@ -3,11 +3,13 @@
 #include <QLineEdit>
 #include <QBoxLayout>
 
+class HeaderBlockWidget;
+
 class HeaderLineEdit : public QLineEdit, public BlockControl
 {
     Q_OBJECT
 public:
-    HeaderLineEdit(QWidget* parent);
+    HeaderLineEdit(HeaderBlockWidget* parent);
     void undo();
     void redo();
     void clearUndoStack();

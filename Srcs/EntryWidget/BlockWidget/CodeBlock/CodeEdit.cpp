@@ -3,7 +3,8 @@
 CodeEdit::CodeEdit(CodeBlockWidget* parent) :
     QTextEdit(parent),
     parent_ptr(parent),
-    highlighter(0)
+    highlighter(0),
+    BlockControl(parent)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setTabStopDistance(20);

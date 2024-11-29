@@ -1,7 +1,7 @@
 ﻿#include "HeaderBlockWidget.h"
 
-HeaderLineEdit::HeaderLineEdit(QWidget* parent) :
-    QLineEdit(parent)
+HeaderLineEdit::HeaderLineEdit(HeaderBlockWidget* parent) :
+    QLineEdit(parent), BlockControl(parent)
 {
     setStyleSheet(
         "HeaderLineEdit:hover { background-color: rgba(0, 0, 0, 20); border: none;}  "

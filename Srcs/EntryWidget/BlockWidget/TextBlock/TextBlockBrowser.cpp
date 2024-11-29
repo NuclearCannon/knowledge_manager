@@ -4,31 +4,10 @@
 #include <QThread>
 #include <QMessageBox>
 
-//void openUrlInDefaultBrowser(const QUrl& url) {
-//    // 将QUrl转换为QString
-//    QString urlString = url.toString();
-//
-//    // 构建命令行指令
-//    QString command = QString("start %1").arg(urlString);
-//
-//    // 使用QProcess执行命令
-//    QProcess process;
-//    process.start(command);
-//
-//    // 检查进程是否成功启动
-//    if (!process.waitForStarted()) {
-//        qWarning() << "Failed to start process:" << process.errorString();
-//    }
-//    else {
-//        qDebug() << "URL opened in default browser.";
-//    }
-//}
-
-
-
 
 TextBlockBrowser::TextBlockBrowser(TextBlockWidget* parent) :
-    QTextBrowser(parent)
+    QTextBrowser(parent),
+    BlockControl(parent)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setReadOnly(false);

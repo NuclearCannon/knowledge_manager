@@ -25,8 +25,6 @@ CodeBlockWidget::CodeBlockWidget(QWidget* parent) :
     connect(languange_box, &LanguageComboBox::contextMenuQuery, this, &CodeBlockWidget::handleContextMenuQueryFromControls);
     
     // 安装事件过滤器
-    code_edit->installEventFilter(filter);
-    languange_box->installEventFilter(filter);
     // 代码块设置高亮
     updateHighlighter();
     justifyHeight();// 调整一次高度

@@ -2,7 +2,8 @@
 // LanguageComboBox
 
 LanguageComboBox::LanguageComboBox(CodeBlockWidget* parent) :
-    QComboBox(parent)
+    QComboBox(parent),
+    BlockControl(parent)
 {
     blockSignals(true);
     addItem("Plain Text");
