@@ -189,7 +189,7 @@ void KMMainWindow::actSaveKL()
 		QString file_path = QFileDialog::getSaveFileName(
 			this,
 			"保存知识库",
-			default_path_for_all_kls,
+			globals.default_path_for_all_kls,
 			"Knowledge Manager Files (*.km))"
 		);
 
@@ -250,7 +250,7 @@ void KMMainWindow::actSaveKL()
 			return;
 		}
 
-		temp_kl_path = default_path_for_temp_kls + "/" + QString::number(rnt) + "_" + kl_name;
+		temp_kl_path = globals.default_path_for_temp_kls + "/" + QString::number(rnt) + "_" + kl_name;
 
 		// 修改临时知识库文件夹的名称为输入的名称
 		QDir temp_kl_dir(old_temp_kl_path);

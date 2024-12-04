@@ -12,7 +12,7 @@ RecentKLWindow* RecentKLWindow::construct(QWidget* parent, KMMainWindow* _main_w
 	RecentKLWindow* recent_kl_window = new RecentKLWindow(parent, _main_window);
 	if (!recent_kl_window->refreshListWidget())
 	{
-		QMessageBox::warning(recent_kl_window, "错误", "无法打开或操作文件：" + data_path + "/recent_kl_list.txt");
+		QMessageBox::warning(recent_kl_window, "错误", "无法打开或操作文件：" + globals.data_path + "/recent_kl_list.txt");
 		delete recent_kl_window;
 		return nullptr;
 	}
@@ -54,7 +54,7 @@ bool RecentKLWindow::refreshListWidget()
 	ui.listwidget->clear();
 
 	// 打开历史库文件，如果打不开应该是不存在，则创建一个
-	QString recent_kl_list_path = data_path + "/recent_kl_list.txt";
+	QString recent_kl_list_path = globals.data_path + "/recent_kl_list.txt";
 	QFile recent_kl_list(recent_kl_list_path);
 	if (!recent_kl_list.open(QIODevice::ReadOnly))
 	{
@@ -143,7 +143,7 @@ void RecentKLWindow::searchButtonClicked() {
 		return;
 	}
 	
-	QString filePath = QDir(data_path).filePath("recent_kl_list.txt");
+	QString filePath = QDir(globals.data_path).filePath("recent_kl_list.txt");
 	// 注意：在Windows上，应使用正斜杠("/")或双反斜杠("\\")作为路径分隔符，  
 	// 单个反斜杠("\")在字符串中是转义字符的开始。  
 

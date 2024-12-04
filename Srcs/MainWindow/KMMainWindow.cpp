@@ -52,7 +52,7 @@ KMMainWindow* KMMainWindow::construct(QString kl_path)
 	}
 
 	// 生成临时文件夹的路径
-	QString _temp_kl_path = default_path_for_temp_kls + "/" + QString::number(rnt) + "_" + kl_name;
+	QString _temp_kl_path = globals.default_path_for_temp_kls + "/" + QString::number(rnt) + "_" + kl_name;
 
 	QDir _temp_kl_dir(_temp_kl_path);
 
@@ -99,7 +99,7 @@ KMMainWindow* KMMainWindow::construct()
 	
 	int my_id = (max_id / 10 + 1) * 10 + 1;  // 获得了一个临时文件区id
 
-	QString temp_kl_path = default_path_for_temp_kls + "/" + QString::number(my_id) + "_" + kl_name;
+	QString temp_kl_path = globals.default_path_for_temp_kls + "/" + QString::number(my_id) + "_" + kl_name;
 
 	// 构建meta_data.xml
 	QDir temp_kl_dir(temp_kl_path);
@@ -807,7 +807,7 @@ bool KMMainWindow::openKnowledgeLibrary(const QString& open_kl_path)
 		// 修改kl_name, original_kl_path，temp_kl_path，is_temp_kl，在这里修改是因为initialize函数会用到这些变量
 		kl_name = open_kl_name;
 		original_kl_path = open_kl_path;
-		temp_kl_path = default_path_for_temp_kls + "/" + QString::number(rnt) + "_" + kl_name;
+		temp_kl_path = globals.default_path_for_temp_kls + "/" + QString::number(rnt) + "_" + kl_name;
 		is_temp_kl = false;
 
 		// 初始化，加载元数据

@@ -1,7 +1,7 @@
 /*
 实现了一些公共函数，定义全局变量
 */
-
+#include <QCoreApplication>
 #include <QMessageBox>
 #include <QString>
 #include <QInputDialog>
@@ -10,13 +10,79 @@
 
 #include "public.h"
 
-QString current_path_of_mainfile;  // 当前程序所在的路径
-QString data_path;  // 存放软件运行所需要的文件，历史记录等
-QString default_path_for_all_kls;  // 默认的所有知识库的存放位置
-QString default_path_for_temp_kls;  // 默认的临时知识库的存放位置
+//QString current_path_of_mainfile;  // 当前程序所在的路径
+//QString data_path;  // 存放软件运行所需要的文件，历史记录等
+//QString default_path_for_all_kls;  // 默认的所有知识库的存放位置
+//QString default_path_for_temp_kls;  // 默认的临时知识库的存放位置
+
+Globals globals;
 
 int recent_kl_list_limit = 10;  // 最近打开的知识库列表的最大长度
 int recent_entry_list_limit = 10;  // 最近打开的词条列表最大长度
+
+
+Globals::Globals():
+	m_successfully_inited(false)
+{
+	
+	current_path_of_mainfile = QCoreApplication::applicationDirPath();  // 当前程序所在的路径
+	data_path = current_path_of_mainfile + "/data";
+	default_path_for_all_kls = data_path + "/all_kls";
+	default_path_for_temp_kls = data_path + "/temp_kls";
+
+	// 检查data文件夹是否存在，不存在则创建
+	QDir data_dir(data_path);
+	if (!data_dir.exists())
+	{
+		if (!data_dir.mkpath(data_path))
+		{
+			QMessageBox::warning(nullptr, "错误", "无法创建data文件夹，请检查权限：" + data_path);
+			return;
+		}
+	}
+
+	// 检查all_kls文件夹是否存在，不存在则创建
+	QDir all_kls_dir(default_path_for_all_kls);
+	if (!all_kls_dir.exists())
+	{
+		if (!all_kls_dir.mkpath(default_path_for_all_kls))
+		{
+			QMessageBox::warning(nullptr, "错误", "无法创建all_kls文件夹，请检查权限：" + default_path_for_all_kls);
+			return;
+		}
+	}
+
+	// 检查temp_kls文件夹是否存在，不存在则创建
+	QDir temp_kls_dir(default_path_for_temp_kls);
+	if (!temp_kls_dir.exists())
+	{
+		if (!temp_kls_dir.mkpath(default_path_for_temp_kls))
+		{
+			QMessageBox::warning(nullptr, "错误", "无法创建temp_kls文件夹，请检查权限：" + default_path_for_temp_kls);
+			return;
+		}
+	}
+
+	// 为了防止程序异常退出，没有删除current_kl_list文件，所以每次启动时都要删除
+	QFile current_kl_list_file(data_path + "/current_kl_list.txt");
+	QDir dir(data_path);
+
+	if (current_kl_list_file.exists())
+	{
+		if (!current_kl_list_file.remove())
+		{
+			QMessageBox::warning(nullptr, "错误", "无法删除current_kl_list文件，请检查权限：" + data_path + "/current_kl_list.txt");
+			return;
+		}
+	}
+	m_successfully_inited = true;
+	return;
+}
+
+bool Globals::successfully_inited() const
+{
+	return m_successfully_inited;
+}
 
 // 注意：存入文件的路径是绝对路径，且一定是带.km的路径
 // 
@@ -28,7 +94,7 @@ int recent_entry_list_limit = 10;  // 最近打开的词条列表最大长度
 // 将打开的库文件名称加到最近打开的库文件列表中，作为列表第一项（就是放在txt文件开头）
 Status addKLToRecentKLList(const QString kl_name, const QString kl_path)
 {
-	QString recent_kl_list_path = data_path + '/' + "recent_kl_list.txt";
+	QString recent_kl_list_path = globals.data_path + '/' + "recent_kl_list.txt";
 	QFile recent_kl_list(recent_kl_list_path);
 	if (!recent_kl_list.open(QIODevice::ReadOnly))
 	{
@@ -77,7 +143,7 @@ Status addKLToRecentKLList(const QString kl_name, const QString kl_path)
 // 将某个库文件名称从最近打开的库文件列表中删除
 Status removeKLFromRecentKLList(const QString kl_path)
 {
-	QString recent_kl_list_path = data_path + '/' + "recent_kl_list.txt";
+	QString recent_kl_list_path = globals.data_path + '/' + "recent_kl_list.txt";
 	QFile recent_kl_list(recent_kl_list_path);
 	if (!recent_kl_list.open(QIODevice::ReadOnly))
 	{
@@ -116,7 +182,7 @@ Status removeKLFromRecentKLList(const QString kl_path)
 int addKLToCurrentKLList(bool is_temp_kl, const QString kl_name, const QString kl_path)
 {
 	int my_id = 0;
-	QString current_kl_list_path = data_path + '/' + "current_kl_list.txt";
+	QString current_kl_list_path = globals.data_path + '/' + "current_kl_list.txt";
 	QFile current_kl_list(current_kl_list_path);
 	if (!current_kl_list.open(QIODevice::ReadOnly))
 	{
@@ -198,7 +264,7 @@ int addKLToCurrentKLList(bool is_temp_kl, const QString kl_name, const QString k
 // 将某个库文件名称从当前打开的库文件列表中删除
 Status removeKLFromCurrentKLList(const QString kl_path)
 {
-	QString current_kl_list_path = data_path + '/' + "current_kl_list.txt";
+	QString current_kl_list_path = globals.data_path + '/' + "current_kl_list.txt";
 	QFile current_kl_list(current_kl_list_path);
 	if (!current_kl_list.open(QIODevice::ReadOnly))
 	{
@@ -235,7 +301,7 @@ int getLatestCurrentKLID(bool is_temp_kl)
 {
 	int max_id = 0;
 
-	QString current_kl_list_path = data_path + '/' + "current_kl_list.txt";
+	QString current_kl_list_path = globals.data_path + '/' + "current_kl_list.txt";
 	QFile current_kl_list(current_kl_list_path);
 	if (!current_kl_list.open(QIODevice::ReadOnly))
 	{

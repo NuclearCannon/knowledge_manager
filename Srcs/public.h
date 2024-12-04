@@ -6,18 +6,35 @@
 
 #include <QString>
 #include <QWidget>
-
-extern QString current_path_of_mainfile;
-extern QString data_path;
-extern QString default_path_for_all_kls;
-extern QString default_path_for_temp_kls;
-
 enum class Status
 {
 	Success,  // 要执行的操作成功
 	Failure,  // 一般是逻辑错误
 	Error  // 一般是文件操作错误或者其他错误
 };
+
+class Globals
+{
+private:
+	bool m_successfully_inited;
+public:
+	Globals();
+
+	bool successfully_inited() const;
+	QString current_path_of_mainfile;  // 当前程序所在的路径
+	QString data_path;  // 存放软件运行所需要的文件，历史记录等
+	QString default_path_for_all_kls;  // 默认的所有知识库的存放位置
+	QString default_path_for_temp_kls;  // 默认的临时知识库的存放位置
+};
+
+extern Globals globals;
+
+//extern QString current_path_of_mainfile;
+//extern QString data_path;
+//extern QString default_path_for_all_kls;
+//extern QString default_path_for_temp_kls;
+
+
 
 // 将打开的库文件名称加到最近打开的库文件列表中，作为列表第一项（就是放在txt文件开头）
 Status addKLToRecentKLList(const QString kl_name, const QString kl_path);
