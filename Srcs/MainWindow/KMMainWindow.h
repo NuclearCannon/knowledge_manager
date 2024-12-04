@@ -18,8 +18,8 @@ private:
 	QString original_kl_path;  // 知识库的km文件存放的路径，只有在压缩解压和显示库信息时用到，末尾带.km
 	QString temp_kl_path;  // 知识库临时路径（解压后的路径），实际中用到的全是这个路径，末尾不带.km
 	MetaData meta_data;  // 知识库的元数据
-	int is_saved;  // 记录当前库是否已经保存，用于MainWindow标题的改变和关闭时询问
-	int is_temp_kl;  // 记录当前库是否是临时库，用于关闭时询问以及保存时的判断
+	bool is_saved;  // 记录当前库是否已经保存，用于MainWindow标题的改变和关闭时询问
+	bool is_temp_kl;  // 记录当前库是否是临时库，用于关闭时询问以及保存时的判断
 
 public:
 	// 静态函数，用来构造一个新的KMMainWindow窗口，禁止直接构造，参数kl_path是知识库的路径，带.km后缀
@@ -105,7 +105,7 @@ private slots:
 	void actSearchEntry();//搜索词条打开函数
 	//void actSearchkl();//搜索库打开函数
 
-	// 锚点、关联标签、标签、大纲 槽函数
+	// 锚点、关联词条、标签、大纲 槽函数
 	void relatedEntriedButtonClicked();  // 关联词条
 	void relatedEntryItemClicked(QListWidgetItem* item);  // 左键关联词条中的条目，跳转到对应的词条
 	void relatedEntryItemRightClicked(const QPoint& pos);  // 右键关联词条中的条目，弹出菜单，指出词条的菜单包括 跳转、删除，指入词条的菜单包括 跳转
@@ -128,10 +128,6 @@ private slots:
 
 	// 指出指入
 	void addPointOut();
-
-
-signals:
-	void klChanged();  // 知识库发生变化时，发出信号
 
 protected:
 	void closeEvent(QCloseEvent* event) override;  // 关闭时，询问未保存的词条，从 current_kl_list 中删除当前库
