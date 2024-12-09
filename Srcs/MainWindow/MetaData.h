@@ -88,7 +88,7 @@ public:
 	// 一切正常，return 0
 	int removeTag(int tag_id);
 
-	// 删除一个词条元数据
+	// 删除一个词条元数据，并且删除和它相关的指入指出关系
 	// 如果词条原本就不存在，return -1
 	// 一切正常，return 0
 	int removeEntry(int entry_id);

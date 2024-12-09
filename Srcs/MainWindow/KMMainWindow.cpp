@@ -643,6 +643,7 @@ void KMMainWindow::tabWidgetChanged(int index)
 // 点击tab关闭按钮时，关闭特定的tab
 void KMMainWindow::actTabCloseRequested(int index)
 {
+	qDebug() << "actTabCloseRequested\n";
 	EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->widget(index));
 	if (entry_widget == nullptr) return;
 	if (entry_widget->saveEntry())

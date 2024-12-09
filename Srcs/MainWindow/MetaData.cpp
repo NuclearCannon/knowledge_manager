@@ -145,6 +145,17 @@ int MetaData::removeEntry(int entry_id)
 {
 	auto dest_iter = entrys.find(entry_id);
 	if (dest_iter == entrys.end())return -1;
+
+	// 删除相关的指入指出关系
+	for (auto p_in : dest_iter->second->in)
+	{
+		entrys[p_in]->out.erase(entry_id);
+	}
+	for (auto p_out : dest_iter->second->out)
+	{
+		entrys[p_out]->in.erase(entry_id);
+	}
+
 	delete dest_iter->second;
 	entrys.erase(entry_id);
 	return 0;

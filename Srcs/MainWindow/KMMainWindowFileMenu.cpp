@@ -110,25 +110,25 @@ void KMMainWindow::actDeleteEntry()
 		return;
 	}
 
+	// 获取当前tab的entry_widget
+	int current_index = ui.tab_widget->currentIndex();
+	EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->widget(current_index));
+	int entry_id = entry_widget->getEntryId();
+
+	QString hint_message = "是否删除当前词条？";
+	if (!meta_data.getIn(entry_id)->empty() || !meta_data.getOut(entry_id)->empty()) {
+		hint_message = "是否删除当前词条（当前词条含指入指出关系）？";
+	}
+
+
 	// 询问是否删除当前词条
-	QMessageBox msg_box(QMessageBox::Warning, "警告", "是否删除当前词条？", QMessageBox::Yes | QMessageBox::No, this);
+	QMessageBox msg_box(QMessageBox::Warning, "警告", hint_message, QMessageBox::Yes | QMessageBox::No, this);
 	msg_box.button(QMessageBox::Yes)->setText("是");
 	msg_box.button(QMessageBox::No)->setText("否");
 	int reply = msg_box.exec();
 
 	if (reply == QMessageBox::Yes)
 	{
-		// 获取当前tab的entry_widget
-		int current_index = ui.tab_widget->currentIndex();
-		EntryWidget* entry_widget = static_cast<EntryWidget*>(ui.tab_widget->widget(current_index));
-
-		// 删除当前tab
-		ui.tab_widget->removeTab(current_index);
-
-		// 删除元数据中的词条
-		int entry_id = entry_widget->getEntryId();
-		meta_data.removeEntry(entry_id);
-
 		// 删除词条文件夹
 		QString entry_path = getTempKLPath() + "/" + QString::number(entry_id);
 		QDir entry_dir(entry_path);
@@ -137,10 +137,13 @@ void KMMainWindow::actDeleteEntry()
 			return;
 		}
 
+		// 元数据删除
+		meta_data.removeEntry(entry_id);
+
 		// 删除entry_widget
 		delete entry_widget;
 		entry_widget = nullptr;
-
+		
 		handleKLChanged();
 	}
 }
