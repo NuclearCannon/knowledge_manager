@@ -360,10 +360,7 @@ KMMainWindow::KMMainWindow(bool temp_kl, QString _kl_name, QString _original_kl_
 	//connect(ui.act_search_multi_kl, &QAction::triggered, this, &KMMainWindow::actSearchMultikl);//点击多库搜素时，打开搜索框
 	//connect(ui.act_merge_kl, &QAction::triggered, this, &KMMainWindow::actopenmergekl);//点击合库时，打开搜索框
 	//connect(ui.act_separate_kl, &QAction::triggered, this, &KMMainWindow::actopenseparatekl);//点击分库时，打开搜索框
-
-	// 知识库改变时，更新窗口标题
-	connect(this, &KMMainWindow::klChanged, this, &KMMainWindow::handleKLChanged);
-
+	
 	// 关联部分
 	connect(ui.act_point_out, &QAction::triggered, this, &KMMainWindow::addPointOut);
 }

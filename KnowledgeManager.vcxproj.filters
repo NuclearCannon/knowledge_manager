@@ -33,9 +33,6 @@
     <Filter Include="Srcs\RecentKLWindow">
       <UniqueIdentifier>{b3812ca5-140b-4206-9a69-1991f219ec7b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Srcs\NewKLGuidance">
-      <UniqueIdentifier>{2a04d5ab-d5e6-4890-b32b-f35a397a094b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Srcs\EntryWidget\BlockWidget\CodeBlock">
       <UniqueIdentifier>{d6adc306-f628-4604-8c5a-005e46925365}</UniqueIdentifier>
     </Filter>
@@ -108,9 +105,6 @@
     </ClCompile>
     <ClCompile Include="Srcs\RecentKLWindow\RecentKLWindow.cpp">
       <Filter>Srcs\RecentKLWindow</Filter>
-    </ClCompile>
-    <ClCompile Include="Srcs\NewKLGuidance\new_kl_guidance.cpp">
-      <Filter>Srcs\NewKLGuidance</Filter>
     </ClCompile>
     <ClCompile Include="Srcs\EntryWidget\BlockWidget\CodeBlock\CodeBlockWidget.cpp">
       <Filter>Srcs\EntryWidget\BlockWidget\CodeBlock</Filter>
@@ -197,9 +191,6 @@
     <QtMoc Include="Srcs\RecentKLWindow\RecentKLWindow.h">
       <Filter>Srcs\RecentKLWindow</Filter>
     </QtMoc>
-    <QtMoc Include="Srcs\NewKLGuidance\new_kl_guidance.h">
-      <Filter>Srcs\NewKLGuidance</Filter>
-    </QtMoc>
     <QtMoc Include="Srcs\EntryWidget\BlockWidget\CodeBlock\CodeBlockWidget.h">
       <Filter>Srcs\EntryWidget\BlockWidget\CodeBlock</Filter>
     </QtMoc>
@@ -228,9 +219,6 @@
     </QtUic>
     <QtUic Include="Srcs\RecentKLWindow\RecentKLWindow.ui">
       <Filter>Srcs\RecentKLWindow</Filter>
-    </QtUic>
-    <QtUic Include="Srcs\NewKLGuidance\newklguidance.ui">
-      <Filter>Srcs\NewKLGuidance</Filter>
     </QtUic>
   </ItemGroup>
 </Project>
