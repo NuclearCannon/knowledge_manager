@@ -163,3 +163,4 @@ void TextBlockWidget::clearUndoStack()
 {
     text_edit->clearUndoStack();
 }
+

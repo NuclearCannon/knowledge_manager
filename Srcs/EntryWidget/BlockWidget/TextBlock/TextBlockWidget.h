@@ -66,6 +66,7 @@ protected:
     void mousePressEvent(QMouseEvent* event);
     void contextMenuEvent(QContextMenuEvent* event);
     void focusOutEvent(QFocusEvent* event);
+    void keyPressEvent(QKeyEvent* event) override;
 signals:
     void contextMenuQuery(QContextMenuEvent*);
 

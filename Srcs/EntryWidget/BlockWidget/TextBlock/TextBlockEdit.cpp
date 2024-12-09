@@ -3,7 +3,10 @@
 #include <QDesktopServices>
 #include <QThread>
 #include <QMessageBox>
+#include <QClipboard>
 
+
+QString local_clipboard;
 
 TextBlockEdit::TextBlockEdit(TextBlockWidget* parent) :
     QTextEdit(parent),
@@ -166,4 +169,36 @@ void TextBlockEdit::focusOutEvent(QFocusEvent* event)
         setTextCursor(cursor);
     }
     QTextEdit::focusOutEvent(event);
+}
+
+void TextBlockEdit::keyPressEvent(QKeyEvent* event) {
+
+    if (event->key() == Qt::Key_C && (event->modifiers() & Qt::ControlModifier)) {
+        // 拦截Ctrl+C 复制
+        QTextEdit::keyPressEvent(event);
+        QClipboard* clipboard = QApplication::clipboard();
+        local_clipboard = clipboard->mimeData()->html();
+        return;
+    }
+    else if (event->key() == Qt::Key_V && (event->modifiers() & Qt::ControlModifier)) {
+        // 拦截 Ctrl+V 粘贴
+        QClipboard* clipboard = QApplication::clipboard();
+        const QMimeData* mimeData = clipboard->mimeData();
+        if (mimeData->hasHtml() && mimeData->html() != local_clipboard)
+        {
+            QString plainText = mimeData->text();
+            insertPlainText(plainText);
+            return;
+        }
+        else
+        {
+            QTextEdit::keyPressEvent(event);
+        }
+    }
+    else
+    {
+        QTextEdit::keyPressEvent(event);
+    }
+    
+    
 }
