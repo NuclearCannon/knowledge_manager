@@ -6,7 +6,8 @@
 #include "MainWindow/KMMainWindow.h"
 #include "public.h"
 
-int real_main(int argc, char* argv[])
+
+int app_main(int argc, char* argv[])
 {
 	QApplication a(argc, argv);
 	KMMainWindow* km_main_window = KMMainWindow::construct();
@@ -27,7 +28,7 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
-	int rtn = real_main(argc, argv);
+	int rtn = app_main(argc, argv);
 
 
 	return rtn;

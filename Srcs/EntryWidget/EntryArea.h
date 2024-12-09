@@ -16,7 +16,6 @@ private:
     QDir root_dir, attachment_dir;
     QList<BlockWidget*> blocks;
 
-    BlockWidget* focus;
     bool saved;
     // 构造函数私有：不允许手动构造，必须使用open或者initialize构造
     EntryArea(QWidget* parent, const QDir& root);
