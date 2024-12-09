@@ -1,4 +1,6 @@
 ﻿#include "CodeBlockWidget.h"
+#include <QClipboard>
+#include <QApplication>
 // 代码编辑框
 CodeEdit::CodeEdit(CodeBlockWidget* parent) :
     QTextEdit(parent),
@@ -36,7 +38,6 @@ void CodeEdit::removeHighlighter()
 void CodeEdit::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
-        qDebug() << "Enter handled";
         // 拦截回车键  
         QTextCursor cursor = textCursor();
         // 在当前光标位置插入换行符  
@@ -45,6 +46,21 @@ void CodeEdit::keyPressEvent(QKeyEvent* event)
         setTextCursor(cursor);
         // 阻止默认行为（即创建新段落）  
         event->accept();
+    }
+    else if (event->key() == Qt::Key_V && (event->modifiers() & Qt::ControlModifier)) {
+        // 拦截 Ctrl+V 粘贴
+        QClipboard* clipboard = QApplication::clipboard();
+        const QMimeData* mimeData = clipboard->mimeData();
+        if (mimeData->hasText())
+        {
+            QString plainText = mimeData->text();
+            insertPlainText(plainText);
+            return;
+        }
+        else
+        {
+            QTextEdit::keyPressEvent(event);
+        }
     }
     else {
         // 对于其他按键，调用基类的keyPressEvent方法  
