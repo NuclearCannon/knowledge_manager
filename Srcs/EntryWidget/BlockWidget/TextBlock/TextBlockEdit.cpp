@@ -171,14 +171,15 @@ void TextBlockEdit::focusOutEvent(QFocusEvent* event)
     QTextEdit::focusOutEvent(event);
 }
 
-void TextBlockEdit::keyPressEvent(QKeyEvent* event) {
 
-    if (event->key() == Qt::Key_C && (event->modifiers() & Qt::ControlModifier)) {
-        // 拦截Ctrl+C 复制
+
+
+void TextBlockEdit::keyPressEvent(QKeyEvent* event) {
+    if ((event->key() == Qt::Key_C || event->key() == Qt::Key_X) && (event->modifiers() & Qt::ControlModifier)) {
         QTextEdit::keyPressEvent(event);
         QClipboard* clipboard = QApplication::clipboard();
         local_clipboard = clipboard->mimeData()->html();
-        return;
+
     }
     else if (event->key() == Qt::Key_V && (event->modifiers() & Qt::ControlModifier)) {
         // 拦截 Ctrl+V 粘贴

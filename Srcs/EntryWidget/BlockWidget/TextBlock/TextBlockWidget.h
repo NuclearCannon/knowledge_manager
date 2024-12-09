@@ -53,8 +53,6 @@ private:
 class TextBlockEdit : public QTextEdit, public BlockControl
 {
     Q_OBJECT
-private:
-
 public:
     TextBlockEdit(TextBlockWidget* parent);
     void setStyleOnSelection(FormatItem x, bool value = true);
@@ -67,6 +65,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent* event);
     void focusOutEvent(QFocusEvent* event);
     void keyPressEvent(QKeyEvent* event) override;
+    
 signals:
     void contextMenuQuery(QContextMenuEvent*);
 
@@ -95,5 +94,6 @@ private slots:
 protected:
     void contextMenuEvent(QContextMenuEvent* event);
     void resizeEvent(QResizeEvent* event) override;
+    
 };
 
