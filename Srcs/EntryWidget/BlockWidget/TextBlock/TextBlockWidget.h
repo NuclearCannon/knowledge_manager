@@ -94,5 +94,6 @@ private slots:
 
 protected:
     void contextMenuEvent(QContextMenuEvent* event);
+    void resizeEvent(QResizeEvent* event) override;
 };
 

@@ -23,7 +23,7 @@ TextBlockWidget::TextBlockWidget(QWidget* parent) :
     connect(text_edit, &TextBlockEdit::textChanged, this, &TextBlockWidget::emitContentChange);
     connect(text_edit, &TextBlockEdit::textChanged, this, &TextBlockWidget::justifyHeight);
     connect(text_edit, &TextBlockEdit::contextMenuQuery, this, &TextBlockWidget::handleContextMenuQueryFromControls);
-
+    
     justifyHeight();// 调整一次高度
 
     qDebug() << "TextBlockWidget 构造时尺寸" << size();
@@ -164,3 +164,9 @@ void TextBlockWidget::clearUndoStack()
     text_edit->clearUndoStack();
 }
 
+void TextBlockWidget::resizeEvent(QResizeEvent* event)
+{
+    // 调用基类的 resizeEvent 以保持默认行为
+    QWidget::resizeEvent(event);
+    justifyHeight();
+}
