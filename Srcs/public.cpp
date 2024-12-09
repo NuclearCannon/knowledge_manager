@@ -1,7 +1,6 @@
 /*
 实现了一些公共函数，定义全局变量
 */
-#include <QCoreApplication>
 #include <QMessageBox>
 #include <QString>
 #include <QInputDialog>
@@ -20,12 +19,12 @@ Globals globals;
 int recent_kl_list_limit = 10;  // 最近打开的知识库列表的最大长度
 int recent_entry_list_limit = 10;  // 最近打开的词条列表最大长度
 
+Globals::Globals() {}
 
-Globals::Globals():
-	m_successfully_inited(false)
+bool Globals::initial(QString _current_path_of_mainfile)
 {
-	
-	current_path_of_mainfile = QCoreApplication::applicationDirPath();  // 当前程序所在的路径
+	//qDebug() << "current_path_of_mainfile: " << current_path_of_mainfile;
+	current_path_of_mainfile = _current_path_of_mainfile;
 	data_path = current_path_of_mainfile + "/data";
 	default_path_for_all_kls = data_path + "/all_kls";
 	default_path_for_temp_kls = data_path + "/temp_kls";
@@ -37,7 +36,7 @@ Globals::Globals():
 		if (!data_dir.mkpath(data_path))
 		{
 			QMessageBox::warning(nullptr, "错误", "无法创建data文件夹，请检查权限：" + data_path);
-			return;
+			return false;
 		}
 	}
 
@@ -48,7 +47,7 @@ Globals::Globals():
 		if (!all_kls_dir.mkpath(default_path_for_all_kls))
 		{
 			QMessageBox::warning(nullptr, "错误", "无法创建all_kls文件夹，请检查权限：" + default_path_for_all_kls);
-			return;
+			return false;
 		}
 	}
 
@@ -59,7 +58,7 @@ Globals::Globals():
 		if (!temp_kls_dir.mkpath(default_path_for_temp_kls))
 		{
 			QMessageBox::warning(nullptr, "错误", "无法创建temp_kls文件夹，请检查权限：" + default_path_for_temp_kls);
-			return;
+			return false;
 		}
 	}
 
@@ -72,16 +71,11 @@ Globals::Globals():
 		if (!current_kl_list_file.remove())
 		{
 			QMessageBox::warning(nullptr, "错误", "无法删除current_kl_list文件，请检查权限：" + data_path + "/current_kl_list.txt");
-			return;
+			return false;
 		}
 	}
-	m_successfully_inited = true;
-	return;
-}
 
-bool Globals::successfully_inited() const
-{
-	return m_successfully_inited;
+	return true;
 }
 
 // 注意：存入文件的路径是绝对路径，且一定是带.km的路径

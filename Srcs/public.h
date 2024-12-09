@@ -15,12 +15,9 @@ enum class Status
 
 class Globals
 {
-private:
-	bool m_successfully_inited;
 public:
 	Globals();
-
-	bool successfully_inited() const;
+	bool initial(QString _current_path_of_mainfile);
 	QString current_path_of_mainfile;  // 当前程序所在的路径
 	QString data_path;  // 存放软件运行所需要的文件，历史记录等
 	QString default_path_for_all_kls;  // 默认的所有知识库的存放位置
