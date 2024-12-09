@@ -14,11 +14,7 @@ CodeEdit::CodeEdit(CodeBlockWidget* parent) :
 
 CodeEdit::~CodeEdit()
 {
-    if (highlighter)
-    {
-        delete highlighter;
-        highlighter = nullptr;
-    }
+    removeHighlighter();
 }
 
 void CodeEdit::setHighlighter(const QVector<HighlightingRule>& rules)
@@ -32,7 +28,7 @@ void CodeEdit::removeHighlighter()
 {
     if (highlighter)
     {
-        delete highlighter;
+        highlighter->deleteLater();
         highlighter = nullptr;
     }
 }
