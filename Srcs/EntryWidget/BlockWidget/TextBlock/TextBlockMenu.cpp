@@ -2,7 +2,7 @@
 #include <QMenu>
 
 
-void TextBlockBrowser::contextMenuEvent(QContextMenuEvent* event)
+void TextBlockEdit::contextMenuEvent(QContextMenuEvent* event)
 {
     emit contextMenuQuery(event);
 }
@@ -56,9 +56,9 @@ void TextBlockWidget::contextMenuEvent(QContextMenuEvent* event)
 
 void TextBlockWidget::handleContextMenuUndo()
 {
-    this->text_browser->undo();
+    this->text_edit->undo();
 }
 void TextBlockWidget::handleContextMenuRedo()
 {
-    this->text_browser->redo();
+    this->text_edit->redo();
 }

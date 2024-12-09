@@ -9,19 +9,20 @@
 
 
 TextBlockWidget::TextBlockWidget(QWidget* parent) :
-    BlockWidget(parent), text_browser(0)
+    BlockWidget(parent), text_edit(0)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
-    text_browser = new TextBlockBrowser(this);
-    layout->addWidget(text_browser);
+    text_edit = new TextBlockEdit(this);
+    qDebug() << text_edit->wordWrapMode() << text_edit->lineWrapMode();
+    layout->addWidget(text_edit);
     setLayout(layout);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     // 连接更改信号
-    connect(text_browser, &TextBlockBrowser::textChanged, this, &TextBlockWidget::emitContentChange);
-    connect(text_browser, &TextBlockBrowser::textChanged, this, &TextBlockWidget::justifyHeight);
-    connect(text_browser, &TextBlockBrowser::contextMenuQuery, this, &TextBlockWidget::handleContextMenuQueryFromControls);
+    connect(text_edit, &TextBlockEdit::textChanged, this, &TextBlockWidget::emitContentChange);
+    connect(text_edit, &TextBlockEdit::textChanged, this, &TextBlockWidget::justifyHeight);
+    connect(text_edit, &TextBlockEdit::contextMenuQuery, this, &TextBlockWidget::handleContextMenuQueryFromControls);
 
     justifyHeight();// 调整一次高度
 
@@ -39,10 +40,8 @@ BlockType TextBlockWidget::type() const
 
 void TextBlockWidget::justifyHeight()
 {
-    
-    text_browser->document()->adjustSize();//将文档调整到合理的大小。
-    int height = text_browser->document()->size().rheight() + 5;
-    text_browser->setFixedHeight(height);
+    int height = text_edit->document()->size().rheight() + 5;
+    text_edit->setFixedHeight(height);
     setFixedHeight(height);
 }
 
@@ -52,7 +51,7 @@ void TextBlockWidget::exportToQtXml(QDomElement& dest, QDomDocument& dom_doc)
 {
 
 
-    QTextDocument* doc = this->text_browser->document();
+    QTextDocument* doc = this->text_edit->document();
     QTextBlock block = doc->begin();
 
     dest.setTagName(QStringLiteral("text-block"));
@@ -115,8 +114,8 @@ void TextBlockWidget::exportToQtXml(QDomElement& dest, QDomDocument& dom_doc)
 
 void TextBlockWidget::importFromQtXml(QDomElement& src)
 {
-    text_browser->clear();
-    QTextCursor cursor = text_browser->textCursor();
+    text_edit->clear();
+    QTextCursor cursor = text_edit->textCursor();
     for (QDomNode child = src.firstChild(); !child.isNull(); child = child.nextSibling())
     {
         QDomElement elem = child.toElement();
@@ -162,5 +161,5 @@ void TextBlockWidget::importFromQtXml(QDomElement& src)
 
 void TextBlockWidget::clearUndoStack()
 {
-    text_browser->clearUndoStack();
+    text_edit->clearUndoStack();
 }

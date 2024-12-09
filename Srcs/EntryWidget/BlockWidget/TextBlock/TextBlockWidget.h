@@ -50,13 +50,13 @@ private:
     bool resultAccepted = false;
 };
 
-class TextBlockBrowser : public QTextBrowser, public BlockControl
+class TextBlockEdit : public QTextEdit, public BlockControl
 {
     Q_OBJECT
 private:
 
 public:
-    TextBlockBrowser(TextBlockWidget* parent);
+    TextBlockEdit(TextBlockWidget* parent);
     void setStyleOnSelection(FormatItem x, bool value = true);
     void setTypeOnSelection(TextType type);
     void undo();
@@ -76,7 +76,7 @@ class TextBlockWidget : public BlockWidget
 {
 	Q_OBJECT
 private:
-	TextBlockBrowser* text_browser;
+	TextBlockEdit* text_edit;
 public:
     TextBlockWidget(QWidget* parent);
     virtual ~TextBlockWidget();

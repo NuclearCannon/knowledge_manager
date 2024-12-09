@@ -5,25 +5,25 @@
 #include <QMessageBox>
 
 
-TextBlockBrowser::TextBlockBrowser(TextBlockWidget* parent) :
-    QTextBrowser(parent),
+TextBlockEdit::TextBlockEdit(TextBlockWidget* parent) :
+    QTextEdit(parent),
     BlockControl(parent)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setReadOnly(false);
-    setOpenLinks(false);
-    setOpenExternalLinks(true);
     setTabStopDistance(20);
     setStyleSheet(
-        "TextBlockBrowser:hover { background-color: rgba(0, 0, 0, 20); border: none; }  "
-        "TextBlockBrowser:focus { background-color: rgba(0, 0, 0, 20); border: none; }  "
-        "TextBlockBrowser { background-color: rgba(0, 0, 0, 0); border: none; }");
+        "TextBlockEdit:hover { background-color: rgba(0, 0, 0, 20); border: none; }  "
+        "TextBlockEdit:focus { background-color: rgba(0, 0, 0, 20); border: none; }  "
+        "TextBlockEdit { background-color: rgba(0, 0, 0, 0); border: none; }");
     setUndoRedoEnabled(true);
-    setFocus();
     
+    setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+    setLineWrapMode(QTextEdit::WidgetWidth);
+    setFocus();
 }
 
-void TextBlockBrowser::setStyleOnSelection(FormatItem x, bool value)
+void TextBlockEdit::setStyleOnSelection(FormatItem x, bool value)
 {
     // 获取QTextEdit的当前文本光标  
     QTextCursor cursor = textCursor();
@@ -81,7 +81,7 @@ void TextBlockBrowser::setStyleOnSelection(FormatItem x, bool value)
     }
 }
 
-void TextBlockBrowser::setTypeOnSelection(TextType type)
+void TextBlockEdit::setTypeOnSelection(TextType type)
 {
     // 获取QTextEdit的当前文本光标  
     QTextCursor cursor = textCursor();
@@ -121,20 +121,20 @@ void TextBlockBrowser::setTypeOnSelection(TextType type)
 }
 
 
-void TextBlockBrowser::undo()
+void TextBlockEdit::undo()
 {
-    this->QTextBrowser::undo();
+    this->QTextEdit::undo();
 }
-void TextBlockBrowser::redo()
+void TextBlockEdit::redo()
 {
-    this->QTextBrowser::redo();
+    this->QTextEdit::redo();
 }
-void TextBlockBrowser::clearUndoStack()
+void TextBlockEdit::clearUndoStack()
 {
     this->document()->clearUndoRedoStacks();
 }
 
-void TextBlockBrowser::mousePressEvent(QMouseEvent* event)
+void TextBlockEdit::mousePressEvent(QMouseEvent* event)
 {
     if (event->modifiers() & Qt::ControlModifier)
     {
@@ -143,15 +143,15 @@ void TextBlockBrowser::mousePressEvent(QMouseEvent* event)
         QUrl url(anchor);
 
         QDesktopServices::openUrl(url);
-        QTextBrowser::mousePressEvent(event);
+        QTextEdit::mousePressEvent(event);
     }
     else
     {
-        QTextBrowser::mousePressEvent(event);
+        QTextEdit::mousePressEvent(event);
     }
 }
 
-void TextBlockBrowser::focusOutEvent(QFocusEvent* event)
+void TextBlockEdit::focusOutEvent(QFocusEvent* event)
 {
     QWidget* focus_widget = QApplication::focusWidget();
     qDebug() << "focused widget:" << focus_widget;
@@ -165,5 +165,5 @@ void TextBlockBrowser::focusOutEvent(QFocusEvent* event)
         cursor.setPosition(0);
         setTextCursor(cursor);
     }
-    QTextBrowser::focusOutEvent(event);
+    QTextEdit::focusOutEvent(event);
 }
