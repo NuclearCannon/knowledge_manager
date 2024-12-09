@@ -99,31 +99,42 @@ void search::putEntriesByTags(const QString& tag_str)
 {
     auto list = tag_str.split(' ');  // 按空格切分
     std::set<int> tag_set;
-    for (const Tag *tag : meta.getTags())
+    const auto  & meta_tags = meta.getTags();
+
+    bool all_match = true;
+    for (const auto& tag_name : list)
     {
-        for (const auto& tag_name : list)
+        bool match = false;  // 该tag_name是否存在于tag集合中
+        for (const Tag* tag : meta_tags)
         {
             if (tag->name() == tag_name)
             {
+                match = true;
                 tag_set.insert(tag->id());
                 break;
             }
         }
-    }
-    putEntriesByTags(tag_set);
-}
-void search::putEntriesByTags(const std::set<int>& tag_set)
-{
-    ui->list_widget->clear();
-    for (auto entry : meta.getEntries())
-    {
-        // 判断目标集合是不是entry的集合的子集
-        qDebug() << entry->id() << entry->title();
-        if (isSubset(tag_set, entry->getTags()))
+        if (!match)
         {
-            ui->list_widget->addItem(new SeachEntryItem(entry->id(), entry->title()));
+            all_match = false;
+            break;
         }
     }
+
+    ui->list_widget->clear();
+    if (all_match)
+    {
+        for (auto entry : meta.getEntries())
+        {
+            // 判断目标集合是不是entry的集合的子集
+            qDebug() << entry->id() << entry->title();
+            if (isSubset(tag_set, entry->getTags()))
+            {
+                ui->list_widget->addItem(new SeachEntryItem(entry->id(), entry->title()));
+            }
+        }
+    }
+    
 }
 
 void search::searchTextChanged()

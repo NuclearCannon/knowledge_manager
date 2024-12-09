@@ -46,7 +46,6 @@ private slots:
 private:
     void putAllEntries();  // 显示所有结果到list中
     void putEntriesByTitle(const QString& target);
-    void putEntriesByTags(const std::set<int>& tag_set);
     void putEntriesByTags(const QString& tag_str);
 
     void addItem(int id, const QString& title);
