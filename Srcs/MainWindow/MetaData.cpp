@@ -155,7 +155,8 @@ int MetaData::removeEntry(int entry_id)
 	{
 		entrys[p_out]->in.erase(entry_id);
 	}
-
+	// 如果该词条是锚点，删除之
+	anchors.erase(entry_id);  // 就算原本不存在于anchors集合，该操作也是安全的
 	delete dest_iter->second;
 	entrys.erase(entry_id);
 	return 0;
