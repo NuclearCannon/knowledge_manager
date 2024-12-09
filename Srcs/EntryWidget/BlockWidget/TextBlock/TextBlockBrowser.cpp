@@ -153,9 +153,9 @@ void TextBlockBrowser::mousePressEvent(QMouseEvent* event)
 
 void TextBlockBrowser::focusOutEvent(QFocusEvent* event)
 {
-    BlockControl* focus = dynamic_cast<BlockControl*>(QApplication::focusWidget());
-
-    if (focus && focus!=this)
+    QWidget* focus_widget = QApplication::focusWidget();
+    qDebug() << "focused widget:" << focus_widget;
+    if (focus_widget && focus_widget !=this)
     {
         QTextCursor cursor = textCursor();
         if (cursor.hasSelection())
